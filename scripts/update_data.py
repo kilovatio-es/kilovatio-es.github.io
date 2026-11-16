@@ -3,9 +3,12 @@ Actualiza data/energia.json con:
   - Precio PVPC (tarifa 2.0TD, península) hora a hora de hoy y de mañana, desde Red Eléctrica.
     Se guarda el histórico de los últimos 400 días para calcular medias mensuales y por periodos.
   - Precio medio nacional de la gasolina 95 y del gasóleo A, desde el Ministerio (Geoportal).
+Y, para el mapa:
+  - data/gasolineras.json: todas las gasolineras con sus precios (Ministerio), en cada ejecución.
+  - data/recarga.json: todos los puntos de recarga públicos (DGT, Punto de Acceso Nacional), una vez al día.
 Lo ejecuta GitHub Actions varias veces al día. Solo usa la biblioteca estándar de Python.
 """
-import json, os, ssl, statistics, time, urllib.request
+import json, os, re, ssl, statistics, time, urllib.request
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -131,7 +134,8 @@ def pvpc(day):
     return None
 
 
-def fuel():
+def fuel_raw():
+    """Todas las gasolineras de España con sus precios (Ministerio para la Transición Ecológica)."""
     url = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/"
     j, last_err = None, None
     for intento in range(3):
@@ -146,20 +150,154 @@ def fuel():
         time.sleep(10)
     if not j:
         raise RuntimeError(last_err)
+    return j
+
+
+def num(s):
+    try:
+        x = float(str(s).replace(",", "."))
+        return x if x == x else None
+    except ValueError:
+        return None
+
+
+def fuel(j):
     def avg(field):
-        vals = []
-        for e in j.get("ListaEESSPrecio", []):
-            s = str(e.get(field, "")).replace(",", ".")
-            try:
-                x = float(s)
-                if 0.5 < x < 4:
-                    vals.append(x)
-            except ValueError:
-                pass
+        vals = [x for x in (num(e.get(field)) for e in j.get("ListaEESSPrecio", [])) if x and 0.5 < x < 4]
         return round(statistics.mean(vals), 3) if vals else None
     g, d = avg("Precio Gasolina 95 E5"), avg("Precio Gasoleo A")
     print(f"Carburantes: gasolina 95 {g} €/l, gasóleo A {d} €/l")
     return {"gasolina95": g, "diesel": d}
+
+
+# Carburantes que se guardan para el mapa (clave corta, campo del Ministerio)
+FUELS = [("g95", "Precio Gasolina 95 E5"), ("g98", "Precio Gasolina 98 E5"), ("dA", "Precio Gasoleo A"),
+         ("dP", "Precio Gasoleo Premium"), ("glp", "Precio Gases licuados del petróleo"),
+         ("gnc", "Precio Gas Natural Comprimido"), ("h2", "Precio Hidrogeno")]
+
+
+def gasolineras(j, now):
+    """data/gasolineras.json: una fila por gasolinera de venta al público. Precios en milésimas de euro."""
+    rows = []
+    for e in j.get("ListaEESSPrecio", []):
+        if e.get("Tipo Venta") == "R":  # venta restringida a socios (cooperativas): no se muestra
+            continue
+        lat, lon = num(e.get("Latitud")), num(e.get("Longitud (WGS84)"))
+        if not lat or not lon:
+            continue
+        prices = []
+        for _, field in FUELS:
+            x = num(e.get(field))
+            prices.append(round(x * 1000) if x and 0.3 < x < 30 else 0)
+        if not any(prices):
+            continue
+        rows.append([round(lat, 5), round(lon, 5), (e.get("Rótulo") or "").strip(), (e.get("Dirección") or "").strip(),
+                     (e.get("Municipio") or "").strip(), (e.get("Provincia") or "").strip().title(),
+                     (e.get("Horario") or "").strip(), (e.get("C.P.") or "").strip()] + prices)
+    out = {"updated": now.isoformat(timespec="minutes"), "source": j.get("Fecha"),
+           "cols": ["lat", "lon", "rotulo", "direccion", "municipio", "provincia", "horario", "cp"] + [k for k, _ in FUELS],
+           "rows": rows}
+    write_json(os.path.join(ROOT, "data", "gasolineras.json"), out)
+    print(f"Mapa: {len(rows)} gasolineras")
+
+
+# ---------- Puntos de recarga (DGT, Punto de Acceso Nacional, DATEX II, licencia CC-BY) ----------
+NAP_RECARGA = "https://nap.dgt.es/datex2/v3/miterd/EnergyInfrastructureTablePublication/electrolineras.xml"
+CONN = {"iec62196T2": 1, "iec62196T2COMBO": 2, "chademo": 4, "domesticF": 8, "domesticE": 8}  # resto: 16
+
+
+def short_hours(label):
+    label = " ".join((label or "").split())
+    days = re.findall(r"(Lunes|Martes|Miercoles|Jueves|Viernes|Sabado|Domingo) \(([^)]*)\)", label)
+    if days and all(h.replace(" ", "") in ("00:00-23:59", "00:00-24:00") for _, h in days) and len(days) == 7:
+        return "24h"
+    order = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+    if len(days) == 7:
+        d = dict(days)
+        return " · ".join(f"{k[:2]} {d[k].replace(' ', '')}" for k in order)
+    return label[:120]
+
+
+def parse_recarga(fileobj):
+    import xml.etree.ElementTree as ET
+    def local(tag):
+        return tag.rsplit("}", 1)[-1]
+    rows = []
+    for ev, el in ET.iterparse(fileobj, events=("end",)):
+        if local(el.tag) != "energyInfrastructureSite":
+            continue
+        name = operator = hours = cp = ""
+        addr = {}
+        lat = lon = None
+        kw = 0.0
+        mask = points = 0
+        for ch in el.iter():
+            t = local(ch.tag)
+            if t == "latitude":
+                lat = num(ch.text)
+            elif t == "longitude":
+                lon = num(ch.text)
+            elif t == "postcode":
+                cp = (ch.text or "").strip().zfill(5)
+            elif t == "label" and not hours:
+                hours = short_hours(ch.text)
+            elif t == "refillPoint":
+                points += 1
+            elif t == "connectorType":
+                mask |= CONN.get((ch.text or "").strip(), 16)
+            elif t == "maxPowerAtSocket":
+                kw = max(kw, (num(ch.text) or 0) / 1000)
+        # nombre del sitio y del operador: primer <fac:name> directo de cada uno
+        for ch in el:
+            if local(ch.tag) == "name":
+                name = " ".join("".join(ch.itertext()).split())
+            elif local(ch.tag) == "operator":
+                for n in ch:
+                    if local(n.tag) == "name":
+                        operator = " ".join("".join(n.itertext()).split())
+        for v in el.iter():
+            if local(v.tag) == "text":
+                txt = " ".join("".join(v.itertext()).split())
+                if ":" in txt:
+                    k, val = txt.split(":", 1)
+                    addr[k.strip()] = val.strip()
+        el.clear()
+        if not lat or not lon or not (27 < lat < 44.5) or not (-19 < lon < 5):
+            continue
+        rows.append([round(lat, 5), round(lon, 5), name, operator, addr.get("Dirección", ""), addr.get("Municipio", ""),
+                     addr.get("Provincia", ""), cp, round(kw, 1), points, mask, hours])
+    return rows
+
+
+def recarga(now):
+    path = os.path.join(ROOT, "data", "recarga.json")
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                old = json.load(f)
+            age = now - datetime.fromisoformat(old["updated"])
+            if age < timedelta(hours=20):
+                print(f"Recarga: datos de hace {age}, no hace falta descargar")
+                return
+        except Exception:  # noqa: BLE001
+            pass
+    req = urllib.request.Request(NAP_RECARGA, headers={"User-Agent": UA["User-Agent"]})
+    with urllib.request.urlopen(req, timeout=240) as r:
+        rows = parse_recarga(r)
+    if len(rows) < 1000:
+        raise RuntimeError(f"solo {len(rows)} puntos; no se guarda")
+    write_json(path, {"updated": now.isoformat(timespec="minutes"),
+                      "cols": ["lat", "lon", "nombre", "operador", "direccion", "municipio", "provincia", "cp",
+                               "kw", "puntos", "conectores", "horario"],
+                      "conectores": {"1": "Tipo 2", "2": "CCS2", "4": "CHAdeMO", "8": "Schuko", "16": "Otros"},
+                      "rows": rows})
+    print(f"Mapa: {len(rows)} ubicaciones de recarga")
+
+
+def write_json(path, obj):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(obj, fh, ensure_ascii=False, separators=(",", ":"))
 
 
 def main():
@@ -176,15 +314,21 @@ def main():
         if p:
             data["days"][day] = p
     backfill(data, now)
-    keep = sorted(data["days"])[-KEEP_DAYS:]
+    keep =sorted(data["days"])[-KEEP_DAYS:]
     data["days"] = {k: data["days"][k] for k in keep}
     try:
-        f = fuel()
+        j = fuel_raw()
+        f = fuel(j)
         if f["gasolina95"] and f["diesel"]:
             f["date"] = now.strftime("%Y-%m-%d")
             data["fuel"] = f
+        gasolineras(j, now)
     except Exception as e:  # noqa: BLE001
         print(f"Carburantes: fallo: {e}")
+    try:
+        recarga(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"Recarga: fallo: {e}")
     data["updated"] = now.isoformat(timespec="minutes")
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as fh:
