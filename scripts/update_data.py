@@ -334,6 +334,11 @@ def main():
     with open(OUT, "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, separators=(",", ":"))
     print(f"Guardado {OUT}: {len(data['days'])} días")
+    try:
+        import luz_pages  # páginas de hoy, mañana y cada día, con los números en el HTML
+        luz_pages.write_all(data, ROOT, now.strftime("%Y-%m-%d"))
+    except Exception as e:  # noqa: BLE001
+        print(f"Páginas de la luz: fallo: {e}")
 
 
 if __name__ == "__main__":
