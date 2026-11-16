@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kilovatio</title>
+<title>Precio de la luz hoy, lunes 16 de noviembre: más barata a las 04:00 · Kilovatio</title>
+<link rel="canonical" href="https://kilovatio-es.github.io/">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Precio de la luz hoy hora a hora (PVPC) y calculadoras de energía para tu casa: placas solares, tarifas, potencia, calefacción, coche eléctrico y electrodomésticos.">
+<meta name="description" content="Precio de la luz hoy (lunes 16 de noviembre de 2026) hora a hora: la hora más barata es 04:00–05:00 (0,127 €/kWh) y la más cara 20:00–21:00 (0,437 €/kWh). Media 0,265 €/kWh con impuestos. Semáforo de 24 horas y mejor hora para cada aparato.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Kilovatio">
-<meta property="og:description" content="Precio de la luz hoy hora a hora (PVPC) y calculadoras de energía para tu casa: placas solares, tarifas, potencia, calefacción, coche eléctrico y electrodomésticos.">
+<meta property="og:title" content="Precio de la luz hoy, lunes 16 de noviembre: más barata a las 04:00 · Kilovatio">
+<meta property="og:description" content="Precio de la luz hoy (lunes 16 de noviembre de 2026) hora a hora: la hora más barata es 04:00–05:00 (0,127 €/kWh) y la más cara 20:00–21:00 (0,437 €/kWh). Media 0,265 €/kWh con impuestos. Semáforo de 24 horas y mejor hora para cada aparato.">
 <meta property="og:locale" content="es_ES">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +25,7 @@
     <span class="tagline">Calculadoras de energía para tu casa</span>
   </div>
   <nav class="main" aria-label="Secciones"><div class="wrap">
-    <a href="index.html" aria-current="page">Precio de la luz hoy</a>
+    <a href="index.html" aria-current="page">Precio de la luz</a>
     <a href="placas-solares.html">Placas solares</a>
     <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
     <a href="potencia-contratada.html">Potencia</a>
@@ -36,56 +37,112 @@
   </div></nav>
 </header>
 <main class="wrap">
-  <div class="intro">
-    <p class="eyebrow">Precio de la luz · PVPC</p>
-    <h1>Precio de la luz hoy, hora a hora</h1>
-    <p>Precio de la tarifa regulada (PVPC) para cada hora del día, con las horas más baratas para poner la lavadora, cargar el coche o encender la calefacción. Datos oficiales de Red Eléctrica.</p>
+  <div class="intro luz-intro">
+    <h1>Precio de la luz hoy</h1>
   </div>
-
-  <div class="live">
-    <section class="panel" aria-labelledby="h-chart">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
-        <h2 id="h-chart" style="font-size:1.2rem">Precio PVPC por horas · <span id="day-label">hoy</span></h2>
-        <div class="seg" role="group" aria-label="Día">
-          <button type="button" id="b-today" aria-pressed="true">Hoy</button>
-          <button type="button" id="b-tomorrow" aria-pressed="false">Mañana</button>
-        </div>
-      </div>
-      <div class="stats">
-        <div class="stat now"><small>Ahora</small><b id="s-now">—</b><em id="s-now-h"></em></div>
-        <div class="stat"><small>Media del día</small><b id="s-avg">—</b><em>€/kWh</em></div>
-        <div class="stat"><small>Más barata</small><b id="s-min">—</b><em id="s-min-h"></em></div>
-        <div class="stat"><small>Más cara</small><b id="s-max">—</b><em id="s-max-h"></em></div>
-      </div>
-      <svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg>
-      <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center">
-        <div class="legend"><span><i style="background:var(--good)"></i>Horas baratas</span><span><i style="background:var(--mid)"></i>Intermedias</span><span><i style="background:var(--bad)"></i>Caras</span></div>
-        <label class="check"><input type="checkbox" id="tax" checked> Con impuestos (IVA e impuesto eléctrico)</label>
-      </div>
-      <p class="status" id="status">Cargando precios de Red Eléctrica…</p>
-    </section>
-
-    <aside class="panel" aria-labelledby="h-when">
-      <h2 id="h-when" style="font-size:1.2rem">¿Cuándo lo pongo?</h2>
-      <div class="field">
-        <label for="app">Aparato</label>
-        <div class="input"><select id="app">
-          <option value="0.9">Lavadora (ciclo 40 °C · 0,9 kWh)</option>
-          <option value="1.0">Lavavajillas (ciclo eco · 1 kWh)</option>
-          <option value="2.5">Secadora (ciclo completo · 2,5 kWh)</option>
-          <option value="1.4">Horno (1 hora · 1,4 kWh)</option>
-          <option value="1.0">Aire acondicionado (1 hora · 1 kWh)</option>
-          <option value="7.4">Coche eléctrico (1 hora a 7,4 kW)</option>
-          <option value="22">Coche eléctrico (carga 22 kWh)</option>
-        </select></div>
-      </div>
-      <div class="kv" id="when-kv"></div>
-      <div class="field"><span class="lbl">3 horas más baratas</span><div class="hours" id="cheap"></div></div>
-      <div class="field"><span class="lbl">3 horas más caras</span><div class="hours bad" id="dear"></div></div>
-      <p class="note">El PVPC cambia cada hora según el mercado mayorista. Los precios del día siguiente se publican hacia las 20:30.</p>
-    </aside>
-  </div>
-
+<div class="daynav">
+<div class="seg" role="navigation" aria-label="Día"><a href="index.html" aria-current="page">Hoy</a><a href="precio-luz-manana.html">Mañana</a></div>
+<label class="pickday"><span>Otro día</span><input type="date" id="pick" value="2026-11-16" min="2025-10-17" max="2026-11-17" aria-label="Elegir día"></label>
+</div>
+<p class="eyebrow">Hoy, lunes 16 de noviembre · PVPC con impuestos</p>
+<div class="answer">
+<div class="ans good"><small>Hora más barata</small><b>04:00–05:00</b><span class="num">0,127 €/kWh</span></div>
+<div class="ans bad"><small>Hora más cara</small><b>20:00–21:00</b><span class="num">0,437 €/kWh</span></div>
+<div class="ans mid"><small>Precio medio del día</small><b class="num">0,265</b><span>€/kWh · Día normal</span></div>
+<div class="ans now" id="nowcard" hidden><small>Ahora</small><b class="num" id="now-p">—</b><span id="now-t"></span></div>
+</div>
+<p class="lead">El precio medio de la luz hoy (lunes 16 de noviembre de 2026) es de <strong>0,265 €/kWh</strong>, un 35 % más caro que el domingo y un 31 % más que hace un año (0,202 €/kWh). La hora más barata es de <strong>04:00–05:00</strong> (0,127 €/kWh) y la más cara, de <strong>20:00–21:00</strong> (0,437 €/kWh). Es un día normal: en la media de los últimos 30 días.</p>
+<section class="panel sema-wrap" aria-labelledby="h-sema">
+<div class="sema-head"><h2 id="h-sema">Semáforo de la luz hoy, hora a hora</h2><div class="legend"><span><i style="background:var(--good)"></i>Barata</span><span><i style="background:var(--mid)"></i>Media</span><span><i style="background:var(--bad)"></i>Cara</span></div></div>
+<ol class="sema" id="sema">
+<li class="good" data-h="0" title="00:00–01:00 · 0,215 €/kWh · Barata"><span class="h">00:00</span><span class="p">0,215</span></li>
+<li class="good" data-h="1" title="01:00–02:00 · 0,189 €/kWh · Barata"><span class="h">01:00</span><span class="p">0,189</span></li>
+<li class="good" data-h="2" title="02:00–03:00 · 0,139 €/kWh · Barata"><span class="h">02:00</span><span class="p">0,139</span></li>
+<li class="good" data-h="3" title="03:00–04:00 · 0,128 €/kWh · Barata"><span class="h">03:00</span><span class="p">0,128</span></li>
+<li class="good" data-h="4" title="04:00–05:00 · 0,127 €/kWh · Barata"><span class="h">04:00</span><span class="p">0,127</span></li>
+<li class="good" data-h="5" title="05:00–06:00 · 0,177 €/kWh · Barata"><span class="h">05:00</span><span class="p">0,177</span></li>
+<li class="mid" data-h="6" title="06:00–07:00 · 0,238 €/kWh · Media"><span class="h">06:00</span><span class="p">0,238</span></li>
+<li class="mid" data-h="7" title="07:00–08:00 · 0,262 €/kWh · Media"><span class="h">07:00</span><span class="p">0,262</span></li>
+<li class="bad" data-h="8" title="08:00–09:00 · 0,321 €/kWh · Cara"><span class="h">08:00</span><span class="p">0,321</span></li>
+<li class="mid" data-h="9" title="09:00–10:00 · 0,275 €/kWh · Media"><span class="h">09:00</span><span class="p">0,275</span></li>
+<li class="bad" data-h="10" title="10:00–11:00 · 0,311 €/kWh · Cara"><span class="h">10:00</span><span class="p">0,311</span></li>
+<li class="mid" data-h="11" title="11:00–12:00 · 0,272 €/kWh · Media"><span class="h">11:00</span><span class="p">0,272</span></li>
+<li class="mid" data-h="12" title="12:00–13:00 · 0,249 €/kWh · Media"><span class="h">12:00</span><span class="p">0,249</span></li>
+<li class="mid" data-h="13" title="13:00–14:00 · 0,240 €/kWh · Media"><span class="h">13:00</span><span class="p">0,240</span></li>
+<li class="good" data-h="14" title="14:00–15:00 · 0,153 €/kWh · Barata"><span class="h">14:00</span><span class="p">0,153</span></li>
+<li class="good" data-h="15" title="15:00–16:00 · 0,182 €/kWh · Barata"><span class="h">15:00</span><span class="p">0,182</span></li>
+<li class="mid" data-h="16" title="16:00–17:00 · 0,247 €/kWh · Media"><span class="h">16:00</span><span class="p">0,247</span></li>
+<li class="bad" data-h="17" title="17:00–18:00 · 0,327 €/kWh · Cara"><span class="h">17:00</span><span class="p">0,327</span></li>
+<li class="bad" data-h="18" title="18:00–19:00 · 0,431 €/kWh · Cara"><span class="h">18:00</span><span class="p">0,431</span></li>
+<li class="bad" data-h="19" title="19:00–20:00 · 0,433 €/kWh · Cara"><span class="h">19:00</span><span class="p">0,433</span></li>
+<li class="bad" data-h="20" title="20:00–21:00 · 0,437 €/kWh · Cara"><span class="h">20:00</span><span class="p">0,437</span></li>
+<li class="bad" data-h="21" title="21:00–22:00 · 0,425 €/kWh · Cara"><span class="h">21:00</span><span class="p">0,425</span></li>
+<li class="bad" data-h="22" title="22:00–23:00 · 0,313 €/kWh · Cara"><span class="h">22:00</span><span class="p">0,313</span></li>
+<li class="mid" data-h="23" title="23:00–00:00 · 0,280 €/kWh · Media"><span class="h">23:00</span><span class="p">0,280</span></li>
+</ol>
+<p class="note">Colores relativos a este día: verde, el tercio de horas más barato; rojo, el más caro. Precios PVPC (tarifa 2.0TD, península) en €/kWh con impuesto eléctrico (5,11 %) e IVA (21 %). Fuente: Red Eléctrica.</p>
+<details class="chartbox"><summary>Ver gráfico</summary><svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg></details>
+</section>
+<section class="panel" aria-labelledby="h-apps">
+<h2 id="h-apps">¿Cuándo pongo la lavadora hoy?</h2>
+<p class="muted">La mejor franja seguida para cada aparato y lo que cuesta, frente a hacerlo en las horas más caras.</p>
+<div class="tablewrap"><table class="apps"><thead><tr><th>Aparato</th><th>Mejor franja</th><th class="num">Cuesta</th><th class="num">En la peor franja</th><th class="num">Ahorras</th></tr></thead><tbody>
+<tr data-n="2" data-kwh="0.9" data-worst="0.3914"><td><b>Lavadora</b><small>ciclo de 40 °C</small></td><td class="mono">03:00–05:00</td><td class="num">0,11 €</td><td class="num">0,39 € <small>(19:00–21:00)</small></td><td class="num save">0,28 €</td></tr>
+<tr data-n="2" data-kwh="1.0" data-worst="0.4349"><td><b>Lavavajillas</b><small>programa eco</small></td><td class="mono">03:00–05:00</td><td class="num">0,13 €</td><td class="num">0,43 € <small>(19:00–21:00)</small></td><td class="num save">0,31 €</td></tr>
+<tr data-n="2" data-kwh="2.5" data-worst="1.0871"><td><b>Secadora</b><small>ciclo completo</small></td><td class="mono">03:00–05:00</td><td class="num">0,32 €</td><td class="num">1,09 € <small>(19:00–21:00)</small></td><td class="num save">0,77 €</td></tr>
+<tr data-n="1" data-kwh="1.4" data-worst="0.6118"><td><b>Horno</b><small>1 hora</small></td><td class="mono">04:00–05:00</td><td class="num">0,18 €</td><td class="num">0,61 € <small>(20:00–21:00)</small></td><td class="num save">0,43 €</td></tr>
+<tr data-n="2" data-kwh="3.0" data-worst="1.3046"><td><b>Termo eléctrico</b><small>calentar el depósito</small></td><td class="mono">03:00–05:00</td><td class="num">0,38 €</td><td class="num">1,30 € <small>(19:00–21:00)</small></td><td class="num save">0,92 €</td></tr>
+<tr data-n="3" data-kwh="22.0" data-worst="9.5402"><td><b>Coche eléctrico</b><small>22 kWh a 7,4 kW</small></td><td class="mono">02:00–05:00</td><td class="num">2,89 €</td><td class="num">9,54 € <small>(18:00–21:00)</small></td><td class="num save">6,65 €</td></tr>
+</tbody></table></div>
+<p class="note">Consumos típicos; el tuyo depende del aparato y del programa. Si un ciclo dura más de lo indicado, elige el principio de la franja verde.</p>
+</section>
+<nav class="prevnext" aria-label="Días">
+<a href="precio-luz-2026-11-15.html">← domingo 15 de noviembre</a>
+<a href="precio-luz-2026-11-17.html">martes 17 de noviembre →</a>
+</nav>
+<section class="panel cal" aria-labelledby="h-cal"><div class="cal-head"><h2 id="h-cal">Precio medio de cada día · noviembre de 2026</h2>
+<div class="cal-nav"><a href="precio-luz-2026-10-31.html" aria-label="Mes anterior">← octubre</a></div></div>
+<div class="calgrid" role="list"><span class="dow">L</span><span class="dow">M</span><span class="dow">X</span><span class="dow">J</span><span class="dow">V</span><span class="dow">S</span><span class="dow">D</span>
+<span class="pad"></span>
+<span class="pad"></span>
+<span class="pad"></span>
+<span class="pad"></span>
+<span class="pad"></span>
+<span class="pad"></span>
+<a role="listitem" class="good" href="precio-luz-2026-11-01.html" title="domingo 1 de noviembre de 2026 · media 0,231 €/kWh"><b>1</b><span>0,231</span></a>
+<a role="listitem" class="bad" href="precio-luz-2026-11-02.html" title="lunes 2 de noviembre de 2026 · media 0,288 €/kWh"><b>2</b><span>0,288</span></a>
+<a role="listitem" class="bad" href="precio-luz-2026-11-03.html" title="martes 3 de noviembre de 2026 · media 0,290 €/kWh"><b>3</b><span>0,290</span></a>
+<a role="listitem" class="bad" href="precio-luz-2026-11-04.html" title="miércoles 4 de noviembre de 2026 · media 0,322 €/kWh"><b>4</b><span>0,322</span></a>
+<a role="listitem" class="bad" href="precio-luz-2026-11-05.html" title="jueves 5 de noviembre de 2026 · media 0,317 €/kWh"><b>5</b><span>0,317</span></a>
+<a role="listitem" class="bad" href="precio-luz-2026-11-06.html" title="viernes 6 de noviembre de 2026 · media 0,314 €/kWh"><b>6</b><span>0,314</span></a>
+<a role="listitem" class="mid" href="precio-luz-2026-11-07.html" title="sábado 7 de noviembre de 2026 · media 0,262 €/kWh"><b>7</b><span>0,262</span></a>
+<a role="listitem" class="mid" href="precio-luz-2026-11-08.html" title="domingo 8 de noviembre de 2026 · media 0,248 €/kWh"><b>8</b><span>0,248</span></a>
+<a role="listitem" class="mid" href="precio-luz-2026-11-09.html" title="lunes 9 de noviembre de 2026 · media 0,282 €/kWh"><b>9</b><span>0,282</span></a>
+<a role="listitem" class="mid" href="precio-luz-2026-11-10.html" title="martes 10 de noviembre de 2026 · media 0,277 €/kWh"><b>10</b><span>0,277</span></a>
+<a role="listitem" class="bad" href="precio-luz-2026-11-11.html" title="miércoles 11 de noviembre de 2026 · media 0,293 €/kWh"><b>11</b><span>0,293</span></a>
+<a role="listitem" class="good" href="precio-luz-2026-11-12.html" title="jueves 12 de noviembre de 2026 · media 0,247 €/kWh"><b>12</b><span>0,247</span></a>
+<a role="listitem" class="mid" href="precio-luz-2026-11-13.html" title="viernes 13 de noviembre de 2026 · media 0,285 €/kWh"><b>13</b><span>0,285</span></a>
+<a role="listitem" class="good" href="precio-luz-2026-11-14.html" title="sábado 14 de noviembre de 2026 · media 0,232 €/kWh"><b>14</b><span>0,232</span></a>
+<a role="listitem" class="good" href="precio-luz-2026-11-15.html" title="domingo 15 de noviembre de 2026 · media 0,197 €/kWh"><b>15</b><span>0,197</span></a>
+<a role="listitem" class="mid cur" href="precio-luz-2026-11-16.html" title="lunes 16 de noviembre de 2026 · media 0,265 €/kWh"><b>16</b><span>0,265</span></a>
+<a role="listitem" class="good" href="precio-luz-2026-11-17.html" title="martes 17 de noviembre de 2026 · media 0,223 €/kWh"><b>17</b><span>0,223</span></a>
+<span role="listitem" class="empty"><b>18</b></span>
+<span role="listitem" class="empty"><b>19</b></span>
+<span role="listitem" class="empty"><b>20</b></span>
+<span role="listitem" class="empty"><b>21</b></span>
+<span role="listitem" class="empty"><b>22</b></span>
+<span role="listitem" class="empty"><b>23</b></span>
+<span role="listitem" class="empty"><b>24</b></span>
+<span role="listitem" class="empty"><b>25</b></span>
+<span role="listitem" class="empty"><b>26</b></span>
+<span role="listitem" class="empty"><b>27</b></span>
+<span role="listitem" class="empty"><b>28</b></span>
+<span role="listitem" class="empty"><b>29</b></span>
+<span role="listitem" class="empty"><b>30</b></span>
+</div>
+<p class="note">Media de noviembre hasta ahora: <b>0,269 €/kWh</b> con impuestos. Día más barato: 15 (0,197); más caro: 4 (0,322). Pulsa un día para ver sus horas.</p>
+</section>
+<script>window.LUZ={"date": "2026-11-16", "kind": "hoy", "p": [0.21526, 0.18908, 0.13941, 0.12781, 0.12726, 0.17723, 0.23772, 0.26192, 0.3211, 0.27524, 0.31092, 0.27225, 0.24855, 0.24021, 0.15314, 0.18172, 0.24731, 0.32725, 0.43123, 0.43272, 0.43699, 0.42465, 0.31309, 0.27968], "q": [0.23772, 0.31092]};</script>
   <section class="block" aria-labelledby="h-calc">
     <header><p class="eyebrow">Calculadoras</p><h2 id="h-calc">Haz las cuentas antes de decidir</h2></header>
     <div class="cards">
@@ -100,7 +157,7 @@
 
   <section class="block" aria-labelledby="h-per">
     <header><p class="eyebrow">Tarifa 2.0TD</p><h2 id="h-per">Periodos horarios de lunes a viernes</h2>
-    <p class="muted" style="max-width:66ch">Los periodos los fija la normativa: con la tarifa de acceso 2.0TD, la que tienen casi todos los hogares, los peajes y cargos cambian según la hora. Los fines de semana y festivos nacionales son todo el día valle. Las horas realmente más baratas de cada día las ves en el gráfico de arriba.</p></header>
+    <p class="muted" style="max-width:66ch">Los periodos los fija la normativa: con la tarifa de acceso 2.0TD, la que tienen casi todos los hogares, los peajes y cargos cambian según la hora. Los fines de semana y festivos nacionales son todo el día valle. Las horas realmente más baratas de cada día las ves en el semáforo de arriba.</p></header>
     <div class="periods" id="periods" aria-hidden="true"></div>
     <div style="display:flex;justify-content:space-between;font:11px var(--f-mono);color:var(--muted)"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
     <div class="panel" id="avg-panel" hidden>
@@ -141,8 +198,8 @@
     <div class="faq">
       <details open><summary>¿Por qué cambia el precio de la luz cada hora?</summary><p>El PVPC se calcula a partir del mercado mayorista, donde cada hora se casan la oferta de las centrales y la demanda. Cuando hay mucho sol y viento, las renovables abaratan las horas centrales del día; cuando hace falta gas para cubrir la demanda, el precio sube, sobre todo al anochecer.</p></details>
       <details><summary>¿Qué es el PVPC?</summary><p>El Precio Voluntario para el Pequeño Consumidor es la tarifa regulada por el Gobierno para hogares con hasta 10 kW de potencia. Solo la ofrecen las comercializadoras de referencia, y su precio cambia cada hora. Desde 2024 una parte del precio se calcula con referencias de los mercados a plazo, lo que suaviza los picos.</p></details>
-      <details><summary>¿A qué hora se publican los precios de mañana?</summary><p>Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:30. Pulsa «Mañana» en el gráfico para verlos cuando estén disponibles.</p></details>
-      <details><summary>¿Los precios incluyen impuestos?</summary><p>Red Eléctrica publica el precio sin impuestos. Con la casilla «Con impuestos» marcada, sumamos el impuesto especial sobre la electricidad (5,11 %) y el IVA (21 %), que es lo que pagas realmente por cada kWh.</p></details>
+      <details><summary>¿A qué hora se publican los precios de mañana?</summary><p>Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:15–20:30. En Kilovatio aparecen en la pestaña <a href="precio-luz-manana.html">Mañana</a> a partir de las 20:45.</p></details>
+      <details><summary>¿Los precios incluyen impuestos?</summary><p>Sí. Red Eléctrica publica el precio sin impuestos y Kilovatio le suma el impuesto especial sobre la electricidad (5,11 %) y el IVA (21 %), que es lo que pagas realmente por cada kWh de energía. No incluye el término de potencia ni el alquiler del contador.</p></details>
       <details><summary>¿Y si tengo una tarifa de precio fijo?</summary><p>Con una tarifa del mercado libre a precio fijo, lo que pagas no depende de la hora. Mira la calculadora <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a> para saber qué te conviene.</p></details>
     </div>
   </section>
@@ -152,15 +209,13 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"¿Por qué cambia el precio de la luz cada hora?","acceptedAnswer":{"@type":"Answer","text":"El PVPC se calcula a partir del mercado mayorista, donde cada hora se casan la oferta de las centrales y la demanda. Las renovables abaratan las horas de sol y viento; el gas encarece las horas de mayor demanda."}},
 {"@type":"Question","name":"¿Qué es el PVPC?","acceptedAnswer":{"@type":"Answer","text":"El Precio Voluntario para el Pequeño Consumidor es la tarifa regulada para hogares con hasta 10 kW de potencia, cuyo precio cambia cada hora."}},
-{"@type":"Question","name":"¿A qué hora se publican los precios de la luz de mañana?","acceptedAnswer":{"@type":"Answer","text":"Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:30."}}]}
+{"@type":"Question","name":"¿A qué hora se publican los precios de la luz de mañana?","acceptedAnswer":{"@type":"Answer","text":"Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:15–20:30."}}]}
 </script>
 
+<script src="luz.js"></script>
 <script>
 (function () {
   var $ = KV.$;
-  var TZ = "Europe/Madrid";
-  var state = { day: 0, data: [null, null], loading: [false, false] };
-
   // Periodos 2.0TD (laborables)
   var per = [];
   for (var h = 0; h < 24; h++) {
@@ -168,110 +223,6 @@
     per.push('<div class="p-' + p + '" title="' + String(h).padStart(2, "0") + ':00 · ' + p + '"></div>');
   }
   $("periods").innerHTML = per.join("");
-
-  function madridDate(offsetDays) {
-    var d = new Date(Date.now() + offsetDays * 864e5);
-    return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
-  }
-  function madridHour() {
-    return parseInt(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(new Date()), 10);
-  }
-  function hh(h) { return String(h).padStart(2, "0") + ":00"; }
-
-  function fromRee(d) {
-    var url = "https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=" + d + "T00:00&end_date=" + d + "T23:59&time_trunc=hour";
-    return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .then(function (j) {
-        var s = (j.included || []).filter(function (x) { return /pvpc/i.test(x.attributes && x.attributes.title || ""); })[0];
-        if (!s) throw new Error("sin serie PVPC");
-        var acc = {};
-        s.attributes.values.forEach(function (v) {
-          if (String(v.datetime).slice(0, 10) !== d) return;
-          var h = parseInt(String(v.datetime).substr(11, 2), 10);
-          (acc[h] = acc[h] || []).push(v.value);
-        });
-        var hours = Object.keys(acc).map(Number).sort(function (a, b) { return a - b; });
-        if (hours.length < 23) throw new Error("incompleto");
-        return hours.map(function (h) { var a = acc[h]; return { h: h, p: a.reduce(function (x, y) { return x + y; }, 0) / a.length / 1000 }; });
-      });
-  }
-  function load(day) {
-    if (state.data[day] || state.loading[day]) return render();
-    state.loading[day] = true;
-    var d = madridDate(day);
-    $("status").className = "status";
-    $("status").textContent = "Cargando precios de Red Eléctrica…";
-    KV.data().then(function (all) {
-      var arr = all && all.days[d];
-      if (arr && arr.filter(function (v) { return v != null; }).length >= 23) {
-        state.src = "archivo"; state.updated = all.updated;
-        return arr.map(function (p, h) { return { h: h, p: p }; }).filter(function (x) { return x.p != null; });
-      }
-      state.src = "directo";
-      return fromRee(d);
-    }).then(function (pts) { state.data[day] = pts; })
-      .catch(function () { state.data[day] = "error"; })
-      .then(function () { state.loading[day] = false; render(); });
-  }
-
-  function render() {
-    var day = state.day, d = state.data[day];
-    $("day-label").textContent = day ? "mañana" : "hoy";
-    $("b-today").setAttribute("aria-pressed", day === 0);
-    $("b-tomorrow").setAttribute("aria-pressed", day === 1);
-    if (!d) return;
-    var svg = $("chart");
-    if (d === "error") {
-      svg.innerHTML = ""; svg.removeAttribute("viewBox"); svg.hidden = true;
-      ["s-now", "s-avg", "s-min", "s-max"].forEach(function (id) { $(id).textContent = "—"; });
-      $("when-kv").innerHTML = ""; $("cheap").innerHTML = ""; $("dear").innerHTML = "";
-      $("status").className = "status err";
-      $("status").innerHTML = day
-        ? "Los precios de mañana aún no están publicados. Red Eléctrica los publica hacia las 20:30."
-        : 'No se han podido cargar los precios ahora mismo. Consúltalos en <a href="https://www.ree.es/es/datos/mercados" target="_blank" rel="noopener">Red Eléctrica</a> o en <a href="https://www.esios.ree.es/es/pvpc" target="_blank" rel="noopener">e·sios</a>.';
-      return;
-    }
-    svg.hidden = false;
-    var tax = $("tax").checked ? KV.TAX : 1;
-    var pts = d.map(function (x) { return { h: x.h, p: x.p * tax }; });
-    var sorted = pts.map(function (x) { return x.p; }).sort(function (a, b) { return a - b; });
-    var q1 = sorted[Math.floor(sorted.length / 3)], q2 = sorted[Math.floor(sorted.length * 2 / 3)];
-    var nowH = day === 0 ? madridHour() : -1;
-    KV.columns($("chart"), pts.map(function (x) {
-      return { label: String(x.h).padStart(2, "0"), value: x.p, title: hh(x.h) + " · " + KV.n3(x.p) + " €/kWh",
-        color: x.p < q1 ? "var(--good)" : x.p >= q2 ? "var(--bad)" : "var(--mid)", stroke: x.h === nowH };
-    }), { height: 260, labelEvery: 2, yfmt: function (v) { return v.toFixed(2).replace(".", ","); } });
-    var avg = pts.reduce(function (s, x) { return s + x.p; }, 0) / pts.length;
-    var min = pts.reduce(function (a, b) { return b.p < a.p ? b : a; });
-    var max = pts.reduce(function (a, b) { return b.p > a.p ? b : a; });
-    var now = pts.filter(function (x) { return x.h === nowH; })[0];
-    $("s-now").textContent = now ? KV.n3(now.p) : "—";
-    $("s-now-h").textContent = now ? hh(now.h) + "–" + hh((now.h + 1) % 24) : (day ? "mañana" : "");
-    $("s-avg").textContent = KV.n3(avg);
-    $("s-min").textContent = KV.n3(min.p); $("s-min-h").textContent = hh(min.h);
-    $("s-max").textContent = KV.n3(max.p); $("s-max-h").textContent = hh(max.h);
-    var byPrice = pts.slice().sort(function (a, b) { return a.p - b.p; });
-    $("cheap").innerHTML = byPrice.slice(0, 3).map(function (x) { return "<span>" + hh(x.h) + " · " + KV.n3(x.p) + "</span>"; }).join("");
-    $("dear").innerHTML = byPrice.slice(-3).reverse().map(function (x) { return "<span>" + hh(x.h) + " · " + KV.n3(x.p) + "</span>"; }).join("");
-    // ¿Cuándo lo pongo?
-    var kwh = KV.val("app");
-    var pool = day === 0 ? pts.filter(function (x) { return x.h >= nowH; }) : pts;
-    var best = pool.reduce(function (a, b) { return b.p < a.p ? b : a; }, pool[0]);
-    var rows = [];
-    if (now) rows.push(["Si lo pones ahora (" + hh(now.h) + ")", KV.eur2(kwh * now.p)]);
-    rows.push(["En la hora más barata " + (day === 0 ? "que queda hoy" : "de mañana") + " (" + hh(best.h) + ")", KV.eur2(kwh * best.p)]);
-    rows.push(["En la hora más cara (" + hh(max.h) + ")", KV.eur2(kwh * max.p)]);
-    if (now) rows.push(["Ahorro esperando a las " + hh(best.h), KV.eur2(Math.max(kwh * (now.p - best.p), 0)), true]);
-    KV.kv($("when-kv"), rows);
-    $("status").className = "status";
-    $("status").textContent = "Fuente: Red Eléctrica (REData), PVPC tarifa 2.0TD, península. Precios en €/kWh" + (tax > 1 ? " con impuestos." : " sin impuestos.");
-  }
-
-  $("b-today").addEventListener("click", function () { state.day = 0; load(0); render(); });
-  $("b-tomorrow").addEventListener("click", function () { state.day = 1; load(1); render(); });
-  $("tax").addEventListener("change", render);
-  $("app").addEventListener("change", render);
-  load(0);
 
   // Tabla de referencia y media horaria con el histórico
   var fmtE = function (v) { return v == null ? "—" : KV.n3(v) + " €/kWh"; };
@@ -313,7 +264,7 @@
     <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
   </ul></div>
   <div><h4>Información</h4><ul>
-    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="mapa.html">Mapa de gasolineras y recarga</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="precio-luz-manana.html">Precio de la luz mañana</a></li><li><a href="mapa.html">Mapa de gasolineras y recarga</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
   </ul></div>
 </div></footer>
 </body>
