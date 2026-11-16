@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora de placas solares: ahorro y amortización · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Calcula cuánto ahorras con placas solares según tu comunidad autónoma: producción mensual, autoconsumo, batería, excedentes, deducción del IRPF y años de amortización.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculadora de placas solares: ahorro y amortización · Kilovatio">
+<meta property="og:description" content="Calcula cuánto ahorras con placas solares según tu comunidad autónoma: producción mensual, autoconsumo, batería, excedentes, deducción del IRPF y años de amortización.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz hoy</a>
+    <a href="placas-solares.html" aria-current="page">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html">Calefacción</a>
+    <a href="coche-electrico.html">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html">Electrodomésticos</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="crumbs"><a href="index.html">Inicio</a> › Placas solares</p>
+    <p class="eyebrow">Autoconsumo solar</p>
+    <h1>Calculadora de ahorro con placas solares</h1>
+    <p>Calcula, mes a mes, cuánto produciría tu instalación según tu comunidad, cuánto consumirías al momento, cuánto te compensarían por los excedentes y en cuántos años la recuperas. Con o sin batería, y con la deducción del IRPF.</p>
+  </div>
+
+  <div class="calc">
+    <form class="panel" id="f" novalidate>
+      <div class="field">
+        <label for="cons">Consumo eléctrico anual</label>
+        <div class="input"><input id="cons" type="number" min="0" step="100" value="3500"><span>kWh/año</span></div>
+        <small>Aparece en tu factura como «consumo de los últimos 12 meses». Un hogar medio consume unos 3.500 kWh; una vivienda unifamiliar con aire acondicionado, 5.000–7.000.</small>
+      </div>
+      <div class="field">
+        <label for="ccaa">Comunidad autónoma</label>
+        <div class="input"><select id="ccaa"></select></div>
+      </div>
+      <div class="two">
+        <div class="field">
+          <label for="kwp">Potencia de la instalación</label>
+          <div class="input"><input id="kwp" type="number" min="0.5" step="0.1" value="3"><span>kWp</span></div>
+          <small id="kwp-hint"></small>
+        </div>
+        <div class="field">
+          <label for="profile">Cuándo consumes</label>
+          <div class="input"><select id="profile">
+            <option value="0.30">Casi nunca en casa de día</option>
+            <option value="0.40" selected>Uso mixto</option>
+            <option value="0.55">En casa de día o teletrabajo</option>
+          </select></div>
+          <small>Determina qué parte de la producción consumes al momento.</small>
+        </div>
+      </div>
+
+      <h3 class="sub">Batería</h3>
+      <label class="check"><input type="checkbox" id="bat"> Añadir batería</label>
+      <div class="two" id="bat-fields">
+        <div class="field">
+          <label for="batkwh">Capacidad</label>
+          <div class="input"><input id="batkwh" type="number" min="0" step="0.5" value="5"><span>kWh</span></div>
+        </div>
+        <div class="field">
+          <label for="batcost">Coste de la batería</label>
+          <div class="input"><input id="batcost" type="number" min="0" step="50" value="800"><span>€/kWh</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">Ayudas</h3>
+      <label class="check"><input type="checkbox" id="irpf"> Deducción del 40 % en el IRPF (vivienda habitual)</label>
+      <div class="field">
+        <label for="aid">Otras subvenciones</label>
+        <div class="input"><input id="aid" type="number" min="0" step="100" value="0"><span>€</span></div>
+        <small>Ayudas autonómicas o municipales. Muchos ayuntamientos bonifican además el IBI durante varios años.</small>
+      </div>
+
+      <details class="adv">
+        <summary>Ajustar precios, costes y supuestos</summary>
+        <div class="inner">
+          <div class="two">
+            <div class="field"><label for="price">Precio de la luz</label><div class="input"><input id="price" type="number" min="0" step="0.01" value="0.20"><span>€/kWh</span></div></div>
+            <div class="field"><label for="comp">Compensación de excedentes</label><div class="input"><input id="comp" type="number" min="0" step="0.01" value="0.06"><span>€/kWh</span></div></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="cost">Coste de los paneles instalados</label><div class="input"><input id="cost" type="number" min="0" step="0.05" value="1.30"><span>€/Wp</span></div></div>
+            <div class="field"><label for="infl">Subida anual de la luz</label><div class="input"><input id="infl" type="number" min="0" step="0.5" value="2"><span>%/año</span></div></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="degr">Pérdida de rendimiento</label><div class="input"><input id="degr" type="number" min="0" step="0.1" value="0.5"><span>%/año</span></div></div>
+            <div class="field"><label for="orient">Orientación del tejado</label><div class="input"><select id="orient">
+              <option value="1">Sur</option><option value="0.94">Sureste o suroeste</option><option value="0.82">Este u oeste</option>
+            </select></div></div>
+          </div>
+        </div>
+      </details>
+    </form>
+
+    <div class="panel result" aria-live="polite">
+      <div class="headline">
+        <span class="muted">Ahorro el primer año</span>
+        <span class="big" id="r-save">—</span>
+        <span class="muted" id="r-pay"></span>
+      </div>
+      <div class="kv" id="r-kv"></div>
+      <div class="field">
+        <span class="lbl">Producción y consumo por meses (kWh)</span>
+        <svg class="chart" id="c-month" role="img" aria-label="Producción y autoconsumo por meses"></svg>
+        <div class="legend"><span><i style="background:var(--sun)"></i>Autoconsumo</span><span><i style="background:var(--grid)"></i>Excedentes</span><span><i style="background:var(--ink);height:3px;vertical-align:3px"></i>Consumo del mes</span></div>
+      </div>
+      <div class="field">
+        <span class="lbl">Ahorro acumulado en 25 años (€)</span>
+        <svg class="chart" id="c-cash" role="img" aria-label="Ahorro acumulado"></svg>
+      </div>
+      <p class="note">Estimación orientativa. La compensación de excedentes se calcula mes a mes y no puede superar el coste de la energía que compras a la red.</p>
+    </div>
+  </div>
+
+  <article class="explain">
+    <h2>Cómo se calcula</h2>
+    <p>La calculadora reparte la producción anual de tu comunidad entre los 12 meses según la radiación típica en España, y hace el balance mensual como lo haría tu comercializadora con la compensación simplificada:</p>
+    <div class="formula">Producción del mes = kWp × producción específica (kWh/kWp·año) × orientación × peso del mes
+Autoconsumo = mín(producción × % de consumo diurno, consumo del mes)
+Batería = mín(capacidad × 0,9 × días del mes, excedentes, energía que compras de noche)
+Compensación = mín(excedentes × precio de compensación, energía comprada × precio de la luz)
+Ahorro = autoconsumo × precio de la luz + compensación</div>
+
+    <h3>Producción por comunidad autónoma</h3>
+    <p>Producción anual aproximada por cada kWp instalado, con orientación sur e inclinación óptima. Son valores en la línea de PVGIS, la herramienta de radiación solar de la Comisión Europea. Para un estudio preciso de tu tejado, usa PVGIS con tu dirección exacta.</p>
+    <div class="tablewrap"><table id="t-ccaa"><thead><tr><th>Comunidad</th><th class="num">kWh por kWp al año</th><th class="num">Para 3.500 kWh necesitas</th></tr></thead><tbody></tbody></table></div>
+
+    <h3>Compensación de excedentes</h3>
+    <p>La energía que no consumes se vierte a la red. Con la <strong>compensación simplificada</strong> (para instalaciones de hasta 100 kW), tu comercializadora te la descuenta de la factura cada mes a un precio menor que el de compra: en 2026, normalmente entre 0,05 y 0,08 €/kWh. El descuento nunca puede dejar el término de energía por debajo de cero, así que los excedentes de más se pierden. Algunas comercializadoras ofrecen una <strong>batería virtual</strong>, que guarda ese saldo en euros para meses siguientes.</p>
+
+    <h3>¿Merece la pena la batería?</h3>
+    <p>Una batería sube mucho el autoconsumo, porque guarda los excedentes del día para la noche. Pero cuesta entre 600 y 1.000 € por kWh, y cada kWh que guarda solo te ahorra la diferencia entre el precio de la luz y lo que te pagarían por verterlo. Por eso, sin ayudas, suele <strong>alargar los años de amortización</strong>. Activa la casilla de batería para compararlo con tu caso.</p>
+
+    <h3>Deducción del IRPF</h3>
+    <p>Si instalas placas en tu <strong>vivienda habitual</strong> y reduces al menos un 30 % el consumo de energía primaria no renovable, puedes deducirte el <strong>40 %</strong> de la inversión en la declaración de la renta, con una base máxima de 7.500 € al año (hasta 3.000 € de deducción). Hace falta un certificado de eficiencia energética antes y otro después de la obra, facturas a tu nombre y pago por transferencia o tarjeta. Las subvenciones recibidas se restan de la base. La deducción está prorrogada hasta el <strong>31 de diciembre de 2026</strong>: confirma los plazos con la Agencia Tributaria antes de contar con ella.</p>
+
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <details><summary>¿Cuántas placas necesito para mi casa?</summary><p>Un panel actual tiene 400–500 W. Para un hogar medio de 3.500 kWh al año suelen bastar 2–3 kWp, es decir, de 5 a 7 paneles. La calculadora te sugiere la potencia que produce tu consumo anual.</p></details>
+      <details><summary>¿Las placas funcionan si se va la luz?</summary><p>No. Por seguridad, el inversor de una instalación conectada a red se desconecta cuando hay un corte. Solo siguen funcionando si tienes batería con función de respaldo (<em>backup</em>).</p></details>
+      <details><summary>¿Necesito permiso para instalarlas?</summary><p>Depende del ayuntamiento: lo normal es una comunicación previa o una licencia de obra menor. Las instalaciones de autoconsumo de hasta 15 kW sin excedentes, o en suelo urbanizado, tienen trámites simplificados. La empresa instaladora suele encargarse de todo, incluido el registro de autoconsumo.</p></details>
+      <details><summary>¿Cuánto duran las placas solares?</summary><p>Los paneles suelen tener 25–30 años de garantía de producción, perdiendo alrededor de un 0,5 % de rendimiento al año. El inversor es el componente que antes se cambia, normalmente a los 10–15 años.</p></details>
+    </div>
+  </article>
+</main>
+
+<script>
+(function () {
+  var $ = KV.$, val = KV.val;
+  var CCAA = [["Andalucía",1650],["Aragón",1550],["Asturias",1150],["Baleares",1550],["Canarias",1700],["Cantabria",1150],["Castilla-La Mancha",1600],["Castilla y León",1500],["Cataluña",1450],["Comunidad Valenciana",1600],["Extremadura",1650],["Galicia",1250],["La Rioja",1400],["Madrid",1600],["Murcia",1700],["Navarra",1350],["País Vasco",1150],["Ceuta",1600],["Melilla",1650]];
+  var MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+  var DIAS = [31,28,31,30,31,30,31,31,30,31,30,31];
+  var PROD_W = [.055,.065,.085,.095,.105,.11,.115,.105,.09,.075,.055,.045];
+  var CONS_W = (function(){ var w=[1.15,1.05,1.0,.9,.88,.95,1.12,1.08,.95,.9,1.0,1.12], s=w.reduce(function(a,b){return a+b;},0); return w.map(function(x){return x/s;}); })();
+  var sel = $("ccaa"), tb = document.querySelector("#t-ccaa tbody");
+  CCAA.forEach(function (c) {
+    var o = document.createElement("option"); o.value = c[1]; o.textContent = c[0]; if (c[0] === "Madrid") o.selected = true; sel.appendChild(o);
+    var tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + c[0] + "</td><td class=\"num\">" + KV.n0(c[1]) + "</td><td class=\"num\">" + KV.n1(3500 / c[1]) + " kWp</td>";
+    tb.appendChild(tr);
+  });
+
+  function year1(o) {
+    var t = { prod: 0, self: 0, bat: 0, surplus: 0, bought: 0, comp: 0, months: [] };
+    for (var m = 0; m < 12; m++) {
+      var prod = o.kwp * o.spec * o.orient * PROD_W[m] * o.perf;
+      var cons = o.cons * CONS_W[m];
+      var self = Math.min(prod * o.share, cons);
+      var surplus = prod - self, bought = cons - self;
+      var bat = o.bat ? Math.min(o.batkwh * 0.9 * DIAS[m], surplus, bought * 0.85) : 0;
+      surplus -= bat; bought -= bat;
+      var comp = Math.min(surplus * o.comp, bought * o.price);
+      t.prod += prod; t.self += self; t.bat += bat; t.surplus += surplus; t.bought += bought; t.comp += comp;
+      t.months.push({ self: self + bat, surplus: surplus, cons: cons });
+    }
+    t.save = (t.self + t.bat) * o.price + t.comp;
+    return t;
+  }
+
+  function render() {
+    var batOn = $("bat").checked;
+    $("bat-fields").hidden = !batOn;
+    var o = { cons: val("cons"), spec: val("ccaa"), kwp: val("kwp"), share: val("profile"), price: val("price"), comp: val("comp"),
+      orient: val("orient") || 1, bat: batOn, batkwh: val("batkwh"), perf: 1 };
+    var pvCost = val("cost") * o.kwp * 1000, batCost = batOn ? val("batkwh") * val("batcost") : 0;
+    var gross = pvCost + batCost, aid = Math.min(val("aid"), gross);
+    var irpf = $("irpf").checked ? Math.min(gross - aid, 7500) * 0.4 : 0;
+    var net = Math.max(gross - aid - irpf, 0);
+    var r = year1(o);
+    $("kwp-hint").textContent = o.spec ? "Para producir tu consumo anual: ~" + KV.n1(o.cons / (o.spec * o.orient)) + " kWp" : "";
+
+    // 25 años con degradación y subida de precio
+    var infl = val("infl") / 100, degr = val("degr") / 100, cum = -net, payback = null, series = [], total = 0;
+    for (var y = 1; y <= 25; y++) {
+      var oy = Object.assign({}, o, { perf: Math.pow(1 - degr, y - 1), price: o.price * Math.pow(1 + infl, y - 1), comp: o.comp * Math.pow(1 + infl, y - 1) });
+      var s = year1(oy).save;
+      var prev = cum; cum += s; total += s;
+      if (payback === null && cum >= 0) payback = y - 1 + (-prev) / s;
+      series.push({ label: String(y), value: cum, color: cum >= 0 ? "var(--good)" : "var(--bad)", title: "Año " + y + ": " + KV.eur0(cum) });
+    }
+    $("r-save").textContent = KV.eur0(r.save) + " /año";
+    $("r-pay").textContent = payback !== null ? "Recuperas la inversión en " + KV.n1(payback) + " años" : "No se recupera en 25 años con estos datos";
+    var selfTot = r.self + r.bat;
+    var rows = [
+      ["Producción anual", KV.n0(r.prod) + " kWh"],
+      ["Autoconsumo directo", KV.n0(r.self) + " kWh"]
+    ];
+    if (batOn) rows.push(["Energía guardada en la batería", KV.n0(r.bat) + " kWh"]);
+    rows = rows.concat([
+      ["Excedentes vertidos a la red", KV.n0(r.surplus) + " kWh"],
+      ["Consumo cubierto por tu instalación", Math.round(o.cons ? selfTot / o.cons * 100 : 0) + " %"],
+      ["Ahorro por autoconsumo", KV.eur0(selfTot * o.price)],
+      ["Compensación de excedentes", KV.eur0(r.comp)],
+      ["Inversión" + (batOn ? " (con batería)" : ""), KV.eur0(gross)]
+    ]);
+    if (aid) rows.push(["Subvenciones", "−" + KV.eur0(aid)]);
+    if (irpf) rows.push(["Deducción del IRPF", "−" + KV.eur0(irpf)]);
+    rows.push(["Coste neto", KV.eur0(net), true]);
+    rows.push(["Ahorro total en 25 años", KV.eur0(total)]);
+    rows.push(["Beneficio neto en 25 años", KV.eur0(total - net), true]);
+    rows.push(["CO₂ evitado al año (aprox.)", KV.n0(r.prod * 0.12) + " kg"]);
+    KV.kv($("r-kv"), rows);
+
+    // Gráfico mensual: barras apiladas simples (autoconsumo + excedentes)
+    var svg = $("c-month"), W = 640, H = 220, L = 44, B = 26, T = 10;
+    var mx = Math.max.apply(null, r.months.map(function (m) { return Math.max(m.self + m.surplus, m.cons); }).concat([1]));
+    var step = mx > 800 ? 200 : mx > 400 ? 100 : 50, top = Math.ceil(mx / step) * step;
+    var Y = function (v) { return T + (H - T - B) * (1 - v / top); }, cw = (W - L - 8) / 12, out = [];
+    for (var g = 0; g <= top; g += step) out.push('<line class="axis" x1="' + L + '" x2="' + (W - 8) + '" y1="' + Y(g) + '" y2="' + Y(g) + '" stroke-dasharray="' + (g ? "2 3" : "0") + '"/><text x="' + (L - 6) + '" y="' + (Y(g) + 4) + '" text-anchor="end">' + g + '</text>');
+    r.months.forEach(function (m, i) {
+      var x = L + i * cw + cw * .15, w = cw * .7;
+      out.push('<rect x="' + x + '" y="' + Y(m.self) + '" width="' + w + '" height="' + (Y(0) - Y(m.self)) + '" fill="var(--sun)"><title>' + MESES[i] + ': autoconsumo ' + KV.n0(m.self) + ' kWh</title></rect>');
+      out.push('<rect x="' + x + '" y="' + Y(m.self + m.surplus) + '" width="' + w + '" height="' + (Y(m.self) - Y(m.self + m.surplus)) + '" fill="var(--grid)"><title>' + MESES[i] + ': excedentes ' + KV.n0(m.surplus) + ' kWh</title></rect>');
+      out.push('<line x1="' + (x - 2) + '" x2="' + (x + w + 2) + '" y1="' + Y(m.cons) + '" y2="' + Y(m.cons) + '" stroke="var(--ink)" stroke-width="2"><title>' + MESES[i] + ': consumo ' + KV.n0(m.cons) + ' kWh</title></line>');
+      out.push('<text x="' + (L + i * cw + cw / 2) + '" y="' + (H - 8) + '" text-anchor="middle">' + MESES[i] + '</text>');
+    });
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.innerHTML = out.join("");
+    KV.columns($("c-cash"), series, { height: 200, labelEvery: 4, left: 56, yfmt: function (v) { return KV.n0(v); } });
+  }
+  KV.onInput($("f"), render);
+  KV.applyLive(function (s) { return { price: s.last30.avg * KV.TAX }; }, $("f"), render,
+    function (s) { return "Precio de la luz: media del PVPC de los últimos 30 días, " + KV.n3(s.last30.avg * KV.TAX) + " €/kWh con impuestos."; });
+})();
+</script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coche eléctrico o gasolina: ¿cuál sale más barato? · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Compara el coste por kilómetro de un coche eléctrico con uno de gasolina o diésel, cargando en casa o en la calle, y la amortización del punto de recarga.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Coche eléctrico o gasolina: ¿cuál sale más barato? · Kilovatio">
+<meta property="og:description" content="Compara el coste por kilómetro de un coche eléctrico con uno de gasolina o diésel, cargando en casa o en la calle, y la amortización del punto de recarga.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz hoy</a>
+    <a href="placas-solares.html">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html">Calefacción</a>
+    <a href="coche-electrico.html" aria-current="page">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html">Electrodomésticos</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="crumbs"><a href="index.html">Inicio</a> › Coche eléctrico</p>
+    <p class="eyebrow">Movilidad</p>
+    <h1>Coche eléctrico frente a gasolina o diésel</h1>
+    <p>Calcula cuánto te cuesta cada kilómetro con un coche eléctrico según dónde cargues, compáralo con uno de combustión y descubre en cuánto tiempo amortizas el punto de recarga en casa.</p>
+  </div>
+
+  <div class="calc">
+    <form class="panel" id="f" novalidate>
+      <div class="two">
+        <div class="field"><label for="km">Kilómetros al año</label><div class="input"><input id="km" type="number" min="0" step="500" value="12000"><span>km</span></div><small>La media en España ronda los 12.000 km.</small></div>
+        <div class="field"><label for="years">Años de uso</label><div class="input"><input id="years" type="number" min="1" step="1" value="8"><span>años</span></div></div>
+      </div>
+      <h3 class="sub">Coche eléctrico</h3>
+      <div class="two">
+        <div class="field"><label for="ev">Consumo</label><div class="input"><input id="ev" type="number" min="0" step="0.5" value="17"><span>kWh/100 km</span></div></div>
+        <div class="field"><label for="batt">Batería</label><div class="input"><input id="batt" type="number" min="0" step="1" value="60"><span>kWh</span></div></div>
+      </div>
+      <div class="field">
+        <label for="where">Dónde cargas</label>
+        <div class="input"><select id="where">
+          <option value="90">Casi siempre en casa (90 %)</option>
+          <option value="70" selected>Sobre todo en casa (70 %)</option>
+          <option value="40">Mitad casa, mitad calle (40 % en casa)</option>
+          <option value="0">Nunca en casa</option>
+        </select></div>
+      </div>
+      <div class="three">
+        <div class="field"><label for="ph">Casa (valle)</label><div class="input"><input id="ph" type="number" min="0" step="0.01" value="0.13"><span>€/kWh</span></div></div>
+        <div class="field"><label for="pp">Cargador lento</label><div class="input"><input id="pp" type="number" min="0" step="0.01" value="0.40"><span>€/kWh</span></div></div>
+        <div class="field"><label for="pr">Cargador rápido</label><div class="input"><input id="pr" type="number" min="0" step="0.01" value="0.59"><span>€/kWh</span></div></div>
+      </div>
+      <div class="field"><label for="fast">De la carga fuera de casa, rápida</label><div class="input"><input id="fast" type="number" min="0" max="100" step="5" value="30"><span>%</span></div></div>
+      <div class="field"><label for="wb">Punto de recarga en casa (con instalación)</label><div class="input"><input id="wb" type="number" min="0" step="50" value="1100"><span>€</span></div><small>Un cargador de pared (<em>wallbox</em>) de 7,4 kW instalado suele costar 800–1.500 €.</small></div>
+
+      <h3 class="sub">Coche de combustión</h3>
+      <div class="two">
+        <div class="field"><label for="fuel">Combustible</label><div class="input"><select id="fuel"><option value="g">Gasolina 95</option><option value="d">Diésel</option><option value="h">Híbrido gasolina</option></select></div></div>
+        <div class="field"><label for="lpk">Consumo</label><div class="input"><input id="lpk" type="number" min="0" step="0.1" value="6.5"><span>l/100 km</span></div></div>
+      </div>
+      <div class="field"><label for="pf">Precio del combustible</label><div class="input"><input id="pf" type="number" min="0" step="0.01" value="1.67"><span>€/l</span></div><small>Media en España a mediados de noviembre de 2026: gasolina 95 ~1,67 €/l; diésel ~1,86 €/l.</small></div>
+    </form>
+
+    <div class="panel result" aria-live="polite">
+      <div class="headline">
+        <span class="muted" id="r-lab">Ahorro al año con el eléctrico</span>
+        <span class="big" id="r-save">—</span>
+        <span class="muted" id="r-sub"></span>
+      </div>
+      <div class="bars" id="r-bars"></div>
+      <div class="kv" id="r-kv"></div>
+      <div class="field"><span class="lbl">Coste acumulado de energía (€)</span><svg class="chart" id="c-cum" role="img" aria-label="Coste acumulado"></svg>
+      <div class="legend"><span><i style="background:var(--grid)"></i>Eléctrico (incluye punto de recarga)</span><span><i style="background:var(--sun)"></i>Combustión</span></div></div>
+      <p class="note">Solo energía y punto de recarga. No incluye precio de compra, seguro ni impuestos. El mantenimiento de un eléctrico suele ser más barato: no tiene aceite, embrague ni filtros de combustible, y frena menos con las pastillas.</p>
+    </div>
+  </div>
+
+  <article class="explain">
+    <h2>Cómo se calcula</h2>
+    <div class="formula">Precio medio de carga = % casa × precio en casa + % calle × (lento o rápido)
+Coste eléctrico al año = km ÷ 100 × kWh/100 km × precio medio de carga
+Coste combustión al año = km ÷ 100 × l/100 km × precio del combustible
+Amortización del punto de recarga = coste ÷ ahorro anual</div>
+    <h3>Cargar en casa: la clave del ahorro</h3>
+    <p>Con una tarifa de discriminación horaria, cargar entre las 0:00 y las 8:00 o en fin de semana sale mucho más barato que cargar en la calle. En la <a href="index.html">portada</a> puedes ver cada día qué horas son las más baratas. Si cargas de noche, valora contratar una potencia mayor solo en el periodo valle: lo explicamos en la calculadora de <a href="potencia-contratada.html">potencia</a>.</p>
+    <h3>Consumos de referencia</h3>
+    <div class="tablewrap"><table><thead><tr><th>Tipo de coche</th><th class="num">Consumo real</th></tr></thead><tbody>
+      <tr><td>Eléctrico urbano o compacto</td><td class="num">13–16 kWh/100 km</td></tr>
+      <tr><td>Berlina eléctrica</td><td class="num">15–18 kWh/100 km</td></tr>
+      <tr><td>SUV eléctrico</td><td class="num">17–22 kWh/100 km</td></tr>
+      <tr><td>Gasolina compacto</td><td class="num">5,5–7 l/100 km</td></tr>
+      <tr><td>Diésel compacto</td><td class="num">4,5–6 l/100 km</td></tr>
+      <tr><td>Híbrido no enchufable</td><td class="num">4,2–5,5 l/100 km</td></tr>
+    </tbody></table></div>
+    <p>En autopista, con frío o con la calefacción puesta, el consumo de un eléctrico puede subir un 20–30 %.</p>
+    <h3>Emisiones</h3>
+    <p>Para el eléctrico usamos unos 0,12 kg de CO₂ por kWh, valor aproximado del mix eléctrico español reciente; si cargas con placas solares, son prácticamente cero. Para los de combustión, 2,31 kg de CO₂ por litro de gasolina y 2,68 kg por litro de diésel.</p>
+  </article>
+</main>
+
+<script>
+(function () {
+  var $ = KV.$, val = KV.val;
+  var DEF = { g: [6.5, 1.67, 2.31, "gasolina"], d: [5.5, 1.86, 2.68, "diésel"], h: [4.8, 1.67, 2.31, "híbrido"] }, last = "g";
+  $("fuel").addEventListener("change", function () { var f = $("fuel").value; if (f !== last) { $("lpk").value = DEF[f][0]; $("pf").value = DEF[f][1]; last = f; } });
+  function render() {
+    var km = val("km"), yrs = Math.max(1, Math.round(val("years"))), ev = val("ev");
+    var home = val("where") / 100, fast = Math.min(val("fast"), 100) / 100;
+    var pOut = fast * val("pr") + (1 - fast) * val("pp");
+    var pmix = home * val("ph") + (1 - home) * pOut;
+    var wb = home > 0 ? val("wb") : 0;
+    var f = DEF[$("fuel").value];
+    var evY = km / 100 * ev * pmix, iceY = km / 100 * val("lpk") * val("pf"), d = iceY - evY;
+    var big = $("r-save"); big.textContent = KV.eur0(Math.abs(d)) + " /año"; big.classList.toggle("bad", d < 0);
+    $("r-lab").textContent = d >= 0 ? "Ahorro al año con el eléctrico" : "El eléctrico te cuesta más al año";
+    $("r-sub").textContent = d > 0 && wb ? "El punto de recarga se amortiza en " + KV.n1(wb / d) + " años" : "";
+    KV.bars($("r-bars"), [["Eléctrico", evY, KV.eur0(evY) + "/año", "alt"], [f[3].charAt(0).toUpperCase() + f[3].slice(1), iceY, KV.eur0(iceY) + "/año"]]);
+    KV.kv($("r-kv"), [
+      ["Precio medio de carga", KV.n3(pmix) + " €/kWh"],
+      ["Eléctrico · 100 km", KV.eur2(ev * pmix)],
+      [f[3].charAt(0).toUpperCase() + f[3].slice(1) + " · 100 km", KV.eur2(val("lpk") * val("pf"))],
+      ["Carga completa en casa (10–80 %)", KV.eur2(val("batt") * 0.7 * val("ph"))],
+      ["Carga completa en cargador rápido (10–80 %)", KV.eur2(val("batt") * 0.7 * val("pr"))],
+      ["CO₂ al año · eléctrico", KV.n0(km / 100 * ev * 0.12) + " kg"],
+      ["CO₂ al año · " + f[3], KV.n0(km / 100 * val("lpk") * f[2]) + " kg"],
+      ["Ahorro neto en " + yrs + " años", KV.eur0(d * yrs - wb), true]
+    ]);
+    // Acumulado: dos series alternas por año
+    var svg = $("c-cum"), W = 640, H = 210, L = 56, B = 26, T = 10;
+    var maxV = Math.max(wb + evY * yrs, iceY * yrs, 1), step = KV.n0 ? (function (x) { var p = Math.pow(10, Math.floor(Math.log10(x))), r = x / p; return (r <= 1 ? 1 : r <= 2 ? 2 : r <= 5 ? 5 : 10) * p; })(maxV / 4) : 1000;
+    var top = Math.ceil(maxV / step) * step, Y = function (v) { return T + (H - T - B) * (1 - v / top); }, cw = (W - L - 8) / yrs, out = [];
+    for (var g = 0; g <= top; g += step) out.push('<line class="axis" x1="' + L + '" x2="' + (W - 8) + '" y1="' + Y(g) + '" y2="' + Y(g) + '" stroke-dasharray="' + (g ? "2 3" : "0") + '"/><text x="' + (L - 6) + '" y="' + (Y(g) + 4) + '" text-anchor="end">' + KV.n0(g) + '</text>');
+    for (var y = 1; y <= yrs; y++) {
+      var e = wb + evY * y, c = iceY * y, x = L + (y - 1) * cw, w = cw * 0.36;
+      out.push('<rect x="' + (x + cw * 0.12) + '" y="' + Y(e) + '" width="' + w + '" height="' + (Y(0) - Y(e)) + '" fill="var(--grid)"><title>Año ' + y + ' · eléctrico ' + KV.eur0(e) + '</title></rect>');
+      out.push('<rect x="' + (x + cw * 0.52) + '" y="' + Y(c) + '" width="' + w + '" height="' + (Y(0) - Y(c)) + '" fill="var(--sun)"><title>Año ' + y + ' · combustión ' + KV.eur0(c) + '</title></rect>');
+      out.push('<text x="' + (x + cw / 2) + '" y="' + (H - 8) + '" text-anchor="middle">' + y + '</text>');
+    }
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.innerHTML = out.join("");
+  }
+  KV.onInput($("f"), render);
+  KV.applyLive(function (s) {
+    var o = { ph: s.last30.valle * KV.TAX };
+    if (s.fuel) { DEF.g[1] = DEF.h[1] = s.fuel.gasolina95; DEF.d[1] = s.fuel.diesel; o.pf = DEF[$("fuel").value][1]; }
+    return o;
+  }, $("f"), render, function (s) {
+    return "Carga en casa: media del PVPC en horas valle de los últimos 30 días, " + KV.n3(s.last30.valle * KV.TAX) + " €/kWh con impuestos." +
+      (s.fuel ? " Carburantes: media nacional del " + KV.fmtDate(s.fuel.date) + " (gasolina 95 " + KV.n3(s.fuel.gasolina95) + " €/l, gasóleo " + KV.n3(s.fuel.diesel) + " €/l)." : "");
+  });
+})();
+</script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>

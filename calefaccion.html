@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Qué calefacción es más barata? Aerotermia, gas, pellets · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Compara el coste anual de calefacción con aerotermia, bomba de calor, gas natural, gasóleo, pellets, butano o radiadores eléctricos según tu zona climática.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="¿Qué calefacción es más barata? Aerotermia, gas, pellets · Kilovatio">
+<meta property="og:description" content="Compara el coste anual de calefacción con aerotermia, bomba de calor, gas natural, gasóleo, pellets, butano o radiadores eléctricos según tu zona climática.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz hoy</a>
+    <a href="placas-solares.html">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html" aria-current="page">Calefacción</a>
+    <a href="coche-electrico.html">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html">Electrodomésticos</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="crumbs"><a href="index.html">Inicio</a> › Calefacción</p>
+    <p class="eyebrow">Climatización</p>
+    <h1>¿Qué calefacción es más barata?</h1>
+    <p>Compara lo que te cuesta al año calentar tu casa con aerotermia, bomba de calor, gas natural, gasóleo, pellets, butano o radiadores eléctricos, y en cuántos años recuperas el cambio de sistema.</p>
+  </div>
+
+  <div class="calc">
+    <form class="panel" id="f" novalidate>
+      <div class="two">
+        <div class="field"><label for="m2">Superficie calefactada</label><div class="input"><input id="m2" type="number" min="0" step="5" value="90"><span>m²</span></div></div>
+        <div class="field"><label for="zone">Zona climática</label><div class="input"><select id="zone">
+          <option value="25">α / A · Canarias, Cádiz, Málaga, Almería</option>
+          <option value="45">B · Sevilla, Valencia, Murcia, Palma</option>
+          <option value="70">C · Barcelona, Bilbao, Badajoz, Ourense</option>
+          <option value="95" selected>D · Madrid, Zaragoza, Logroño, Pamplona</option>
+          <option value="125">E · Burgos, León, Soria, Ávila</option>
+        </select></div></div>
+      </div>
+      <div class="field"><label for="ins">Aislamiento de la vivienda</label><div class="input"><select id="ins">
+        <option value="0.6">Bueno (edificio posterior a 2007 o rehabilitado)</option>
+        <option value="1" selected>Normal (años 80–2000)</option>
+        <option value="1.35">Malo (antes de 1980, ventanas sin rotura de puente térmico)</option>
+      </select></div></div>
+      <div class="field"><label for="demand">Demanda de calefacción</label><div class="input"><input id="demand" type="number" min="0" step="100"><span>kWh/año</span></div><small id="d-hint">Se calcula con los datos anteriores. Puedes escribir la tuya si la conoces por el certificado energético.</small></div>
+
+      <h3 class="sub">Comparar el cambio</h3>
+      <div class="two">
+        <div class="field"><label for="now">Sistema actual</label><div class="input"><select id="now"></select></div></div>
+        <div class="field"><label for="new">Sistema nuevo</label><div class="input"><select id="new"></select></div></div>
+      </div>
+      <div class="field"><label for="inv">Coste de instalar el sistema nuevo</label><div class="input"><input id="inv" type="number" min="0" step="100" value="10000"><span>€</span></div><small id="inv-hint"></small></div>
+
+      <details class="adv"><summary>Ajustar precios y rendimientos</summary><div class="inner" id="adv"></div></details>
+    </form>
+
+    <div class="panel result" aria-live="polite">
+      <div class="headline">
+        <span class="muted" id="r-lab">Ahorro al año con el cambio</span>
+        <span class="big" id="r-save">—</span>
+        <span class="muted" id="r-pay"></span>
+      </div>
+      <div class="field"><span class="lbl">Coste anual de cada sistema</span><div class="bars" id="r-bars"></div></div>
+      <div class="kv" id="r-kv"></div>
+      <p class="note">Solo el coste de la energía para calefacción. No incluye términos fijos (potencia, término fijo del gas), mantenimiento ni agua caliente.</p>
+    </div>
+  </div>
+
+  <article class="explain">
+    <h2>Cómo se calcula</h2>
+    <div class="formula">Demanda (kWh/año) = m² × demanda por m² de tu zona climática × factor de aislamiento
+Energía consumida = demanda ÷ rendimiento (o ÷ SCOP en las bombas de calor)
+Coste = energía consumida × precio por kWh del combustible</div>
+    <h3>Rendimiento y precio de cada sistema</h3>
+    <div class="tablewrap"><table><thead><tr><th>Sistema</th><th class="num">Rendimiento</th><th class="num">Precio por defecto</th><th class="num">€ por kWh de calor</th><th class="num">kg CO₂ por kWh de calor</th></tr></thead><tbody id="t-sys"></tbody></table></div>
+    <h3>Qué es el SCOP</h3>
+    <p>Una bomba de calor no quema nada: mueve calor del aire exterior al interior de la casa. El <strong>SCOP</strong> (coeficiente de rendimiento estacional) indica cuántos kWh de calor da por cada kWh de electricidad a lo largo de la temporada. Un SCOP de 3,5 significa que de 1 kWh de electricidad saca 3,5 kWh de calor. Por eso, aunque la electricidad sea más cara que el gas por kWh, la aerotermia suele salir más barata de usar.</p>
+    <h3>Cuándo compensa cambiar</h3>
+    <ul>
+      <li><strong>Aerotermia:</strong> compensa sobre todo en casas bien aisladas, con suelo radiante o radiadores grandes, y si se combina con placas solares.</li>
+      <li><strong>Gasóleo y butano:</strong> son de los sistemas más caros de usar. Si tu caldera es antigua, cambiarla suele amortizarse pronto.</li>
+      <li><strong>Radiadores eléctricos:</strong> baratos de instalar, caros de usar. Solo tienen sentido para estancias pequeñas o uso esporádico.</li>
+      <li><strong>Aislar primero:</strong> mejorar ventanas y aislamiento reduce la demanda y hace que cualquier sistema cueste menos.</li>
+    </ul>
+    <p class="note">Las demandas por zona climática son valores medios aproximados para viviendas existentes. Las zonas siguen el Código Técnico de la Edificación (CTE DB-HE).</p>
+  </article>
+</main>
+
+<script>
+(function () {
+  var $ = KV.$, val = KV.val;
+  // [id, nombre, rendimiento, precio, unidad, kWh por unidad, kg CO2 por kWh de combustible, coste instalación orientativo]
+  var SYS = [
+    ["aero", "Aerotermia (bomba de calor aire-agua)", 3.5, 0.20, "€/kWh", 1, 0.12, "8.000–14.000 €"],
+    ["split", "Bomba de calor aire-aire (splits)", 3.2, 0.20, "€/kWh", 1, 0.12, "1.500–4.000 €"],
+    ["gas", "Caldera de gas natural de condensación", 0.95, 0.065, "€/kWh", 1, 0.202, "2.500–4.000 €"],
+    ["gasold", "Caldera de gas natural antigua", 0.80, 0.065, "€/kWh", 1, 0.202, "—"],
+    ["oil", "Caldera de gasóleo", 0.88, 1.10, "€/l", 10, 0.27, "3.000–5.000 €"],
+    ["pellet", "Caldera o estufa de pellets", 0.88, 0.38, "€/kg", 4.8, 0.03, "3.000–9.000 €"],
+    ["butane", "Estufa o caldera de butano", 0.90, 1.30, "€/kg", 12.8, 0.235, "—"],
+    ["elec", "Radiadores o emisores eléctricos", 1.0, 0.20, "€/kWh", 1, 0.12, "500–2.000 €"]
+  ];
+  var adv = $("adv"), sNow = $("now"), sNew = $("new");
+  adv.innerHTML = SYS.map(function (s, i) {
+    return '<div class="two"><div class="field"><label for="p' + i + '">' + s[1] + ' · precio</label><div class="input"><input id="p' + i + '" type="number" min="0" step="0.005" value="' + s[3] + '"><span>' + s[4] + '</span></div></div>' +
+      '<div class="field"><label for="e' + i + '">' + (s[2] > 1.5 ? "SCOP" : "Rendimiento") + '</label><div class="input"><input id="e' + i + '" type="number" min="0.1" step="0.05" value="' + s[2] + '"></div></div></div>';
+  }).join("") + '<p class="note">Gas natural: tarifa TUR 2 con impuestos. Butano: bombona de 12,5 kg a unos 16 €. Gasóleo C y pellets: precios orientativos de distribuidor.</p>';
+  SYS.forEach(function (s, i) {
+    sNow.add(new Option(s[1], i, false, s[0] === "gasold"));
+    sNew.add(new Option(s[1], i, false, s[0] === "aero"));
+  });
+  function perKwh(i) { return val("p" + i) / SYS[i][5] / (val("e" + i) || 1); }
+  var dTouched = false;
+  $("demand").addEventListener("input", function () { dTouched = $("demand").value !== ""; });
+  function render() {
+    var auto = val("m2") * val("zone") * val("ins");
+    if (!dTouched) $("demand").value = Math.round(auto / 10) * 10;
+    var D = val("demand");
+    $("d-hint").textContent = dTouched ? "Usando tu valor. Bórralo para volver al cálculo automático (" + KV.n0(auto) + " kWh)." : "Calculada: " + KV.n0(auto) + " kWh/año. Puedes escribir la tuya si la conoces por el certificado energético.";
+    var costs = SYS.map(function (s, i) { return { i: i, name: s[1], c: D * perKwh(i), co2: D / (val("e" + i) || 1) * s[6] }; });
+    var sorted = costs.slice().sort(function (a, b) { return a.c - b.c; });
+    var ni = +sNow.value, wi = +sNew.value, cNow = costs[ni].c, cNew = costs[wi].c, save = cNow - cNew;
+    KV.bars($("r-bars"), sorted.map(function (x) { return [x.name, x.c, KV.eur0(x.c), x.i === wi ? "good" : x.i === ni ? "alt" : ""]; }));
+    var big = $("r-save");
+    big.textContent = KV.eur0(Math.abs(save)) + " /año"; big.classList.toggle("bad", save < 0);
+    $("r-lab").textContent = save >= 0 ? "Ahorro al año con el cambio" : "El sistema nuevo cuesta más al año";
+    var inv = val("inv");
+    $("r-pay").textContent = save > 0 ? "Recuperas la inversión en " + KV.n1(inv / save) + " años" : "";
+    $("inv-hint").textContent = "Orientativo para " + SYS[wi][1].toLowerCase() + ": " + SYS[wi][7] + " (sin ayudas).";
+    KV.kv($("r-kv"), [
+      ["Demanda de calor", KV.n0(D) + " kWh/año"],
+      ["Coste con " + SYS[ni][1].toLowerCase(), KV.eur0(cNow) + "/año"],
+      ["Coste con " + SYS[wi][1].toLowerCase(), KV.eur0(cNew) + "/año"],
+      ["CO₂ actual", KV.n0(costs[ni].co2) + " kg/año"],
+      ["CO₂ con el sistema nuevo", KV.n0(costs[wi].co2) + " kg/año"]
+    ]);
+    $("t-sys").innerHTML = SYS.map(function (s, i) {
+      return "<tr><td>" + s[1] + "</td><td class=\"num\">" + String(val("e" + i)).replace(".", ",") + "</td><td class=\"num\">" + String(val("p" + i)).replace(".", ",") + " " + s[4] + "</td><td class=\"num\">" + KV.n3(perKwh(i)) + "</td><td class=\"num\">" + KV.n3(s[6] / (val("e" + i) || 1)) + "</td></tr>";
+    }).join("");
+  }
+  KV.onInput($("f"), render);
+  KV.applyLive(function (s) { var e = s.last30.avg * KV.TAX; return { p0: e, p1: e, p7: e }; }, $("f"), render,
+    function (s) { return "Electricidad: media del PVPC de los últimos 30 días, " + KV.n3(s.last30.avg * KV.TAX) + " €/kWh con impuestos."; });
+})();
+</script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>

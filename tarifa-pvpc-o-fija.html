@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿PVPC o tarifa de precio fijo? Comparador · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Compara el coste anual de la tarifa regulada PVPC con una oferta de precio fijo del mercado libre según tu consumo y tus horarios.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="¿PVPC o tarifa de precio fijo? Comparador · Kilovatio">
+<meta property="og:description" content="Compara el coste anual de la tarifa regulada PVPC con una oferta de precio fijo del mercado libre según tu consumo y tus horarios.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz hoy</a>
+    <a href="placas-solares.html">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html" aria-current="page">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html">Calefacción</a>
+    <a href="coche-electrico.html">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html">Electrodomésticos</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="crumbs"><a href="index.html">Inicio</a> › PVPC o precio fijo</p>
+    <p class="eyebrow">Comparador de tarifas</p>
+    <h1>¿PVPC o tarifa de precio fijo?</h1>
+    <p>Compara cuánto pagarías al año con la tarifa regulada (PVPC) y con una oferta del mercado libre a precio fijo, según tu consumo, tu potencia y a qué horas usas la luz.</p>
+  </div>
+
+  <div class="calc">
+    <form class="panel" id="f" novalidate>
+      <div class="two">
+        <div class="field"><label for="cons">Consumo anual</label><div class="input"><input id="cons" type="number" min="0" step="100" value="3500"><span>kWh</span></div></div>
+        <div class="field"><label for="kw">Potencia contratada</label><div class="input"><input id="kw" type="number" min="0" step="0.05" value="4.6"><span>kW</span></div></div>
+      </div>
+      <div class="field">
+        <label for="profile">Cuándo consumes</label>
+        <div class="input"><select id="profile">
+          <option value="35,30,35">Hogar típico (35 % punta · 30 % llano · 35 % valle)</option>
+          <option value="25,25,50">Muevo consumo a la noche y al fin de semana</option>
+          <option value="45,30,25">Consumo sobre todo por la tarde</option>
+          <option value="custom">Personalizado</option>
+        </select></div>
+      </div>
+      <div class="three" id="custom" hidden>
+        <div class="field"><label for="pP">Punta</label><div class="input"><input id="pP" type="number" min="0" max="100" value="35"><span>%</span></div></div>
+        <div class="field"><label for="pL">Llano</label><div class="input"><input id="pL" type="number" min="0" max="100" value="30"><span>%</span></div></div>
+        <div class="field"><label for="pV">Valle</label><div class="input"><input id="pV" type="number" min="0" max="100" value="35"><span>%</span></div></div>
+      </div>
+
+      <h3 class="sub">PVPC (tarifa regulada)</h3>
+      <div class="three">
+        <div class="field"><label for="vP">Punta</label><div class="input"><input id="vP" type="number" min="0" step="0.005" value="0.26"><span>€/kWh</span></div></div>
+        <div class="field"><label for="vL">Llano</label><div class="input"><input id="vL" type="number" min="0" step="0.005" value="0.19"><span>€/kWh</span></div></div>
+        <div class="field"><label for="vV">Valle</label><div class="input"><input id="vV" type="number" min="0" step="0.005" value="0.14"><span>€/kWh</span></div></div>
+      </div>
+      <small class="muted" style="font-size:.8rem">Medias aproximadas de otoño de 2026 con peajes y cargos, sin impuestos. Consulta el precio de hoy en la <a href="index.html">portada</a>.</small>
+
+      <h3 class="sub">Oferta de precio fijo</h3>
+      <div class="field">
+        <label for="otype">Tipo de oferta</label>
+        <div class="input"><select id="otype"><option value="one">Un único precio todo el día</option><option value="three">Tres precios (punta, llano y valle)</option></select></div>
+      </div>
+      <div class="field" id="one-f"><label for="oF">Precio de la energía</label><div class="input"><input id="oF" type="number" min="0" step="0.005" value="0.15"><span>€/kWh</span></div></div>
+      <div class="three" id="three-f" hidden>
+        <div class="field"><label for="oP">Punta</label><div class="input"><input id="oP" type="number" min="0" step="0.005" value="0.21"><span>€/kWh</span></div></div>
+        <div class="field"><label for="oL">Llano</label><div class="input"><input id="oL" type="number" min="0" step="0.005" value="0.15"><span>€/kWh</span></div></div>
+        <div class="field"><label for="oV">Valle</label><div class="input"><input id="oV" type="number" min="0" step="0.005" value="0.10"><span>€/kWh</span></div></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="oK1">Potencia punta</label><div class="input"><input id="oK1" type="number" min="0" step="0.001" value="0.090"><span>€/kW·día</span></div></div>
+        <div class="field"><label for="oK2">Potencia valle</label><div class="input"><input id="oK2" type="number" min="0" step="0.001" value="0.030"><span>€/kW·día</span></div></div>
+      </div>
+      <details class="adv"><summary>Potencia del PVPC</summary><div class="inner"><div class="two">
+        <div class="field"><label for="rK1">Potencia punta PVPC</label><div class="input"><input id="rK1" type="number" min="0" step="0.001" value="0.082"><span>€/kW·día</span></div><small>Peajes y cargos (0,0738) más margen de comercialización.</small></div>
+        <div class="field"><label for="rK2">Potencia valle PVPC</label><div class="input"><input id="rK2" type="number" min="0" step="0.001" value="0.002"><span>€/kW·día</span></div></div>
+      </div></div></details>
+    </form>
+
+    <div class="panel result" aria-live="polite">
+      <div class="headline">
+        <span class="muted" id="r-lab">Te conviene</span>
+        <span class="big neutral" id="r-win">—</span>
+        <span class="muted" id="r-diff"></span>
+      </div>
+      <div class="bars" id="r-bars"></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Al año, con impuestos</th><th class="num">PVPC</th><th class="num">Precio fijo</th></tr></thead>
+        <tbody id="r-tbl"></tbody>
+      </table></div>
+      <p class="note">Incluye impuesto eléctrico (5,11 %), alquiler del contador (~0,81 €/mes) e IVA (21 %). No incluye servicios adicionales ni permanencias.</p>
+    </div>
+  </div>
+
+  <article class="explain">
+    <h2>PVPC o mercado libre: diferencias</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th></th><th>PVPC (tarifa regulada)</th><th>Mercado libre a precio fijo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Precio</strong></td><td>Cambia cada hora según el mercado</td><td>Fijo durante el contrato (normalmente 12 meses)</td></tr>
+        <tr><td><strong>Quién lo ofrece</strong></td><td>Solo las comercializadoras de referencia</td><td>Cualquier comercializadora</td></tr>
+        <tr><td><strong>Ventaja</strong></td><td>Precio sin margen comercial en la energía; muy barato en horas de mucho sol y viento</td><td>Previsible: sabes lo que vas a pagar</td></tr>
+        <tr><td><strong>Riesgo</strong></td><td>Picos de precio en olas de frío o calor, o cuando el gas sube</td><td>Si el mercado baja, sigues pagando el precio pactado</td></tr>
+        <tr><td><strong>Bono social</strong></td><td>Solo disponible con PVPC</td><td>No disponible</td></tr>
+      </tbody></table></div>
+    <h3>Cómo leer una oferta</h3>
+    <ul>
+      <li>Compara siempre el <strong>precio de la energía en €/kWh</strong> y el <strong>de la potencia en €/kW·día</strong>. Algunas ofertas bajan uno y suben el otro.</li>
+      <li>Fíjate en si el precio incluye <strong>peajes y cargos</strong>. Casi todas las ofertas para hogares los incluyen.</li>
+      <li>Desconfía de descuentos que solo duran unos meses y revisa si hay <strong>permanencia</strong> o servicios de mantenimiento añadidos.</li>
+      <li>Si puedes mover consumo a la noche y a los fines de semana, una oferta de <strong>tres precios</strong> o el PVPC suelen salir mejor.</li>
+    </ul>
+    <h3>Cómo se calcula</h3>
+    <div class="formula">Energía = Σ consumo del periodo × precio del periodo
+Potencia = kW × (precio punta + precio valle) × 365
+Impuesto eléctrico = 5,11 % × (energía + potencia)
+Total = (energía + potencia + impuesto eléctrico + contador) × 1,21 (IVA)</div>
+  </article>
+</main>
+
+<script>
+(function () {
+  var $ = KV.$, val = KV.val;
+  function shares() {
+    var p = $("profile").value;
+    $("custom").hidden = p !== "custom";
+    if (p === "custom") { var a = [val("pP"), val("pL"), val("pV")], s = a[0] + a[1] + a[2] || 1; return a.map(function (x) { return x / s; }); }
+    return p.split(",").map(function (x) { return +x / 100; });
+  }
+  function bill(e, k1, k2, kw) {
+    var pot = kw * (k1 + k2) * 365, iee = 0.0511 * (e + pot), meter = 0.81 * 12;
+    var base = e + pot + iee + meter, iva = base * 0.21;
+    return { e: e, pot: pot, iee: iee, meter: meter, iva: iva, total: base + iva };
+  }
+  function render() {
+    var s = shares(), cons = val("cons"), kw = val("kw");
+    var three = $("otype").value === "three";
+    $("one-f").hidden = three; $("three-f").hidden = !three;
+    var eR = cons * (s[0] * val("vP") + s[1] * val("vL") + s[2] * val("vV"));
+    var eO = three ? cons * (s[0] * val("oP") + s[1] * val("oL") + s[2] * val("oV")) : cons * val("oF");
+    var R = bill(eR, val("rK1"), val("rK2"), kw), O = bill(eO, val("oK1"), val("oK2"), kw);
+    var d = R.total - O.total;
+    $("r-win").textContent = Math.abs(d) < 5 ? "Prácticamente igual" : d > 0 ? "Precio fijo" : "PVPC";
+    $("r-diff").textContent = Math.abs(d) < 5 ? "La diferencia es de menos de 5 € al año" : "Ahorras " + KV.eur0(Math.abs(d)) + " al año (" + KV.eur0(Math.abs(d) / 12) + " al mes)";
+    KV.bars($("r-bars"), [["PVPC", R.total, KV.eur0(R.total) + "/año", "alt"], ["Precio fijo", O.total, KV.eur0(O.total) + "/año"]]);
+    var rows = [["Energía", R.e, O.e], ["Potencia", R.pot, O.pot], ["Impuesto eléctrico", R.iee, O.iee], ["Alquiler del contador", R.meter, O.meter], ["IVA", R.iva, O.iva], ["<strong>Total</strong>", R.total, O.total], ["Al mes", R.total / 12, O.total / 12]];
+    $("r-tbl").innerHTML = rows.map(function (r) { return "<tr><td>" + r[0] + "</td><td class=\"num\">" + KV.eur0(r[1]) + "</td><td class=\"num\">" + KV.eur0(r[2]) + "</td></tr>"; }).join("");
+  }
+  KV.onInput($("f"), render);
+  KV.applyLive(function (s) { return { vP: s.last30.punta, vL: s.last30.llano, vV: s.last30.valle }; }, $("f"), render,
+    function (s) { return "PVPC: media real de los últimos 30 días por periodo (punta " + KV.n3(s.last30.punta) + ", llano " + KV.n3(s.last30.llano) + ", valle " + KV.n3(s.last30.valle) + " €/kWh, sin impuestos)."; });
+})();
+</script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora de consumo de electrodomésticos · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Calcula cuánto consume cada electrodoméstico en kWh y euros al año, el consumo en espera y tu factura de la luz estimada.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculadora de consumo de electrodomésticos · Kilovatio">
+<meta property="og:description" content="Calcula cuánto consume cada electrodoméstico en kWh y euros al año, el consumo en espera y tu factura de la luz estimada.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz hoy</a>
+    <a href="placas-solares.html">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html">Calefacción</a>
+    <a href="coche-electrico.html">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html" aria-current="page">Electrodomésticos</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="crumbs"><a href="index.html">Inicio</a> › Electrodomésticos</p>
+    <p class="eyebrow">Consumo en el hogar</p>
+    <h1>¿Cuánto gasta cada electrodoméstico?</h1>
+    <p>Ajusta la potencia y las horas de uso de tus aparatos y verás cuántos kWh y euros gasta cada uno al año, cuánto se va en consumo en espera y una estimación de tu factura completa.</p>
+  </div>
+
+  <div class="calc wide">
+    <div class="panel" id="f">
+      <div class="three">
+        <div class="field"><label for="price">Precio de la energía (sin impuestos)</label><div class="input"><input id="price" type="number" min="0" step="0.01" value="0.20"><span>€/kWh</span></div></div>
+        <div class="field"><label for="kw">Potencia contratada</label><div class="input"><input id="kw" type="number" min="0" step="0.05" value="4.6"><span>kW</span></div></div>
+        <div class="field"><label for="preset">Hogar tipo</label><div class="input"><select id="preset">
+          <option value="piso" selected>Piso con 2–3 personas</option>
+          <option value="casa">Casa con aire acondicionado</option>
+          <option value="solo">Una persona, poco equipamiento</option>
+        </select></div></div>
+      </div>
+      <div class="tablewrap">
+        <table class="app" id="tbl">
+          <thead><tr><th>Aparato</th><th>Potencia (W)</th><th>Horas/día</th><th>Días/año</th><th class="num">kWh/año</th><th class="num">€/año</th><th><span class="sr">Quitar</span></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div><button class="btn" type="button" id="add">+ Añadir aparato</button></div>
+      <h3 class="sub">Consumo en espera (stand-by)</h3>
+      <div class="two">
+        <div class="field"><label for="sb">Potencia total en espera</label><div class="input"><input id="sb" type="number" min="0" step="1" value="25"><span>W</span></div><small>Televisión, router, descodificador, cargadores, microondas con reloj… Un hogar típico suma 15–40 W.</small></div>
+        <div class="field"><label for="sbh">Horas en espera al día</label><div class="input"><input id="sbh" type="number" min="0" max="24" step="1" value="20"><span>h</span></div></div>
+      </div>
+    </div>
+
+    <div class="panel result" aria-live="polite">
+      <div class="headline">
+        <span class="muted">Factura estimada al año</span>
+        <span class="big neutral" id="r-total">—</span>
+        <span class="muted" id="r-sub"></span>
+      </div>
+      <div class="kv" id="r-kv"></div>
+      <div class="field"><span class="lbl">Qué pesa más en tu consumo</span><div class="bars" id="r-bars"></div></div>
+      <p class="note">Factura con potencia PVPC (~30,7 €/kW·año), alquiler del contador, impuesto eléctrico (5,11 %) e IVA (21 %).</p>
+    </div>
+  </div>
+
+  <article class="explain">
+    <h2>Cómo se calcula</h2>
+    <div class="formula">Consumo (kWh/año) = potencia (W) × horas al día × días al año ÷ 1.000
+Coste de energía = consumo × precio de la energía
+Factura = (energía + potencia + impuesto eléctrico + contador) × 1,21</div>
+    <h3>Consumos de referencia</h3>
+    <div class="tablewrap"><table><thead><tr><th>Aparato</th><th class="num">Consumo típico</th><th>Truco para ahorrar</th></tr></thead><tbody>
+      <tr><td>Frigorífico combi</td><td class="num">250–350 kWh/año</td><td>No lo pegues a la pared ni al horno; 4–5 °C es suficiente.</td></tr>
+      <tr><td>Lavadora</td><td class="num">0,5–1 kWh por lavado</td><td>Lavar a 30 °C gasta casi la mitad que a 60 °C.</td></tr>
+      <tr><td>Lavavajillas</td><td class="num">0,8–1,2 kWh por lavado</td><td>Programa eco y siempre lleno.</td></tr>
+      <tr><td>Secadora de bomba de calor</td><td class="num">1–1,5 kWh por ciclo</td><td>Gasta la mitad que una secadora de condensación (2,5–3,5 kWh).</td></tr>
+      <tr><td>Horno</td><td class="num">1–1,5 kWh por hora</td><td>Apágalo unos minutos antes y aprovecha el calor residual.</td></tr>
+      <tr><td>Termo eléctrico</td><td class="num">1.200–2.000 kWh/año</td><td>Prográmalo en horas valle con un temporizador.</td></tr>
+      <tr><td>Aire acondicionado (inverter)</td><td class="num">0,5–1,2 kWh por hora</td><td>Cada grado por debajo de 25 °C sube el consumo alrededor de un 7 %.</td></tr>
+    </tbody></table></div>
+    <h3>Por qué el frigorífico tiene una potencia tan baja</h3>
+    <p>Está enchufado las 24 horas, pero su compresor solo funciona a ratos. En la tabla usamos su potencia media (unos 35 W), equivalente a unos 300 kWh al año. Si tiene etiqueta energética, el consumo anual en kWh aparece en ella.</p>
+    <p>¿Quieres saber a qué hora poner cada aparato hoy? Mira el <a href="index.html">precio de la luz por horas</a>.</p>
+  </article>
+</main>
+
+<script>
+(function () {
+  var $ = KV.$;
+  var PRESETS = {
+    piso: [["Frigorífico", 35, 24, 365], ["Termo eléctrico", 1500, 2, 365], ["Vitrocerámica o inducción", 1500, 1, 365], ["Horno", 2000, 0.5, 104], ["Lavadora", 900, 1, 156], ["Lavavajillas", 1100, 1.5, 208], ["Secadora", 2500, 1, 52], ["Televisión", 100, 4, 365], ["Ordenador", 150, 6, 260], ["Iluminación LED", 60, 5, 365]],
+    casa: [["Frigorífico", 40, 24, 365], ["Aire acondicionado", 1200, 6, 100], ["Bomba de calor (calefacción)", 1000, 6, 120], ["Termo eléctrico", 1800, 2.5, 365], ["Vitrocerámica o inducción", 2000, 1.2, 365], ["Horno", 2000, 0.5, 156], ["Lavadora", 900, 1, 208], ["Lavavajillas", 1100, 1.5, 300], ["Secadora", 2500, 1, 104], ["Televisión", 120, 5, 365], ["Ordenador", 150, 6, 260], ["Iluminación LED", 100, 6, 365], ["Depuradora de piscina", 750, 6, 120]],
+    solo: [["Frigorífico", 30, 24, 365], ["Vitrocerámica o inducción", 1500, 0.5, 300], ["Microondas", 1000, 0.2, 365], ["Lavadora", 900, 1, 78], ["Televisión", 80, 3, 365], ["Ordenador", 100, 5, 260], ["Iluminación LED", 40, 4, 365]]
+  };
+  var tb = document.querySelector("#tbl tbody"), uid = 0;
+  function addRow(d) {
+    uid++; var tr = document.createElement("tr");
+    tr.innerHTML = '<td><input class="name" id="n' + uid + '" aria-label="Aparato" value="' + KV.esc(d[0]) + '"></td>' +
+      '<td><input id="w' + uid + '" type="number" min="0" step="10" aria-label="Potencia en vatios" value="' + d[1] + '"></td>' +
+      '<td><input id="h' + uid + '" type="number" min="0" max="24" step="0.5" aria-label="Horas al día" value="' + d[2] + '"></td>' +
+      '<td><input id="d' + uid + '" type="number" min="0" max="365" step="1" aria-label="Días al año" value="' + d[3] + '"></td>' +
+      '<td class="num kwh">—</td><td class="num cost">—</td><td><button type="button" aria-label="Quitar aparato">×</button></td>';
+    tr.querySelector("button").addEventListener("click", function () { tr.remove(); render(); });
+    tb.appendChild(tr);
+  }
+  function load(p) { tb.innerHTML = ""; PRESETS[p].forEach(addRow); }
+  function num(el) { var x = parseFloat(el.value); return isFinite(x) && x >= 0 ? x : 0; }
+  function render() {
+    var price = KV.val("price"), items = [], kwhT = 0;
+    tb.querySelectorAll("tr").forEach(function (tr) {
+      var i = tr.querySelectorAll("input");
+      var kwh = num(i[1]) * Math.min(num(i[2]), 24) * Math.min(num(i[3]), 365) / 1000;
+      tr.querySelector(".kwh").textContent = KV.n0(kwh);
+      tr.querySelector(".cost").textContent = KV.eur0(kwh * price);
+      items.push([i[0].value || "Aparato", kwh]); kwhT += kwh;
+    });
+    var sbK = KV.val("sb") * Math.min(KV.val("sbh"), 24) * 365 / 1000;
+    if (sbK > 0) items.push(["Consumo en espera", sbK]);
+    kwhT += sbK;
+    var energy = kwhT * price, pot = KV.val("kw") * 30.7, iee = 0.0511 * (energy + pot), meter = 9.72;
+    var total = (energy + pot + iee + meter) * 1.21;
+    $("r-total").textContent = KV.eur0(total);
+    $("r-sub").textContent = KV.n0(kwhT) + " kWh al año · " + KV.eur0(total / 12) + " al mes";
+    KV.kv($("r-kv"), [["Energía", KV.eur0(energy)], ["  de ella, consumo en espera", KV.eur0(sbK * price)], ["Potencia", KV.eur0(pot)], ["Impuesto eléctrico", KV.eur0(iee)], ["Alquiler del contador", KV.eur0(meter)], ["IVA", KV.eur0((energy + pot + iee + meter) * 0.21)], ["Total", KV.eur0(total), true]]);
+    items.sort(function (a, b) { return b[1] - a[1]; });
+    KV.bars($("r-bars"), items.slice(0, 8).map(function (it) { return [it[0], it[1], KV.eur0(it[1] * price) + " · " + Math.round(kwhT ? it[1] / kwhT * 100 : 0) + " %"]; }));
+  }
+  $("preset").addEventListener("change", function () { load($("preset").value); render(); });
+  $("add").addEventListener("click", function () { addRow(["Nuevo aparato", 500, 1, 365]); render(); tb.lastElementChild.querySelector("input").focus(); });
+  $("f").addEventListener("input", render);
+  load("piso"); render();
+  KV.applyLive(function (s) { return { price: s.last30.avg }; }, $("f"), render,
+    function (s) { return "Precio de la energía: media del PVPC de los últimos 30 días, " + KV.n3(s.last30.avg) + " €/kWh sin impuestos (los impuestos se suman en la factura)."; });
+})();
+</script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>

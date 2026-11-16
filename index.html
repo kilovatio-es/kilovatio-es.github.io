@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Precio de la luz hoy hora a hora (PVPC) y calculadoras de energía para tu casa: placas solares, tarifas, potencia, calefacción, coche eléctrico y electrodomésticos.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kilovatio">
+<meta property="og:description" content="Precio de la luz hoy hora a hora (PVPC) y calculadoras de energía para tu casa: placas solares, tarifas, potencia, calefacción, coche eléctrico y electrodomésticos.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html" aria-current="page">Precio de la luz hoy</a>
+    <a href="placas-solares.html">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html">Calefacción</a>
+    <a href="coche-electrico.html">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html">Electrodomésticos</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="eyebrow">Precio de la luz · PVPC</p>
+    <h1>Precio de la luz hoy, hora a hora</h1>
+    <p>Precio de la tarifa regulada (PVPC) para cada hora del día, con las horas más baratas para poner la lavadora, cargar el coche o encender la calefacción. Datos oficiales de Red Eléctrica.</p>
+  </div>
+
+  <div class="live">
+    <section class="panel" aria-labelledby="h-chart">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+        <h2 id="h-chart" style="font-size:1.2rem">Precio PVPC por horas · <span id="day-label">hoy</span></h2>
+        <div class="seg" role="group" aria-label="Día">
+          <button type="button" id="b-today" aria-pressed="true">Hoy</button>
+          <button type="button" id="b-tomorrow" aria-pressed="false">Mañana</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat now"><small>Ahora</small><b id="s-now">—</b><em id="s-now-h"></em></div>
+        <div class="stat"><small>Media del día</small><b id="s-avg">—</b><em>€/kWh</em></div>
+        <div class="stat"><small>Más barata</small><b id="s-min">—</b><em id="s-min-h"></em></div>
+        <div class="stat"><small>Más cara</small><b id="s-max">—</b><em id="s-max-h"></em></div>
+      </div>
+      <svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg>
+      <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center">
+        <div class="legend"><span><i style="background:var(--good)"></i>Horas baratas</span><span><i style="background:var(--mid)"></i>Intermedias</span><span><i style="background:var(--bad)"></i>Caras</span></div>
+        <label class="check"><input type="checkbox" id="tax" checked> Con impuestos (IVA e impuesto eléctrico)</label>
+      </div>
+      <p class="status" id="status">Cargando precios de Red Eléctrica…</p>
+    </section>
+
+    <aside class="panel" aria-labelledby="h-when">
+      <h2 id="h-when" style="font-size:1.2rem">¿Cuándo lo pongo?</h2>
+      <div class="field">
+        <label for="app">Aparato</label>
+        <div class="input"><select id="app">
+          <option value="0.9">Lavadora (ciclo 40 °C · 0,9 kWh)</option>
+          <option value="1.0">Lavavajillas (ciclo eco · 1 kWh)</option>
+          <option value="2.5">Secadora (ciclo completo · 2,5 kWh)</option>
+          <option value="1.4">Horno (1 hora · 1,4 kWh)</option>
+          <option value="1.0">Aire acondicionado (1 hora · 1 kWh)</option>
+          <option value="7.4">Coche eléctrico (1 hora a 7,4 kW)</option>
+          <option value="22">Coche eléctrico (carga 22 kWh)</option>
+        </select></div>
+      </div>
+      <div class="kv" id="when-kv"></div>
+      <div class="field"><span class="lbl">3 horas más baratas</span><div class="hours" id="cheap"></div></div>
+      <div class="field"><span class="lbl">3 horas más caras</span><div class="hours bad" id="dear"></div></div>
+      <p class="note">El PVPC cambia cada hora según el mercado mayorista. Los precios del día siguiente se publican hacia las 20:30.</p>
+    </aside>
+  </div>
+
+  <section class="block" aria-labelledby="h-calc">
+    <header><p class="eyebrow">Calculadoras</p><h2 id="h-calc">Haz las cuentas antes de decidir</h2></header>
+    <div class="cards">
+      <a class="card" href="placas-solares.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 20h18M5 16l2-9h10l2 9H5ZM9 7l-1 9M15 7l1 9M6 11.5h12"/></svg><h3>Placas solares</h3><p>Producción por comunidad, ahorro, batería, deducción del IRPF y amortización.</p><span class="go">Calcular ahorro →</span></a>
+      <a class="card" href="tarifa-pvpc-o-fija.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 18 9 11l4 4 7-9"/><path d="M4 6h6"/></svg><h3>PVPC o precio fijo</h3><p>Compara la tarifa regulada con una oferta de precio fijo según cómo consumes.</p><span class="go">Comparar tarifas →</span></a>
+      <a class="card" href="potencia-contratada.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="m12 13 4-4M12 5V3"/></svg><h3>Potencia contratada</h3><p>Qué potencia necesitas según los aparatos que usas a la vez, y cuánto ahorras bajándola.</p><span class="go">Calcular potencia →</span></a>
+      <a class="card" href="calefaccion.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8Z"/></svg><h3>Calefacción</h3><p>Aerotermia, gas, gasóleo, pellets o radiadores eléctricos: coste anual comparado.</p><span class="go">Comparar sistemas →</span></a>
+      <a class="card" href="coche-electrico.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 16v-3l2-5h12l2 5v3M4 16h16M4 16v2h3v-2M17 16v2h3v-2"/><path d="m13 9-2 3h3l-2 3"/></svg><h3>Coche eléctrico</h3><p>Coste por kilómetro frente a gasolina o diésel, punto de recarga y emisiones.</p><span class="go">Comparar costes →</span></a>
+      <a class="card" href="consumo-electrodomesticos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6.5h2"/></svg><h3>Electrodomésticos</h3><p>Cuánto gasta cada aparato al año, incluido el consumo en espera.</p><span class="go">Ver consumo →</span></a>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-per">
+    <header><p class="eyebrow">Tarifa 2.0TD</p><h2 id="h-per">Periodos horarios de lunes a viernes</h2>
+    <p class="muted" style="max-width:66ch">Los periodos los fija la normativa: con la tarifa de acceso 2.0TD, la que tienen casi todos los hogares, los peajes y cargos cambian según la hora. Los fines de semana y festivos nacionales son todo el día valle. Las horas realmente más baratas de cada día las ves en el gráfico de arriba.</p></header>
+    <div class="periods" id="periods" aria-hidden="true"></div>
+    <div style="display:flex;justify-content:space-between;font:11px var(--f-mono);color:var(--muted)"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+    <div class="panel" id="avg-panel" hidden>
+      <h3>A qué hora sale más barata la luz: media de los últimos 30 días</h3>
+      <svg class="chart" id="avg-chart" role="img" aria-label="Precio medio por hora en los últimos 30 días"></svg>
+      <p class="note" id="avg-note"></p>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Periodo</th><th>Horario (lunes a viernes)</th><th>Cuándo aprovecharlo</th></tr></thead>
+      <tbody>
+        <tr><td><span style="color:var(--bad);font-weight:600">Punta</span></td><td class="mono">10:00–14:00 y 18:00–22:00</td><td>Evita aquí los aparatos que más consumen.</td></tr>
+        <tr><td><span style="color:var(--mid);font-weight:600">Llano</span></td><td class="mono">08:00–10:00, 14:00–18:00 y 22:00–24:00</td><td>Precio intermedio.</td></tr>
+        <tr><td><span style="color:var(--good);font-weight:600">Valle</span></td><td class="mono">00:00–08:00, fines de semana y festivos</td><td>Lavadora, lavavajillas, termo y carga del coche.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-ref">
+    <header><p class="eyebrow" id="ref-eyebrow">Datos de referencia</p><h2 id="h-ref">Precios de la energía en España</h2></header>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Concepto</th><th class="num">Valor</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td id="rm-l">PVPC, precio medio de este mes</td><td class="num" id="rm-v">—</td><td>Energía con peajes y cargos, sin impuestos</td></tr>
+        <tr><td id="rp-l">PVPC, precio medio del mes pasado</td><td class="num" id="rp-v">—</td><td>Energía con peajes y cargos, sin impuestos</td></tr>
+        <tr><td>PVPC, media de los últimos 30 días</td><td class="num" id="r30-v">—</td><td id="r30-n">Punta, llano y valle</td></tr>
+        <tr><td>Término de potencia PVPC, punta (P1)</td><td class="num">0,0738 €/kW·día</td><td>Peajes y cargos, sin margen ni impuestos</td></tr>
+        <tr><td>Término de potencia PVPC, valle (P2)</td><td class="num">0,0019 €/kW·día</td><td>Peajes y cargos</td></tr>
+        <tr><td>Impuesto especial sobre la electricidad</td><td class="num">5,11 %</td><td>Sobre potencia y energía</td></tr>
+        <tr><td>IVA de la electricidad</td><td class="num">21 %</td><td></td></tr>
+        <tr><td>Gas natural, tarifa TUR 2 (desde el 1 de octubre)</td><td class="num">0,0504 €/kWh</td><td>Término variable, sin impuestos</td></tr>
+        <tr><td>Gasolina 95, media nacional</td><td class="num" id="rg-v">~1,67 €/l</td><td id="rf-n">Referencia de mediados de noviembre de 2026</td></tr>
+        <tr><td>Gasóleo de automoción, media nacional</td><td class="num" id="rd-v">~1,86 €/l</td><td id="rf-n2">Referencia de mediados de noviembre de 2026</td></tr>
+      </tbody></table></div>
+    <p class="note" id="ref-note">Los precios del PVPC y de los carburantes se actualizan solos cada día. Los términos regulados (potencia, impuestos y TUR del gas) cambian por resolución oficial y se revisaron en noviembre de 2026.</p>
+  </section>
+
+  <section class="block" aria-labelledby="h-faq">
+    <header><p class="eyebrow">Preguntas frecuentes</p><h2 id="h-faq">Sobre el precio de la luz</h2></header>
+    <div class="faq">
+      <details open><summary>¿Por qué cambia el precio de la luz cada hora?</summary><p>El PVPC se calcula a partir del mercado mayorista, donde cada hora se casan la oferta de las centrales y la demanda. Cuando hay mucho sol y viento, las renovables abaratan las horas centrales del día; cuando hace falta gas para cubrir la demanda, el precio sube, sobre todo al anochecer.</p></details>
+      <details><summary>¿Qué es el PVPC?</summary><p>El Precio Voluntario para el Pequeño Consumidor es la tarifa regulada por el Gobierno para hogares con hasta 10 kW de potencia. Solo la ofrecen las comercializadoras de referencia, y su precio cambia cada hora. Desde 2024 una parte del precio se calcula con referencias de los mercados a plazo, lo que suaviza los picos.</p></details>
+      <details><summary>¿A qué hora se publican los precios de mañana?</summary><p>Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:30. Pulsa «Mañana» en el gráfico para verlos cuando estén disponibles.</p></details>
+      <details><summary>¿Los precios incluyen impuestos?</summary><p>Red Eléctrica publica el precio sin impuestos. Con la casilla «Con impuestos» marcada, sumamos el impuesto especial sobre la electricidad (5,11 %) y el IVA (21 %), que es lo que pagas realmente por cada kWh.</p></details>
+      <details><summary>¿Y si tengo una tarifa de precio fijo?</summary><p>Con una tarifa del mercado libre a precio fijo, lo que pagas no depende de la hora. Mira la calculadora <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a> para saber qué te conviene.</p></details>
+    </div>
+  </section>
+</main>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"¿Por qué cambia el precio de la luz cada hora?","acceptedAnswer":{"@type":"Answer","text":"El PVPC se calcula a partir del mercado mayorista, donde cada hora se casan la oferta de las centrales y la demanda. Las renovables abaratan las horas de sol y viento; el gas encarece las horas de mayor demanda."}},
+{"@type":"Question","name":"¿Qué es el PVPC?","acceptedAnswer":{"@type":"Answer","text":"El Precio Voluntario para el Pequeño Consumidor es la tarifa regulada para hogares con hasta 10 kW de potencia, cuyo precio cambia cada hora."}},
+{"@type":"Question","name":"¿A qué hora se publican los precios de la luz de mañana?","acceptedAnswer":{"@type":"Answer","text":"Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:30."}}]}
+</script>
+
+<script>
+(function () {
+  var $ = KV.$;
+  var TZ = "Europe/Madrid";
+  var state = { day: 0, data: [null, null], loading: [false, false] };
+
+  // Periodos 2.0TD (laborables)
+  var per = [];
+  for (var h = 0; h < 24; h++) {
+    var p = h < 8 ? "valle" : (h >= 10 && h < 14) || (h >= 18 && h < 22) ? "punta" : "llano";
+    per.push('<div class="p-' + p + '" title="' + String(h).padStart(2, "0") + ':00 · ' + p + '"></div>');
+  }
+  $("periods").innerHTML = per.join("");
+
+  function madridDate(offsetDays) {
+    var d = new Date(Date.now() + offsetDays * 864e5);
+    return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  }
+  function madridHour() {
+    return parseInt(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(new Date()), 10);
+  }
+  function hh(h) { return String(h).padStart(2, "0") + ":00"; }
+
+  function fromRee(d) {
+    var url = "https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=" + d + "T00:00&end_date=" + d + "T23:59&time_trunc=hour";
+    return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (j) {
+        var s = (j.included || []).filter(function (x) { return /pvpc/i.test(x.attributes && x.attributes.title || ""); })[0];
+        if (!s) throw new Error("sin serie PVPC");
+        var acc = {};
+        s.attributes.values.forEach(function (v) {
+          if (String(v.datetime).slice(0, 10) !== d) return;
+          var h = parseInt(String(v.datetime).substr(11, 2), 10);
+          (acc[h] = acc[h] || []).push(v.value);
+        });
+        var hours = Object.keys(acc).map(Number).sort(function (a, b) { return a - b; });
+        if (hours.length < 23) throw new Error("incompleto");
+        return hours.map(function (h) { var a = acc[h]; return { h: h, p: a.reduce(function (x, y) { return x + y; }, 0) / a.length / 1000 }; });
+      });
+  }
+  function load(day) {
+    if (state.data[day] || state.loading[day]) return render();
+    state.loading[day] = true;
+    var d = madridDate(day);
+    $("status").className = "status";
+    $("status").textContent = "Cargando precios de Red Eléctrica…";
+    KV.data().then(function (all) {
+      var arr = all && all.days[d];
+      if (arr && arr.filter(function (v) { return v != null; }).length >= 23) {
+        state.src = "archivo"; state.updated = all.updated;
+        return arr.map(function (p, h) { return { h: h, p: p }; }).filter(function (x) { return x.p != null; });
+      }
+      state.src = "directo";
+      return fromRee(d);
+    }).then(function (pts) { state.data[day] = pts; })
+      .catch(function () { state.data[day] = "error"; })
+      .then(function () { state.loading[day] = false; render(); });
+  }
+
+  function render() {
+    var day = state.day, d = state.data[day];
+    $("day-label").textContent = day ? "mañana" : "hoy";
+    $("b-today").setAttribute("aria-pressed", day === 0);
+    $("b-tomorrow").setAttribute("aria-pressed", day === 1);
+    if (!d) return;
+    var svg = $("chart");
+    if (d === "error") {
+      svg.innerHTML = ""; svg.removeAttribute("viewBox"); svg.hidden = true;
+      ["s-now", "s-avg", "s-min", "s-max"].forEach(function (id) { $(id).textContent = "—"; });
+      $("when-kv").innerHTML = ""; $("cheap").innerHTML = ""; $("dear").innerHTML = "";
+      $("status").className = "status err";
+      $("status").innerHTML = day
+        ? "Los precios de mañana aún no están publicados. Red Eléctrica los publica hacia las 20:30."
+        : 'No se han podido cargar los precios ahora mismo. Consúltalos en <a href="https://www.ree.es/es/datos/mercados" target="_blank" rel="noopener">Red Eléctrica</a> o en <a href="https://www.esios.ree.es/es/pvpc" target="_blank" rel="noopener">e·sios</a>.';
+      return;
+    }
+    svg.hidden = false;
+    var tax = $("tax").checked ? KV.TAX : 1;
+    var pts = d.map(function (x) { return { h: x.h, p: x.p * tax }; });
+    var sorted = pts.map(function (x) { return x.p; }).sort(function (a, b) { return a - b; });
+    var q1 = sorted[Math.floor(sorted.length / 3)], q2 = sorted[Math.floor(sorted.length * 2 / 3)];
+    var nowH = day === 0 ? madridHour() : -1;
+    KV.columns($("chart"), pts.map(function (x) {
+      return { label: String(x.h).padStart(2, "0"), value: x.p, title: hh(x.h) + " · " + KV.n3(x.p) + " €/kWh",
+        color: x.p < q1 ? "var(--good)" : x.p >= q2 ? "var(--bad)" : "var(--mid)", stroke: x.h === nowH };
+    }), { height: 260, labelEvery: 2, yfmt: function (v) { return v.toFixed(2).replace(".", ","); } });
+    var avg = pts.reduce(function (s, x) { return s + x.p; }, 0) / pts.length;
+    var min = pts.reduce(function (a, b) { return b.p < a.p ? b : a; });
+    var max = pts.reduce(function (a, b) { return b.p > a.p ? b : a; });
+    var now = pts.filter(function (x) { return x.h === nowH; })[0];
+    $("s-now").textContent = now ? KV.n3(now.p) : "—";
+    $("s-now-h").textContent = now ? hh(now.h) + "–" + hh((now.h + 1) % 24) : (day ? "mañana" : "");
+    $("s-avg").textContent = KV.n3(avg);
+    $("s-min").textContent = KV.n3(min.p); $("s-min-h").textContent = hh(min.h);
+    $("s-max").textContent = KV.n3(max.p); $("s-max-h").textContent = hh(max.h);
+    var byPrice = pts.slice().sort(function (a, b) { return a.p - b.p; });
+    $("cheap").innerHTML = byPrice.slice(0, 3).map(function (x) { return "<span>" + hh(x.h) + " · " + KV.n3(x.p) + "</span>"; }).join("");
+    $("dear").innerHTML = byPrice.slice(-3).reverse().map(function (x) { return "<span>" + hh(x.h) + " · " + KV.n3(x.p) + "</span>"; }).join("");
+    // ¿Cuándo lo pongo?
+    var kwh = KV.val("app");
+    var pool = day === 0 ? pts.filter(function (x) { return x.h >= nowH; }) : pts;
+    var best = pool.reduce(function (a, b) { return b.p < a.p ? b : a; }, pool[0]);
+    var rows = [];
+    if (now) rows.push(["Si lo pones ahora (" + hh(now.h) + ")", KV.eur2(kwh * now.p)]);
+    rows.push(["En la hora más barata " + (day === 0 ? "que queda hoy" : "de mañana") + " (" + hh(best.h) + ")", KV.eur2(kwh * best.p)]);
+    rows.push(["En la hora más cara (" + hh(max.h) + ")", KV.eur2(kwh * max.p)]);
+    if (now) rows.push(["Ahorro esperando a las " + hh(best.h), KV.eur2(Math.max(kwh * (now.p - best.p), 0)), true]);
+    KV.kv($("when-kv"), rows);
+    $("status").className = "status";
+    $("status").textContent = "Fuente: Red Eléctrica (REData), PVPC tarifa 2.0TD, península. Precios en €/kWh" + (tax > 1 ? " con impuestos." : " sin impuestos.");
+  }
+
+  $("b-today").addEventListener("click", function () { state.day = 0; load(0); render(); });
+  $("b-tomorrow").addEventListener("click", function () { state.day = 1; load(1); render(); });
+  $("tax").addEventListener("change", render);
+  $("app").addEventListener("change", render);
+  load(0);
+
+  // Tabla de referencia y media horaria con el histórico
+  var fmtE = function (v) { return v == null ? "—" : KV.n3(v) + " €/kWh"; };
+  KV.data().then(function (all) {
+    if (!all) { $("rm-v").textContent = "Sin datos"; $("rp-v").textContent = "Sin datos"; $("r30-v").textContent = "Sin datos"; return; }
+    var s = KV.stats(all);
+    $("ref-eyebrow").textContent = "Datos de referencia · actualizado el " + KV.fmtDate(s.last);
+    $("rm-l").textContent = "PVPC, precio medio de " + KV.monthName(s.month.ym) + (s.month.s.days ? " (" + s.month.s.days + " días)" : "");
+    $("rm-v").textContent = fmtE(s.month.s.avg);
+    $("rp-l").textContent = "PVPC, precio medio de " + KV.monthName(s.prev.ym);
+    $("rp-v").textContent = s.prev.s.days ? fmtE(s.prev.s.avg) : "Aún sin histórico";
+    $("r30-v").textContent = fmtE(s.last30.avg);
+    $("r30-n").textContent = "Punta " + KV.n3(s.last30.punta) + " · llano " + KV.n3(s.last30.llano) + " · valle " + KV.n3(s.last30.valle);
+    if (s.fuel) {
+      $("rg-v").textContent = KV.n3(s.fuel.gasolina95) + " €/l"; $("rd-v").textContent = KV.n3(s.fuel.diesel) + " €/l";
+      $("rf-n").textContent = $("rf-n2").textContent = "Media de todas las gasolineras, " + KV.fmtDate(s.fuel.date);
+    }
+    var hrs = s.last30.hours;
+    if (hrs.filter(function (v) { return v != null; }).length === 24) {
+      var srt = hrs.slice().sort(function (a, b) { return a - b; }), q1 = srt[8], q2 = srt[16];
+      $("avg-panel").hidden = false;
+      KV.columns($("avg-chart"), hrs.map(function (v, i) { return { label: String(i).padStart(2, "0"), value: v, title: String(i).padStart(2, "0") + ":00 · " + KV.n3(v) + " €/kWh", color: v < q1 ? "var(--good)" : v >= q2 ? "var(--bad)" : "var(--mid)" }; }),
+        { height: 200, labelEvery: 2, yfmt: function (v) { return v.toFixed(2).replace(".", ","); } });
+      $("avg-note").textContent = "Media de " + s.last30.days + " días, sin impuestos. Incluye fines de semana.";
+    }
+  });
+})();
+</script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>
