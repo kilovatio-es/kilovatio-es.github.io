@@ -93,7 +93,7 @@
     <p><strong>Puntos de recarga:</strong> registro oficial de la Dirección General de Tráfico (DGT) en su Punto de Acceso Nacional de Tráfico y Movilidad, con datos que comunican los operadores (licencia CC-BY). Se actualiza cada día. Cada punto del mapa es una ubicación; dentro puede haber varios cargadores. El color indica la potencia del cargador más potente.</p>
     <h2>Cómo leer el mapa</h2>
     <ul>
-      <li><strong>Puntos rellenos = gasolineras.</strong> Verde: entre el tercio más barato de España para el carburante elegido. Ámbar: precio medio. Rojo: el tercio más caro.</li>
+      <li><strong>Puntos rellenos = gasolineras.</strong> Verde: entre el tercio más barato de la península y Baleares para el carburante elegido. Ámbar: precio medio. Rojo: el tercio más caro.</li>
       <li><strong>Anillos = puntos de recarga.</strong> Azul: recarga lenta o semirrápida (hasta 49 kW, la típica de aparcamiento). Ámbar: rápida (50–149 kW). Verde: ultrarrápida (150 kW o más), la que sirve en un viaje largo.</li>
       <li>La lista de la derecha enseña lo más barato (o lo más potente) <strong>de la zona que estás viendo</strong>. Muévete o acerca el mapa y se actualiza.</li>
     </ul>
@@ -187,6 +187,7 @@
     });
     gasLayer = L.layerGroup(list).addTo(map);
   }
+  function main(r) { return r[0] >= 36; } /* península y Baleares: Canarias, Ceuta y Melilla tienen otros impuestos */
   function evOk(r) { return r[8] >= state.kw && (!state.con || (r[10] & state.con)); }
   function drawEv() {
     if (evLayer) map.removeLayer(evLayer);
@@ -229,9 +230,9 @@
   }
   function side() {
     var b = map.getBounds(), z = map.getZoom(), h = [], wide = z < 9;
-    var where = wide ? "en toda España" : "en esta zona";
+    var where = wide ? "en la península y Baleares" : "en esta zona";
     if (gas && state.show !== "ev") {
-      var fi = GI[state.fuel], rows = (wide ? gas.rows : inView(gas.rows, b)).filter(function (r) { return r[fi]; });
+      var fi = GI[state.fuel], rows = (wide ? gas.rows.filter(main) : inView(gas.rows, b)).filter(function (r) { return r[fi]; });
       rows.sort(function (a, c) { return a[fi] - c[fi]; });
       var avg = rows.length ? rows.reduce(function (s, r) { return s + r[fi]; }, 0) / rows.length : 0;
       h.push("<h3>" + FUEL_NAMES[state.fuel] + " más barata " + where + "</h3>");
@@ -242,13 +243,15 @@
     if (ev && state.show !== "gas") {
       var er = (wide ? ev.rows : inView(ev.rows, b)).filter(evOk);
       var ultra = er.filter(function (r) { return r[8] >= 150; }).length;
-      er.sort(function (a, c) { return c[8] - a[8] || c[9] - a[9]; });
+      /* más de 600 kW por conector no existe hoy: es un error del registro y no se pone arriba */
+      var kwr = function (r) { return r[8] > 600 ? 0 : r[8]; };
+      er.sort(function (a, c) { return kwr(c) - kwr(a) || c[9] - a[9]; });
       h.push("<h3>Recarga más potente " + where + "</h3>");
       h.push(er.length ? "<p class='muted small'>" + KV.n0(er.length) + " ubicaciones · " + KV.n0(ultra) + " ultrarrápidas</p><ol class='rank'>" +
         er.slice(0, wide ? 5 : 8).map(function (r) { return item(r, KV.n0(r[8]) + " kW", (r[5] || "") + " · " + (r[3] || ""), "e"); }).join("") + "</ol>"
         : "<p class='muted small'>No hay puntos de recarga con esos filtros en esta zona.</p>");
     }
-    if (wide) h.push("<p class='callout small'>Acerca el mapa a tu zona, busca tu municipio o pulsa <b>Cerca de mí</b> para ver lo más cercano.</p>");
+    if (wide) h.push("<p class='note'>Canarias, Ceuta y Melilla tienen impuestos distintos (IGIC e IPSI) y no entran en la clasificación general; acerca el mapa para verlas.</p><p class='callout small'>Acerca el mapa a tu zona, busca tu municipio o pulsa <b>Cerca de mí</b> para ver lo más cercano.</p>");
     $("side").innerHTML = h.join("") || "<p class='muted'>Cargando…</p>";
   }
   var sideT; map.on("moveend", function () { clearTimeout(sideT); sideT = setTimeout(side, 120); });
@@ -312,7 +315,7 @@
   function load(url) { return fetch(url, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).catch(function () { return null; }); }
   function index(d) { var o = {}; d.cols.forEach(function (c, i) { o[c] = i; }); return o; }
   function tercile(d, k) {
-    var i = GI[k], v = d.rows.map(function (r) { return r[i]; }).filter(Boolean).sort(function (a, b) { return a - b; });
+    var i = GI[k], v = d.rows.filter(main).map(function (r) { return r[i]; }).filter(Boolean).sort(function (a, b) { return a - b; });
     return v.length > 20 ? [v[Math.floor(v.length / 3)], v[Math.floor(v.length * 2 / 3)]] : null;
   }
   function munis() {
