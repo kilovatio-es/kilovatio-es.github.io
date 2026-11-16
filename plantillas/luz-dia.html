@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>%%TITLE%%</title>
+<link rel="canonical" href="%%CANON%%">
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="%%DESC%%">
+<meta property="og:type" content="website">
+<meta property="og:title" content="%%TITLE%%">
+<meta property="og:description" content="%%DESC%%">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html" aria-current="page">Precio de la luz</a>
+    <a href="placas-solares.html">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html">Calefacción</a>
+    <a href="coche-electrico.html">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html">Electrodomésticos</a>
+    <a href="mapa.html">Gasolineras y recarga</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro luz-intro">
+    <h1>%%H1%%</h1>
+  </div>
+<!--LUZ-->
+
+  <section class="block" aria-labelledby="h-more">
+    <header><p class="eyebrow">Ahorra en la factura</p><h2 id="h-more">Más herramientas de Kilovatio</h2></header>
+    <div class="cards">
+      <a class="card" href="tarifa-pvpc-o-fija.html"><h3>PVPC o precio fijo</h3><p>¿Te compensa el PVPC o una tarifa de precio fijo? Compáralo con tu consumo.</p><span class="go">Comparar tarifas →</span></a>
+      <a class="card" href="consumo-electrodomesticos.html"><h3>Consumo de electrodomésticos</h3><p>Cuánto gasta cada aparato al año, incluido el consumo en espera.</p><span class="go">Ver consumo →</span></a>
+      <a class="card" href="mapa.html"><h3>Gasolineras y recarga</h3><p>Precio de hoy en todas las gasolineras y puntos de recarga para coche eléctrico.</p><span class="go">Abrir el mapa →</span></a>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-faq">
+    <header><p class="eyebrow">Preguntas frecuentes</p><h2 id="h-faq">Sobre el precio de la luz por horas</h2></header>
+    <div class="faq">
+      <details><summary>¿A qué hora se publican los precios de mañana?</summary><p>Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:15–20:30. En Kilovatio aparecen en la pestaña <a href="precio-luz-manana.html">Mañana</a> a partir de las 20:45.</p></details>
+      <details><summary>¿Estos precios incluyen impuestos?</summary><p>Sí: incluyen el impuesto especial sobre la electricidad (5,11 %) y el IVA (21 %). No incluyen el término de potencia ni el alquiler del contador, que pagas igual consumas a la hora que consumas.</p></details>
+      <details><summary>¿Me afecta si tengo una tarifa de precio fijo?</summary><p>No. Estos precios son los del PVPC, la tarifa regulada. Con una tarifa de precio fijo del mercado libre pagas lo mismo a cualquier hora. Compara las dos en la calculadora <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>.</p></details>
+      <details><summary>¿Qué significan los colores del semáforo?</summary><p>Se comparan las horas del mismo día: verde es el tercio de horas más barato, ámbar el intermedio y rojo el más caro. Que un día sea caro o barato en conjunto lo indica el precio medio, comparado con los últimos 30 días.</p></details>
+    </div>
+  </section>
+</main>
+
+<script src="luz.js"></script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="precio-luz-manana.html">Precio de la luz mañana</a></li><li><a href="mapa.html">Mapa de gasolineras y recarga</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>
