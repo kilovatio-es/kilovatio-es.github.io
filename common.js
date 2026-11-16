@@ -134,3 +134,13 @@ window.KV = (function () {
     eur0: eur0.format, eur2: eur2.format, n0: n0.format, n1: n1.format, n3: n3.format,
     TAX: 1.0511 * 1.21 };
 })();
+
+/* Cloudflare Web Analytics: cuenta visitas sin cookies. Solo en la web publicada. */
+(function () {
+  if (location.hostname.indexOf("kilovatio") === -1) return;
+  var s = document.createElement("script");
+  s.defer = true;
+  s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+  s.setAttribute("data-cf-beacon", '{"token": "9e28635f1e6f4ffd9925cc7431e93425"}');
+  document.head.appendChild(s);
+})();
