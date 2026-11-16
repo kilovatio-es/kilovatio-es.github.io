@@ -5,7 +5,7 @@ Actualiza data/energia.json con:
   - Precio medio nacional de la gasolina 95 y del gasóleo A, desde el Ministerio (Geoportal).
 Lo ejecuta GitHub Actions varias veces al día. Solo usa la biblioteca estándar de Python.
 """
-import json, os, statistics, urllib.request
+import json, os, ssl, statistics, time, urllib.request
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -16,10 +16,21 @@ KEEP_DAYS = 400
 UA = {"User-Agent": "Kilovatio/1.0 (calculadoras de energia)", "Accept": "application/json"}
 
 
-def get_json(url, timeout=60):
+def get_json(url, timeout=60, context=None):
     req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout, context=context) as r:
         return json.loads(r.read().decode("utf-8-sig"))
+
+
+def legacy_ssl():
+    """El servidor del Ministerio usa una configuración TLS antigua que OpenSSL 3 rechaza por defecto."""
+    ctx = ssl.create_default_context()
+    ctx.options |= getattr(ssl, "OP_LEGACY_SERVER_CONNECT", 0x4)
+    try:
+        ctx.set_ciphers("DEFAULT:@SECLEVEL=1")
+    except ssl.SSLError:
+        pass
+    return ctx
 
 
 def to_24(acc):
@@ -73,7 +84,19 @@ def pvpc(day):
 
 def fuel():
     url = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/"
-    j = get_json(url, timeout=120)
+    j, last_err = None, None
+    for intento in range(3):
+        for ctx in (legacy_ssl(), None):
+            try:
+                j = get_json(url, timeout=180, context=ctx)
+                break
+            except Exception as e:  # noqa: BLE001
+                last_err = e
+        if j:
+            break
+        time.sleep(10)
+    if not j:
+        raise RuntimeError(last_err)
     def avg(field):
         vals = []
         for e in j.get("ListaEESSPrecio", []):
