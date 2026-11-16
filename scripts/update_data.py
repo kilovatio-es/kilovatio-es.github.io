@@ -57,6 +57,55 @@ def pvpc_redata(day):
     return to_24(acc) if len(acc) >= 23 else None
 
 
+def pvpc_redata_range(start, end):
+    """PVPC de varios días seguidos en una sola petición -> {día: [24 precios]}."""
+    url = ("https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real"
+           f"?start_date={start}T00:00&end_date={end}T23:59&time_trunc=hour")
+    j = get_json(url, timeout=90)
+    series = [s for s in j.get("included", []) if "pvpc" in s.get("attributes", {}).get("title", "").lower()]
+    if not series:
+        return {}
+    acc = {}
+    for v in series[0]["attributes"]["values"]:
+        dt = str(v["datetime"])
+        acc.setdefault(dt[:10], {}).setdefault(int(dt[11:13]), []).append(float(v["value"]))
+    return {d: to_24(h) for d, h in acc.items() if len(h) >= 23}
+
+
+def backfill(data, now, days_back=395, chunk=7, max_requests=80):
+    """Rellena los días que falten del último año, en bloques de `chunk` días."""
+    today = now.date()
+    missing = []
+    for i in range(days_back, 1, -1):
+        d = (today - timedelta(days=i)).strftime("%Y-%m-%d")
+        if d not in data["days"]:
+            missing.append(d)
+    if not missing:
+        return
+    print(f"Histórico: faltan {len(missing)} días; descargando…")
+    blocks, cur = [], [missing[0]]
+    for d in missing[1:]:
+        prev = datetime.strptime(cur[-1], "%Y-%m-%d")
+        if (datetime.strptime(d, "%Y-%m-%d") - prev).days == 1 and len(cur) < chunk:
+            cur.append(d)
+        else:
+            blocks.append(cur)
+            cur = [d]
+    blocks.append(cur)
+    added = 0
+    for n, b in enumerate(blocks[:max_requests]):
+        try:
+            got = pvpc_redata_range(b[0], b[-1])
+            for d, p in got.items():
+                if d in b and sum(x is not None for x in p) >= 23:
+                    data["days"][d] = p
+                    added += 1
+        except Exception as e:  # noqa: BLE001
+            print(f"Histórico {b[0]}–{b[-1]}: fallo: {e}")
+        time.sleep(1)
+    print(f"Histórico: añadidos {added} días ({min(len(blocks), max_requests)} peticiones)")
+
+
 def pvpc_esios_archive(day):
     """Alternativa: archivo público del PVPC de e·sios (no requiere token)."""
     j = get_json(f"https://api.esios.ree.es/archives/70/download_json?locale=es&date={day}")
@@ -126,6 +175,7 @@ def main():
         p = pvpc(day)
         if p:
             data["days"][day] = p
+    backfill(data, now)
     keep = sorted(data["days"])[-KEEP_DAYS:]
     data["days"] = {k: data["days"][k] for k in keep}
     try:
