@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /plantillas/
+
+Sitemap: https://kilovatio-es.github.io/sitemap.xml
