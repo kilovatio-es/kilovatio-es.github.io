@@ -178,3 +178,44 @@ footer.site ul{list-style:none;margin:0;padding:0;display:grid;gap:.25rem}
 footer.site a{color:var(--muted)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Mapa de gasolineras y recarga */
+.mapapp{display:grid;gap:1rem;padding-bottom:1rem}
+.maptools{display:flex;flex-wrap:wrap;align-items:end;gap:.8rem 1rem;padding:1rem}
+.maptools .field{flex:1 1 140px}
+.maptools .search{flex:2 1 240px}
+.maptools .seg{align-self:end;margin-bottom:2px}
+.ibtn{border:0;border-left:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .85rem var(--f-body);padding:.62rem .8rem;cursor:pointer}
+.btn.near{padding:.62rem .9rem}
+.mapgrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:1rem;align-items:start}
+@media (max-width:900px){.mapgrid{grid-template-columns:minmax(0,1fr)}}
+.mapbox{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+#map{height:min(72vh,680px);min-height:380px;background:var(--grid-soft)}
+.maplegend{position:absolute;left:10px;bottom:22px;z-index:500;display:flex;flex-wrap:wrap;gap:.3rem .8rem;max-width:calc(100% - 20px);background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);border-radius:8px;padding:.4rem .6rem;font-size:.76rem}
+.maplegend:empty{display:none}
+.maplegend .dot,.maplegend .ring{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:-1px}
+.maplegend .ring{border:2.5px solid;background:var(--surface)}
+.maploading{position:absolute;top:10px;left:56px;right:56px;z-index:500;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.4rem .7rem;width:fit-content;margin:auto}
+.side{gap:.7rem;padding:1.1rem;max-height:min(72vh,680px);overflow:auto}
+@media (max-width:900px){.side{max-height:none}}
+.side h3{font-size:.98rem}
+.side h3:not(:first-child){margin-top:.6rem;padding-top:.8rem;border-top:1px solid var(--line)}
+.small{font-size:.8rem}
+ol.rank{list-style:none;margin:0;padding:0;display:grid;gap:.25rem;counter-reset:r}
+ol.rank button{width:100%;display:flex;justify-content:space-between;gap:.6rem;align-items:center;text-align:left;border:1px solid transparent;background:var(--paper);color:var(--ink);border-radius:8px;padding:.45rem .6rem;cursor:pointer;font:inherit}
+ol.rank button:hover{border-color:var(--sun)}
+ol.rank button > span:first-child{display:grid;min-width:0}
+ol.rank b{font-size:.86rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ol.rank small{font-size:.74rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ol.rank .num{font:600 .9rem var(--f-mono);white-space:nowrap}
+#prov tbody tr{cursor:pointer}
+#prov tbody tr:hover td{background:var(--sun-soft)}
+.leaflet-container{font:inherit}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink)}
+.leaflet-popup-content{margin:.8rem .9rem}
+.pop{display:grid;gap:.2rem;font-size:.84rem;min-width:220px}
+.pop b{font:700 .95rem var(--f-display)}
+.pop table{min-width:0;font-size:.82rem;margin:.3rem 0}
+.pop td{padding:.2rem .3rem;border-bottom:1px dashed var(--line)}
+.pop td.num{text-align:right;font-family:var(--f-mono);white-space:normal}
+.pop a{font-weight:600}

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa de gasolineras y puntos de recarga de España, con precios de hoy · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Mapa con todas las gasolineras de España y el precio de hoy de cada carburante, y todos los puntos de recarga públicos para coche eléctrico con su potencia y conector.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mapa de gasolineras y puntos de recarga de España, con precios de hoy · Kilovatio">
+<meta property="og:description" content="Mapa con todas las gasolineras de España y el precio de hoy de cada carburante, y todos los puntos de recarga públicos para coche eléctrico con su potencia y conector.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Calculadoras de energía para tu casa</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz hoy</a>
+    <a href="placas-solares.html">Placas solares</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia</a>
+    <a href="calefaccion.html">Calefacción</a>
+    <a href="coche-electrico.html">Coche eléctrico</a>
+    <a href="consumo-electrodomesticos.html">Electrodomésticos</a>
+    <a href="mapa.html" aria-current="page">Gasolineras y recarga</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <p class="crumbs"><a href="index.html">Inicio</a> › Mapa</p>
+    <p class="eyebrow">Movilidad · datos oficiales cada día</p>
+    <h1>Mapa de gasolineras y puntos de recarga de España</h1>
+    <p>Todas las gasolineras con el precio de hoy de cada carburante y todos los puntos de recarga públicos para coches eléctricos, con su potencia y tipo de conector. Busca tu municipio o tu código postal, o pulsa «Cerca de mí».</p>
+  </div>
+
+  <section class="mapapp" aria-label="Mapa">
+    <div class="maptools panel">
+      <div class="seg" role="group" aria-label="Qué mostrar">
+        <button type="button" data-show="gas" aria-pressed="false">Gasolineras</button>
+        <button type="button" data-show="ev" aria-pressed="false">Recarga</button>
+        <button type="button" data-show="both" aria-pressed="true">Todo</button>
+      </div>
+      <div class="field gasopt"><label for="fuel">Carburante</label><div class="input"><select id="fuel">
+        <option value="g95">Gasolina 95</option><option value="dA">Diésel (gasóleo A)</option><option value="g98">Gasolina 98</option>
+        <option value="dP">Diésel premium</option><option value="glp">Autogás (GLP)</option><option value="gnc">Gas natural (GNC)</option><option value="h2">Hidrógeno</option>
+      </select></div></div>
+      <div class="field evopt"><label for="kw">Potencia mínima</label><div class="input"><select id="kw">
+        <option value="0">Cualquiera</option><option value="22">22 kW o más</option><option value="50">Rápida: 50 kW o más</option><option value="150">Ultrarrápida: 150 kW o más</option>
+      </select></div></div>
+      <div class="field evopt"><label for="con">Conector</label><div class="input"><select id="con">
+        <option value="0">Cualquiera</option><option value="1">Tipo 2 (Mennekes)</option><option value="2">CCS2 (Combo)</option><option value="4">CHAdeMO</option><option value="8">Schuko (enchufe)</option>
+      </select></div></div>
+      <form class="field search" id="sf"><label for="q">Municipio o código postal</label>
+        <div class="input"><input id="q" list="munis" placeholder="Ej.: Zaragoza o 28013" autocomplete="off"><button type="submit" class="ibtn" aria-label="Buscar">Buscar</button></div>
+        <datalist id="munis"></datalist>
+      </form>
+      <button type="button" class="btn near" id="near"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/></svg>Cerca de mí</button>
+    </div>
+
+    <div class="mapgrid">
+      <div class="mapbox">
+        <div id="map" role="region" aria-label="Mapa interactivo"></div>
+        <div class="maplegend" id="legend"></div>
+        <p class="status maploading" id="mst">Cargando gasolineras y puntos de recarga…</p>
+      </div>
+      <aside class="panel side" aria-live="polite">
+        <div id="side"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="block">
+    <header><p class="eyebrow">Hoy en España</p><h2>Precio medio por provincia</h2>
+      <p class="muted">Media de las gasolineras de venta al público de cada provincia, ordenada de más barata a más cara. Pulsa una fila para verla en el mapa.</p></header>
+    <div class="tablewrap"><table id="prov"><thead><tr><th>Provincia</th><th class="num">Gasolina 95</th><th class="num">Diésel</th><th class="num">Gasolineras</th><th class="num">Puntos de recarga</th><th class="num">Ultrarrápidos</th></tr></thead><tbody><tr><td colspan="6" class="muted">Cargando…</td></tr></tbody></table></div>
+  </section>
+
+  <article class="explain">
+    <h2>De dónde salen los datos</h2>
+    <p><strong>Gasolineras:</strong> precios que cada estación comunica al Ministerio para la Transición Ecológica y el Reto Demográfico (Geoportal de hidrocarburos). Las gasolineras están obligadas a avisar de cada cambio de precio, así que es la fuente más completa que existe. Kilovatio la descarga varias veces al día. Solo se muestran las de venta al público: no salen las cooperativas que venden únicamente a sus socios.</p>
+    <p><strong>Puntos de recarga:</strong> registro oficial de la Dirección General de Tráfico (DGT) en su Punto de Acceso Nacional de Tráfico y Movilidad, con datos que comunican los operadores (licencia CC-BY). Se actualiza cada día. Cada punto del mapa es una ubicación; dentro puede haber varios cargadores. El color indica la potencia del cargador más potente.</p>
+    <h2>Cómo leer el mapa</h2>
+    <ul>
+      <li><strong>Puntos rellenos = gasolineras.</strong> Verde: entre el tercio más barato de España para el carburante elegido. Ámbar: precio medio. Rojo: el tercio más caro.</li>
+      <li><strong>Anillos = puntos de recarga.</strong> Azul: recarga lenta o semirrápida (hasta 49 kW, la típica de aparcamiento). Ámbar: rápida (50–149 kW). Verde: ultrarrápida (150 kW o más), la que sirve en un viaje largo.</li>
+      <li>La lista de la derecha enseña lo más barato (o lo más potente) <strong>de la zona que estás viendo</strong>. Muévete o acerca el mapa y se actualiza.</li>
+    </ul>
+    <h2>Cuánto cuesta cargar en la calle</h2>
+    <p>Los operadores no publican todavía el precio de cada cargador en el registro oficial. Como orientación, en noviembre de 2026 la recarga lenta en la calle suele costar 0,35–0,45 €/kWh y la rápida o ultrarrápida 0,49–0,69 €/kWh, frente a unos 0,10–0,15 €/kWh cargando en casa en horas valle. Calcula la diferencia con tu coche en la <a href="coche-electrico.html">calculadora de coche eléctrico</a>.</p>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <details><summary>¿Cada cuánto se actualizan los precios de las gasolineras?</summary><p>Kilovatio descarga el listado completo del Ministerio cuatro veces al día. Aun así, una gasolinera puede haber cambiado el precio hace unos minutos: el precio que manda es el del surtidor.</p></details>
+      <details><summary>¿Por qué no aparece una gasolinera o un cargador?</summary><p>Solo salen los que figuran en los registros oficiales con coordenadas válidas. Si un cargador es nuevo, puede tardar unos días en aparecer en el registro de la DGT.</p></details>
+      <details><summary>¿Puedo ver si un cargador está libre ahora?</summary><p>El registro que usa Kilovatio dice dónde están los cargadores y qué potencia tienen, pero no si están ocupados. Para eso, consulta la aplicación del operador que aparece en la ficha de cada punto.</p></details>
+      <details><summary>¿Qué conector necesita mi coche?</summary><p>Casi todos los eléctricos vendidos en Europa cargan en corriente alterna con <strong>Tipo 2</strong> y en rápida con <strong>CCS2</strong>. <strong>CHAdeMO</strong> lo usan algunos modelos japoneses antiguos, como el Nissan Leaf.</p></details>
+    </div>
+  </article>
+</main>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"¿Cada cuánto se actualizan los precios de las gasolineras?","acceptedAnswer":{"@type":"Answer","text":"Kilovatio descarga el listado completo del Ministerio cuatro veces al día. El precio que manda es el del surtidor."}},
+{"@type":"Question","name":"¿Por qué no aparece una gasolinera o un cargador?","acceptedAnswer":{"@type":"Answer","text":"Solo salen los que figuran en los registros oficiales con coordenadas válidas. Un cargador nuevo puede tardar unos días en aparecer en el registro de la DGT."}},
+{"@type":"Question","name":"¿Puedo ver si un cargador está libre ahora?","acceptedAnswer":{"@type":"Answer","text":"El registro oficial dice dónde están los cargadores y su potencia, pero no si están ocupados. Consulta la aplicación del operador."}},
+{"@type":"Question","name":"¿Qué conector necesita mi coche?","acceptedAnswer":{"@type":"Answer","text":"Casi todos los eléctricos vendidos en Europa usan Tipo 2 en corriente alterna y CCS2 en carga rápida. CHAdeMO lo usan algunos modelos japoneses antiguos."}}
+]}
+</script>
+
+<script>
+(function () {
+  var $ = KV.$, esc = KV.esc;
+  var FUEL_NAMES = { g95: "Gasolina 95", g98: "Gasolina 98", dA: "Diésel", dP: "Diésel premium", glp: "Autogás (GLP)", gnc: "Gas natural (GNC)", h2: "Hidrógeno" };
+  var FUEL_UNIT = { gnc: "€/kg", h2: "€/kg" };
+  var CON_NAMES = { 1: "Tipo 2", 2: "CCS2", 4: "CHAdeMO", 8: "Schuko", 16: "Otros" };
+  var css = getComputedStyle(document.documentElement);
+  function cv(n) { return css.getPropertyValue(n).trim(); }
+  var C = { good: cv("--good"), mid: cv("--mid"), bad: cv("--bad"), grid: cv("--grid"), sun: cv("--sun"), ink: cv("--ink"), surface: cv("--surface") };
+
+  var state = { show: "both", fuel: "g95", kw: 0, con: 0 };
+  var gas = null, ev = null, GI = {}, EI = {};
+  var gasLayer, evLayer, cuts = {};
+  var price3 = function (x) { return (x / 1000).toLocaleString("es-ES", { minimumFractionDigits: 3, maximumFractionDigits: 3 }); };
+  var dirs = function (lat, lon) { return "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lon; };
+
+  /* ---------- Mapa ---------- */
+  var map = L.map("map", { preferCanvas: true, zoomControl: true, minZoom: 5, maxZoom: 18, worldCopyJump: false })
+    .setView([40.2, -3.7], 6);
+  var ign = L.tileLayer("https://www.ign.es/wmts/ign-base?service=WMTS&request=GetTile&version=1.0.0&Format=image/png&layer=IGNBaseTodo&style=default&tilematrixset=GoogleMapsCompatible&TileMatrix={z}&TileRow={y}&TileCol={x}",
+    { maxZoom: 18, attribution: 'Mapa: <a href="https://www.ign.es" target="_blank" rel="noopener">IGN</a> · Datos: MITECO, DGT' });
+  var osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    { maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · Datos: MITECO, DGT' });
+  ign.addTo(map);
+  var tileErrors = 0;
+  ign.on("tileerror", function () { if (++tileErrors === 4 && !map.hasLayer(osm)) { map.removeLayer(ign); osm.addTo(map); } });
+  L.control.layers({ "Mapa IGN": ign, "OpenStreetMap": osm }, null, { position: "topright" }).addTo(map);
+  var canvas = L.canvas({ padding: 0.3, tolerance: 4 });
+
+  function gasColor(p) {
+    if (!p) return null;
+    var c = cuts[state.fuel];
+    return !c ? C.mid : p <= c[0] ? C.good : p >= c[1] ? C.bad : C.mid;
+  }
+  function evColor(kw) { return kw >= 150 ? C.good : kw >= 50 ? C.sun : C.grid; }
+  function radius(z, base) { return Math.max(2.5, Math.min(8, base + (z - 6) * 0.7)); }
+
+  function gasPopup(r) {
+    var rows = Object.keys(FUEL_NAMES).map(function (k) {
+      var p = r[GI[k]]; return p ? "<tr><td>" + FUEL_NAMES[k] + "</td><td class='num'>" + price3(p) + " " + (FUEL_UNIT[k] || "€/l") + "</td></tr>" : "";
+    }).join("");
+    return "<div class='pop'><b>" + esc(r[2] || "Gasolinera") + "</b><span>" + esc(r[3]) + " · " + esc(r[4]) + " (" + esc(r[5]) + ")</span>" +
+      "<span class='muted'>" + esc(r[6]) + "</span><table>" + rows + "</table>" +
+      "<a href='" + dirs(r[0], r[1]) + "' target='_blank' rel='noopener'>Cómo llegar ↗</a></div>";
+  }
+  function evPopup(r) {
+    var cons = Object.keys(CON_NAMES).filter(function (b) { return r[10] & b; }).map(function (b) { return CON_NAMES[b]; }).join(", ");
+    var kind = r[8] >= 150 ? "Ultrarrápida" : r[8] >= 50 ? "Rápida" : r[8] > 22 ? "Semirrápida" : "Lenta";
+    return "<div class='pop'><b>" + esc(r[2] || "Punto de recarga") + "</b>" + (r[3] ? "<span>Operador: " + esc(r[3]) + "</span>" : "") +
+      "<span>" + esc(r[4]) + (r[5] ? " · " + esc(r[5]) : "") + "</span>" +
+      "<table><tr><td>Potencia máxima</td><td class='num'>" + KV.n0(r[8]) + " kW · " + kind + "</td></tr>" +
+      "<tr><td>Cargadores</td><td class='num'>" + r[9] + "</td></tr><tr><td>Conectores</td><td class='num'>" + (cons || "—") + "</td></tr>" +
+      "<tr><td>Horario</td><td class='num'>" + esc(r[11] || "—") + "</td></tr></table>" +
+      "<a href='" + dirs(r[0], r[1]) + "' target='_blank' rel='noopener'>Cómo llegar ↗</a></div>";
+  }
+
+  function drawGas() {
+    if (gasLayer) map.removeLayer(gasLayer);
+    gasLayer = null;
+    if (!gas || state.show === "ev") return;
+    var z = map.getZoom(), list = [], fi = GI[state.fuel];
+    gas.rows.forEach(function (r) {
+      var p = r[fi]; if (!p) return;
+      var m = L.circleMarker([r[0], r[1]], { renderer: canvas, radius: radius(z, 3), stroke: z >= 9, color: C.surface, weight: 1, fillColor: gasColor(p), fillOpacity: .9 });
+      m.bindPopup(function () { return gasPopup(r); }, { maxWidth: 300 });
+      list.push(m);
+    });
+    gasLayer = L.layerGroup(list).addTo(map);
+  }
+  function evOk(r) { return r[8] >= state.kw && (!state.con || (r[10] & state.con)); }
+  function drawEv() {
+    if (evLayer) map.removeLayer(evLayer);
+    evLayer = null;
+    if (!ev || state.show === "gas") return;
+    var z = map.getZoom(), list = [];
+    ev.rows.forEach(function (r) {
+      if (!evOk(r)) return;
+      var m = L.circleMarker([r[0], r[1]], { renderer: canvas, radius: radius(z, 3.2), color: evColor(r[8]), weight: z >= 9 ? 3 : 2, fillColor: C.surface, fillOpacity: 1 });
+      m.bindPopup(function () { return evPopup(r); }, { maxWidth: 300 });
+      list.push(m);
+    });
+    evLayer = L.layerGroup(list).addTo(map);
+  }
+  var lastZ = 6;
+  map.on("zoomend", function () {
+    var z = map.getZoom();
+    if ((z >= 9) !== (lastZ >= 9) || Math.abs(z - lastZ) >= 2) { lastZ = z; drawGas(); drawEv(); }
+  });
+
+  /* ---------- Leyenda y lista lateral ---------- */
+  function legend() {
+    var h = [];
+    if (gas && state.show !== "ev") {
+      var c = cuts[state.fuel], u = FUEL_UNIT[state.fuel] || "€/l";
+      h.push("<span><i class='dot' style='background:" + C.good + "'></i>" + (c ? "≤ " + price3(c[0]) + " " + u : "Barata") + "</span>");
+      h.push("<span><i class='dot' style='background:" + C.mid + "'></i>Media</span>");
+      h.push("<span><i class='dot' style='background:" + C.bad + "'></i>" + (c ? "≥ " + price3(c[1]) + " " + u : "Cara") + "</span>");
+    }
+    if (ev && state.show !== "gas") {
+      h.push("<span><i class='ring' style='border-color:" + C.grid + "'></i>&lt; 50 kW</span>");
+      h.push("<span><i class='ring' style='border-color:" + C.sun + "'></i>50–149 kW</span>");
+      h.push("<span><i class='ring' style='border-color:" + C.good + "'></i>≥ 150 kW</span>");
+    }
+    $("legend").innerHTML = h.join("");
+  }
+  function inView(rows, b) { return rows.filter(function (r) { return b.contains([r[0], r[1]]); }); }
+  function item(r, right, sub, kind) {
+    return "<li><button type='button' data-k='" + kind + "' data-lat='" + r[0] + "' data-lon='" + r[1] + "'><span><b>" + esc(r[2] || (kind === "g" ? "Gasolinera" : "Punto de recarga")) + "</b><small>" + esc(sub) + "</small></span><span class='num'>" + right + "</span></button></li>";
+  }
+  function side() {
+    var b = map.getBounds(), z = map.getZoom(), h = [], wide = z < 9;
+    var where = wide ? "en toda España" : "en esta zona";
+    if (gas && state.show !== "ev") {
+      var fi = GI[state.fuel], rows = (wide ? gas.rows : inView(gas.rows, b)).filter(function (r) { return r[fi]; });
+      rows.sort(function (a, c) { return a[fi] - c[fi]; });
+      var avg = rows.length ? rows.reduce(function (s, r) { return s + r[fi]; }, 0) / rows.length : 0;
+      h.push("<h3>" + FUEL_NAMES[state.fuel] + " más barata " + where + "</h3>");
+      h.push(rows.length ? "<p class='muted small'>" + KV.n0(rows.length) + " gasolineras · media " + price3(avg) + " " + (FUEL_UNIT[state.fuel] || "€/l") + "</p><ol class='rank'>" +
+        rows.slice(0, wide ? 5 : 8).map(function (r) { return item(r, price3(r[fi]), r[4] + " · " + r[3], "g"); }).join("") + "</ol>"
+        : "<p class='muted small'>No hay gasolineras con " + FUEL_NAMES[state.fuel].toLowerCase() + " en esta zona.</p>");
+    }
+    if (ev && state.show !== "gas") {
+      var er = (wide ? ev.rows : inView(ev.rows, b)).filter(evOk);
+      var ultra = er.filter(function (r) { return r[8] >= 150; }).length;
+      er.sort(function (a, c) { return c[8] - a[8] || c[9] - a[9]; });
+      h.push("<h3>Recarga más potente " + where + "</h3>");
+      h.push(er.length ? "<p class='muted small'>" + KV.n0(er.length) + " ubicaciones · " + KV.n0(ultra) + " ultrarrápidas</p><ol class='rank'>" +
+        er.slice(0, wide ? 5 : 8).map(function (r) { return item(r, KV.n0(r[8]) + " kW", (r[5] || "") + " · " + (r[3] || ""), "e"); }).join("") + "</ol>"
+        : "<p class='muted small'>No hay puntos de recarga con esos filtros en esta zona.</p>");
+    }
+    if (wide) h.push("<p class='callout small'>Acerca el mapa a tu zona, busca tu municipio o pulsa <b>Cerca de mí</b> para ver lo más cercano.</p>");
+    $("side").innerHTML = h.join("") || "<p class='muted'>Cargando…</p>";
+  }
+  var sideT; map.on("moveend", function () { clearTimeout(sideT); sideT = setTimeout(side, 120); });
+  $("side").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-lat]"); if (!btn) return;
+    var lat = +btn.dataset.lat, lon = +btn.dataset.lon, kind = btn.dataset.k;
+    map.setView([lat, lon], Math.max(map.getZoom(), 15));
+    var src = kind === "g" ? gas.rows : ev.rows;
+    var r = src.find(function (x) { return x[0] === lat && x[1] === lon; });
+    if (r) L.popup({ maxWidth: 300 }).setLatLng([lat, lon]).setContent(kind === "g" ? gasPopup(r) : evPopup(r)).openOn(map);
+  });
+
+  function refresh() { drawGas(); drawEv(); legend(); side(); }
+
+  /* ---------- Controles ---------- */
+  document.querySelectorAll("[data-show]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      state.show = b.dataset.show;
+      document.querySelectorAll("[data-show]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      document.querySelectorAll(".gasopt").forEach(function (x) { x.hidden = state.show === "ev"; });
+      document.querySelectorAll(".evopt").forEach(function (x) { x.hidden = state.show === "gas"; });
+      refresh();
+    });
+  });
+  $("fuel").addEventListener("change", function () { state.fuel = this.value; drawGas(); legend(); side(); });
+  $("kw").addEventListener("change", function () { state.kw = +this.value; drawEv(); side(); });
+  $("con").addEventListener("change", function () { state.con = +this.value; drawEv(); side(); });
+
+  function norm(s) { return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); }
+  function search(q) {
+    q = q.trim(); if (!q) return;
+    var pts = [], all = (gas ? gas.rows.map(function (r) { return [r[0], r[1], r[4], r[5], r[7]]; }) : [])
+      .concat(ev ? ev.rows.map(function (r) { return [r[0], r[1], r[5], r[6], r[7]]; }) : []);
+    var m = q.match(/^(.*?)\s*\(([^)]*)\)$/), name = norm(m ? m[1] : q), prov = m ? norm(m[2]) : "";
+    if (/^\d{5}$/.test(q)) pts = all.filter(function (r) { return r[4] === q; });
+    else {
+      pts = all.filter(function (r) { return norm(r[2]) === name && (!prov || norm(r[3]) === prov); });
+      if (!pts.length) pts = all.filter(function (r) { return norm(r[2]).indexOf(name) === 0; });
+    }
+    if (!pts.length) { $("mst").textContent = "No encuentro «" + q + "». Prueba con otro nombre o con el código postal."; $("mst").hidden = false; return; }
+    $("mst").hidden = true;
+    map.fitBounds(L.latLngBounds(pts.map(function (r) { return [r[0], r[1]]; })).pad(0.15), { maxZoom: 14 });
+  }
+  $("sf").addEventListener("submit", function (e) { e.preventDefault(); search($("q").value); });
+  $("q").addEventListener("change", function () { if (/\(.+\)$/.test(this.value)) search(this.value); });
+
+  var me;
+  $("near").addEventListener("click", function () {
+    if (!navigator.geolocation) return;
+    $("mst").textContent = "Buscando tu ubicación…"; $("mst").hidden = false;
+    navigator.geolocation.getCurrentPosition(function (p) {
+      $("mst").hidden = true;
+      var ll = [p.coords.latitude, p.coords.longitude];
+      if (me) map.removeLayer(me);
+      me = L.circleMarker(ll, { radius: 8, color: C.surface, weight: 3, fillColor: C.ink, fillOpacity: 1 }).addTo(map).bindTooltip("Estás aquí");
+      map.setView(ll, 13);
+    }, function () { $("mst").textContent = "No he podido obtener tu ubicación. Busca tu municipio o código postal."; }, { timeout: 10000 });
+  });
+
+  /* ---------- Datos ---------- */
+  function load(url) { return fetch(url, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).catch(function () { return null; }); }
+  function index(d) { var o = {}; d.cols.forEach(function (c, i) { o[c] = i; }); return o; }
+  function tercile(d, k) {
+    var i = GI[k], v = d.rows.map(function (r) { return r[i]; }).filter(Boolean).sort(function (a, b) { return a - b; });
+    return v.length > 20 ? [v[Math.floor(v.length / 3)], v[Math.floor(v.length * 2 / 3)]] : null;
+  }
+  function munis() {
+    var seen = {}, out = [];
+    function add(m, p) { if (!m) return; var k = m + " (" + p + ")"; if (!seen[k]) { seen[k] = 1; out.push(k); } }
+    if (gas) gas.rows.forEach(function (r) { add(r[4], r[5]); });
+    if (ev) ev.rows.forEach(function (r) { add(r[5], r[6]); });
+    out.sort(function (a, b) { return a.localeCompare(b, "es"); });
+    $("munis").innerHTML = out.map(function (k) { return "<option value=\"" + esc(k) + "\">"; }).join("");
+  }
+  function provTable() {
+    var P = {};
+    function key(p) { return norm(p).replace(/[^a-z]/g, "").slice(0, 6); }
+    function g(p, name) { var k = key(p); return P[k] = P[k] || { name: name, g: [0, 0], d: [0, 0], n: 0, e: 0, u: 0, lat: [], lon: [] }; }
+    if (gas) gas.rows.forEach(function (r) {
+      var o = g(r[5], r[5]); o.n++; o.lat.push(r[0]); o.lon.push(r[1]);
+      if (r[GI.g95]) { o.g[0] += r[GI.g95]; o.g[1]++; } if (r[GI.dA]) { o.d[0] += r[GI.dA]; o.d[1]++; }
+    });
+    if (ev) ev.rows.forEach(function (r) { var o = g(r[6], r[6]); o.e++; if (r[8] >= 150) o.u++; });
+    var list = Object.keys(P).map(function (k) { return P[k]; }).filter(function (o) { return o.n > 5; });
+    list.sort(function (a, b) { return a.g[0] / a.g[1] - b.g[0] / b.g[1]; });
+    $("prov").tBodies[0].innerHTML = list.map(function (o, i) {
+      var la = o.lat.slice().sort(), lo = o.lon.slice().sort(), q = Math.floor(la.length * .05);
+      return "<tr data-b='" + [la[q], lo[q], la[la.length - 1 - q], lo[lo.length - 1 - q]].join(",") + "'><td>" + esc(o.name) + "</td><td class='num'>" + (o.g[1] ? price3(o.g[0] / o.g[1]) : "—") + "</td><td class='num'>" + (o.d[1] ? price3(o.d[0] / o.d[1]) : "—") +
+        "</td><td class='num'>" + KV.n0(o.n) + "</td><td class='num'>" + KV.n0(o.e) + "</td><td class='num'>" + KV.n0(o.u) + "</td></tr>";
+    }).join("");
+  }
+  $("prov").addEventListener("click", function (e) {
+    var tr = e.target.closest("tr[data-b]"); if (!tr) return;
+    var b = tr.dataset.b.split(",").map(Number);
+    map.fitBounds([[b[0], b[1]], [b[2], b[3]]]);
+    $("map").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  Promise.all([load("data/gasolineras.json"), load("data/recarga.json")]).then(function (res) {
+    gas = res[0]; ev = res[1];
+    if (gas) { GI = index(gas); Object.keys(FUEL_NAMES).forEach(function (k) { cuts[k] = tercile(gas, k); }); }
+    if (ev) EI = index(ev);
+    var msg = [];
+    if (gas) msg.push(KV.n0(gas.rows.length) + " gasolineras (precios del " + esc(String(gas.source || "").slice(0, 10)) + ")");
+    if (ev) msg.push(KV.n0(ev.rows.length) + " ubicaciones de recarga");
+    $("mst").textContent = msg.length ? msg.join(" · ") : "No se han podido cargar los datos. Vuelve a intentarlo en unos minutos.";
+    if (!msg.length) $("mst").classList.add("err");
+    else setTimeout(function () { $("mst").hidden = true; }, 4000);
+    refresh(); munis(); provTable();
+  });
+})();
+</script>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Calculadoras gratuitas para entender y reducir lo que gastas en energía en casa. Precios de referencia actualizados en noviembre de 2026; el precio horario de la luz se carga en directo desde Red Eléctrica.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Calculadoras</h4><ul>
+    <li><a href="placas-solares.html">Placas solares</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li>
+    <li><a href="potencia-contratada.html">Potencia contratada</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="coche-electrico.html">Coche eléctrico</a></li><li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li>
+  </ul></div>
+  <div><h4>Información</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="mapa.html">Mapa de gasolineras y recarga</a></li><li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+</div></footer>
+</body>
+</html>
