@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi Kilovatio: tu casa en números, qué gasta cada cosa y cómo pagar menos · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Da de alta tu casa en un minuto o sube tu archivo de consumo de Datadis: qué gasta cada aparato, tu factura estimada, la mejor hora de hoy para cada aparato, qué tarifa te conviene y si te compensa una batería. Gratis y sin registro.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mi Kilovatio: tu casa en números, qué gasta cada cosa y cómo pagar menos · Kilovatio">
+<meta property="og:description" content="Da de alta tu casa en un minuto o sube tu archivo de consumo de Datadis: qué gasta cada aparato, tu factura estimada, la mejor hora de hoy para cada aparato, qué tarifa te conviene y si te compensa una batería. Gratis y sin registro.">
+<meta property="og:locale" content="es_ES">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Tu energía, clara y en números</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz</a>
+    <a href="mi-kilovatio.html" class="mi" aria-current="page">Mi Kilovatio</a>
+    <a href="tarifa-pvpc-o-fija.html">Tu factura</a>
+    <a href="consumo-electrodomesticos.html">Tu casa</a>
+    <a href="mapa.html">Movilidad</a>
+  </div></nav>
+</header>
+<main class="wrap mk">
+  <div class="intro">
+    <p class="eyebrow">Tu espacio personal · gratis y sin registro</p>
+    <h1>Mi Kilovatio</h1>
+    <p>Tu casa en números: qué gasta cada cosa, cuánto vas a pagar, a qué hora te conviene usar cada aparato hoy y qué puedes mejorar. Todo se guarda solo en tu navegador: tus datos no salen de tu dispositivo.</p>
+  </div>
+
+  <!-- 1. Empezar -->
+  <section id="start" class="mk-start" hidden>
+    <label class="choice" for="file">
+      <span class="tag">El más exacto</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5"/><path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>
+      <h2>Sube tu archivo de consumo</h2>
+      <p>El archivo con tu consumo hora a hora que descargas gratis de Datadis o de la web de tu distribuidora. Lo leemos aquí mismo, sin subirlo a ningún sitio.</p>
+      <span class="go">Elegir archivo (.csv) →</span>
+    </label>
+    <button type="button" class="choice" id="go-manual">
+      <span class="tag">En 1 minuto</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>
+      <h2>Da de alta tu casa a mano</h2>
+      <p>Cinco preguntas rápidas y eliges tus aparatos. Puedes subir el archivo más adelante para afinar.</p>
+      <span class="go">Empezar →</span>
+    </button>
+    <details class="howto">
+      <summary>¿Cómo consigo mi archivo de consumo?</summary>
+      <ol>
+        <li>Entra en <a href="https://datadis.es" target="_blank" rel="noopener">datadis.es</a>, la plataforma gratuita de las distribuidoras eléctricas, y regístrate con tu DNI. También vale el área de clientes de tu distribuidora (i-DE, e-distribución, UFD, Viesgo…), que aparece en tu factura.</li>
+        <li>Busca la sección de <strong>consumos</strong>, elige tu punto de suministro (CUPS) y el periodo: lo ideal es el último año.</li>
+        <li>Descarga el consumo <strong>horario</strong> en formato <strong>CSV</strong> y súbelo aquí. Si tienes placas, el archivo puede incluir también la energía vertida a la red.</li>
+      </ol>
+    </details>
+  </section>
+  <input type="file" id="file" accept=".csv,.txt,text/csv" hidden>
+
+  <!-- 2. Alta rápida -->
+  <form id="setup" class="panel mk-setup" hidden novalidate>
+    <h2>Tu casa en cinco preguntas</h2>
+    <div class="q"><span class="lbl">1. ¿Cuántas personas vivís en casa?</span>
+      <div class="chips" data-k="personas"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5 o más</button></div></div>
+    <div class="q"><span class="lbl">2. ¿Qué tarifa de luz tienes?</span>
+      <div class="chips" data-k="tarifa"><button type="button" data-v="pvpc">PVPC (regulada, cambia cada hora)</button><button type="button" data-v="fijo">Precio fijo del mercado libre</button><button type="button" data-v="nose">No lo sé</button></div>
+      <div class="field" id="precio-f" hidden><label for="precio">Precio de la energía de tu tarifa (sin impuestos)</label><div class="input"><input id="precio" type="number" min="0" step="0.001" placeholder="0,130"><span>€/kWh</span></div><small>Viene en tu factura o en tu contrato. Si no lo sabes, déjalo vacío.</small></div></div>
+    <div class="q"><span class="lbl">3. ¿Qué potencia tienes contratada?</span>
+      <div class="chips" data-k="pot"><button type="button" data-v="3.45">3,45 kW</button><button type="button" data-v="4.6">4,6 kW</button><button type="button" data-v="5.75">5,75 kW</button><button type="button" data-v="6.9">6,9 kW</button><button type="button" data-v="8">Más</button><button type="button" data-v="0">No lo sé</button></div></div>
+    <div class="q"><span class="lbl">4. ¿Cómo calientas la casa?</span>
+      <div class="chips" data-k="calef"><button type="button" data-v="gas">Gas o gasóleo</button><button type="button" data-v="electrica">Radiadores o estufas eléctricas</button><button type="button" data-v="bomba">Bomba de calor o aerotermia</button><button type="button" data-v="no">Casi no la uso</button></div></div>
+    <div class="q"><span class="lbl">5. ¿A qué hora sueles poner la lavadora y el lavavajillas?</span>
+      <div class="chips" data-k="hora"><button type="button" data-v="m">Por la mañana</button><button type="button" data-v="t">Por la tarde</button><button type="button" data-v="n">Por la noche (18–24 h)</button><button type="button" data-v="v">De madrugada o con temporizador</button></div></div>
+    <details class="adv"><summary>Más detalles (opcional)</summary>
+      <div class="inner">
+        <div class="chips multi" data-k="extras"><button type="button" data-v="coche">Coche eléctrico</button><button type="button" data-v="aire">Aire acondicionado</button><button type="button" data-v="termo">Termo eléctrico para el agua</button><button type="button" data-v="induccion">Cocina de inducción o vitro</button><button type="button" data-v="secadora">Secadora</button><button type="button" data-v="placas">Placas solares</button></div>
+        <div class="two"><div class="field"><label for="kwp">Placas solares</label><div class="input"><input id="kwp" type="number" min="0" step="0.1" placeholder="0"><span>kWp</span></div></div>
+        <div class="field"><label for="bat">Batería</label><div class="input"><input id="bat" type="number" min="0" step="0.5" placeholder="0"><span>kWh</span></div></div></div>
+      </div>
+    </details>
+    <div class="actions"><button type="submit" class="btn primary">Ver mi casa en números →</button><button type="button" class="btn" id="setup-cancel" hidden>Cancelar</button></div>
+  </form>
+
+  <!-- 3. Panel personal -->
+  <div id="dash" hidden>
+    <div class="mk-bar">
+      <span class="badge" id="src-badge"></span>
+      <div class="mk-actions">
+        <button type="button" class="btn" id="b-edit">Editar mi casa</button>
+        <button type="button" class="btn" id="b-file">Subir archivo de consumo</button>
+        <button type="button" class="btn ghost" id="b-reset">Borrar mis datos</button>
+      </div>
+    </div>
+
+    <section class="panel mk-today" aria-labelledby="h-today">
+      <div class="mk-head"><div><p class="eyebrow" id="today-eyebrow">Hoy en tu casa</p><h2 id="h-today">Cuándo usar cada aparato hoy</h2></div>
+        <div class="bignum good"><small>Hoy puedes ahorrar</small><b id="today-save">—</b><span>eligiendo bien la hora</span></div></div>
+      <div class="todaygrid" id="today-grid"></div>
+      <p class="note" id="today-note"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-num">
+      <div class="mk-head"><div><p class="eyebrow">Mi casa en números</p><h2 id="h-num">Lo que gasta tu casa</h2></div></div>
+      <div class="answer kpis" id="kpis"></div>
+      <div class="two-col">
+        <div><h3 id="cat-h">En qué se va tu dinero</h3><div class="bars" id="cat-bars"></div></div>
+        <div><h3>Tu factura estimada de un mes</h3><div class="kv" id="bill"></div><p class="note" id="bill-note"></p></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-ins">
+      <div class="mk-head"><div><p class="eyebrow">Diagnóstico</p><h2 id="h-ins">Lo que haces bien y lo que puedes mejorar</h2></div>
+        <div class="bignum"><small>Ahorro posible</small><b id="ins-total">—</b><span>al año</span></div></div>
+      <div class="ins" id="ins"></div>
+    </section>
+
+    <section class="panel" id="real" aria-labelledby="h-real">
+      <div class="mk-head"><div><p class="eyebrow">Mis datos reales</p><h2 id="h-real">Tu consumo hora a hora</h2></div></div>
+      <div id="real-empty">
+        <p class="muted">Sube el archivo de consumo horario de Datadis o de tu distribuidora y verás tu consumo real, cuánto te habría costado con cada tarifa y, si tienes placas, si te compensa ampliar la batería.</p>
+        <button type="button" class="btn primary" id="b-file2">Subir archivo de consumo</button>
+      </div>
+      <div id="real-body" hidden>
+        <div class="answer kpis" id="r-kpis"></div>
+        <div class="two-col">
+          <div><h3>Consumo por mes (kWh)</h3><svg class="chart" id="r-month" role="img" aria-label="Consumo por mes"></svg></div>
+          <div><h3>Tu día medio, hora a hora (kWh)</h3><svg class="chart" id="r-hour" role="img" aria-label="Consumo medio por hora"></svg><div class="legend"><span><i style="background:var(--good)"></i>Valle</span><span><i style="background:var(--mid)"></i>Llano</span><span><i style="background:var(--bad)"></i>Punta</span></div></div>
+        </div>
+        <h3>¿Qué tarifa te sale más barata con tu consumo real?</h3>
+        <div class="two"><div class="field"><label for="t-fijo">Precio fijo a comparar (sin impuestos)</label><div class="input"><input id="t-fijo" type="number" min="0" step="0.001" value="0.130"><span>€/kWh</span></div><small>Pon el de tu tarifa o el de una oferta que estés mirando.</small></div>
+        <div class="field"><label for="t-3p">Tarifa de tres periodos: punta / llano / valle</label><div class="input three-in"><input id="t-p1" type="number" min="0" step="0.001" value="0.180" aria-label="Punta"><input id="t-p2" type="number" min="0" step="0.001" value="0.120" aria-label="Llano"><input id="t-p3" type="number" min="0" step="0.001" value="0.080" aria-label="Valle"><span>€/kWh</span></div><small>Valores de ejemplo: cámbialos por los de la oferta.</small></div></div>
+        <div class="bars" id="r-tarifas"></div>
+        <p class="note" id="r-tarifas-note"></p>
+        <div id="r-bat" hidden>
+          <h3>¿Te compensa ampliar la batería?</h3>
+          <div class="two"><div class="field"><label for="b-cost">Precio de la batería instalada</label><div class="input"><input id="b-cost" type="number" min="0" step="10" value="550"><span>€ por kWh</span></div></div>
+          <div class="field"><label for="b-comp">Lo que te pagan por cada kWh vertido</label><div class="input"><input id="b-comp" type="number" min="0" step="0.005" value="0.060"><span>€/kWh</span></div><small>Compensación de excedentes: aparece en tu factura.</small></div></div>
+          <div class="tablewrap"><table class="bat"><thead><tr><th>Batería añadida</th><th class="num">Energía que aprovechas</th><th class="num">Ahorro al año</th><th class="num">Cuesta</th><th class="num">Se paga en</th></tr></thead><tbody id="r-bat-t"></tbody></table></div>
+          <p class="note">Simulación hora a hora con tu propio archivo: la batería se carga con lo que viertes a la red y se descarga cuando compras luz, con un 90 % de eficiencia. El archivo ya incluye el efecto de la batería que tengas hoy, así que el cálculo es de la capacidad que añadirías.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-apps">
+      <div class="mk-head"><div><p class="eyebrow">Mis aparatos</p><h2 id="h-apps">Qué gasta cada cosa</h2></div></div>
+      <p class="muted">Activa los que tienes y ajusta cuánto los usas. Los consumos son típicos; si sabes el de tu aparato, mira su etiqueta energética.</p>
+      <div class="tablewrap"><table class="myapps"><thead><tr><th>Aparato</th><th>Uso</th><th class="num">kWh/año</th><th class="num">€/año</th></tr></thead><tbody id="apps"></tbody></table></div>
+    </section>
+  </div>
+
+  <section class="block" aria-labelledby="h-faq">
+    <header><p class="eyebrow">Preguntas frecuentes</p><h2 id="h-faq">Sobre Mi Kilovatio</h2></header>
+    <div class="faq">
+      <details><summary>¿Dónde se guardan mis datos?</summary><p>Solo en tu navegador, en este dispositivo. Kilovatio no tiene servidor de usuarios: tu archivo de consumo se lee aquí mismo y no se envía a ningún sitio. Si borras los datos del navegador o pulsas «Borrar mis datos», desaparecen.</p></details>
+      <details><summary>¿Qué archivo tengo que subir?</summary><p>El de consumo horario en CSV que descargas de Datadis o del área de clientes de tu distribuidora. Kilovatio reconoce los formatos habituales (fecha, hora y consumo en kWh, con o sin energía vertida). Si tu archivo no se lee bien, el aviso te dirá qué columna falta.</p></details>
+      <details><summary>¿Son exactos los números?</summary><p>Con tu archivo, el consumo es el real y el coste con PVPC se calcula con el precio real de cada hora. Sin archivo, son estimaciones con consumos típicos de cada aparato y el precio medio de los últimos 30 días. En la factura se incluyen potencia, impuesto eléctrico, alquiler del contador e IVA, pero no el bono social ni descuentos de tu comercializadora.</p></details>
+      <details><summary>¿Puedo verlo en el móvil y en el ordenador?</summary><p>Los datos se guardan en cada dispositivo por separado. Puedes subir el archivo o repetir el alta en cada uno: se tarda un minuto.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Precios de la energía y herramientas gratuitas para entender y reducir lo que gastas en casa. Los precios de la luz y de los carburantes se actualizan solos cada día con datos oficiales.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Precio de la luz</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="precio-luz-manana.html">Precio de la luz mañana</a></li>
+    <li><a href="mi-kilovatio.html">Mi Kilovatio</a></li>
+  </ul></div>
+  <div><h4>Tu factura</h4><ul>
+    <li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li><li><a href="potencia-contratada.html">Potencia contratada</a></li>
+    <li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+  <div><h4>Tu casa</h4><ul>
+    <li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="placas-solares.html">Placas solares y batería</a></li>
+  </ul></div>
+  <div><h4>Movilidad</h4><ul>
+    <li><a href="mapa.html">Gasolineras y recarga</a></li><li><a href="coche-electrico.html">Coche eléctrico</a></li>
+  </ul></div>
+</div></footer>
+<script src="mi.js"></script>
+</body>
+</html>

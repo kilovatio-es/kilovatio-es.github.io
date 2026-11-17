@@ -22,6 +22,27 @@
   }
   if (box) box.addEventListener("toggle", function () { if (box.open) draw(); });
 
+  // Gancho de Mi Kilovatio: tu lavadora hoy, o invitación a dar de alta la casa
+  (function () {
+    if (L.kind !== "hoy" && L.kind !== "manana") return;
+    var ans = document.querySelector(".answer"); if (!ans) return;
+    var mi = null; try { mi = JSON.parse(localStorage.getItem("kv-mi") || "null"); } catch (e) { }
+    var box = document.createElement("div"); box.className = "mkhook";
+    if (!mi) {
+      box.innerHTML = "<p><b>Mi Kilovatio:</b> mira qué gasta tu casa, tu factura estimada y la mejor hora de cada día para tus aparatos. Sin registro.</p><a class=\"btn primary\" href=\"mi-kilovatio.html\">Dar de alta mi casa →</a>";
+    } else {
+      var from = L.date === today ? nowH : 0, best = null;
+      for (var s = from; s + 2 <= 24; s++) { var a = L.p[s], b = L.p[s + 1]; if (a == null || b == null) continue; var av = (a + b) / 2; if (!best || av < best[1]) best = [s, av]; }
+      if (!best) return;
+      var R = { m: [8, 14], t: [14, 18], n: [18, 24], v: [0, 8] }[(mi.p && mi.p.hora) || "n"], seg = L.p.slice(R[0], R[1]).filter(function (x) { return x != null; });
+      var usual = seg.reduce(function (x, y) { return x + y; }, 0) / seg.length, fijo = mi.p && mi.p.tarifa === "fijo";
+      var cb = 0.9 * best[1], cu = 0.9 * usual;
+      box.innerHTML = "<p>Tu lavadora " + (L.kind === "hoy" ? "hoy" : "mañana") + ": mejor de <b>" + hh(best[0]) + " a " + hh(best[0] + 2) + "</b>, " + KV.eur2(cb) +
+        (fijo ? "" : (cu - cb >= 0.01 ? " (en tu hora habitual, " + KV.eur2(cu) + ")" : "")) + ".</p><a class=\"btn primary\" href=\"mi-kilovatio.html\">Ver mi casa →</a>";
+    }
+    ans.parentNode.insertBefore(box, ans.nextSibling);
+  })();
+
   // Si la portada se quedó con el día anterior (el robot aún no ha pasado), se avisa.
   if (L.kind === "hoy" && L.date !== today) {
     var n = document.createElement("p");
