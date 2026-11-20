@@ -44,16 +44,16 @@
 <div class="answer">
 <div class="ans good"><small>Hora más barata</small><b>17:00–18:00</b><span class="num">0,091 €/kWh</span></div>
 <div class="ans bad"><small>Hora más cara</small><b>21:00–22:00</b><span class="num">0,305 €/kWh</span></div>
-<div class="ans mid"><small>Precio medio del día</small><b class="num">0,162</b><span>€/kWh · Día normal</span></div>
+<div class="ans bad"><small>Precio medio del día</small><b class="num">0,162</b><span>€/kWh · Día caro</span></div>
 <div class="ans now" id="nowcard" hidden><small>Ahora</small><b class="num" id="now-p">—</b><span id="now-t"></span></div>
 </div>
-<p class="lead">El precio medio de la luz el 10 de junio de 2026 (miércoles 10 de junio de 2026) es de <strong>0,162 €/kWh</strong>, un 1 % más barato que el martes. La hora más barata es de <strong>17:00–18:00</strong> (0,091 €/kWh) y la más cara, de <strong>21:00–22:00</strong> (0,305 €/kWh). Es un día normal: en la media de los últimos 30 días.</p>
+<p class="lead">El precio medio de la luz el 10 de junio de 2026 (miércoles 10 de junio de 2026) es de <strong>0,162 €/kWh</strong>, un 1 % más barato que el martes. La hora más barata es de <strong>17:00–18:00</strong> (0,091 €/kWh) y la más cara, de <strong>21:00–22:00</strong> (0,305 €/kWh). Es un día caro: un 13 % por encima de la media de los últimos 30 días.</p>
 <section class="panel sema-wrap" aria-labelledby="h-sema">
 <div class="sema-head"><h2 id="h-sema">Semáforo de la luz el 10 de junio de 2026, hora a hora</h2><div class="legend"><span><i style="background:var(--good)"></i>Barata</span><span><i style="background:var(--mid)"></i>Media</span><span><i style="background:var(--bad)"></i>Cara</span></div></div>
 <ol class="sema" id="sema">
 <li class="mid" data-h="0" title="00:00–01:00 · 0,164 €/kWh · Media"><span class="h">00:00</span><span class="p">0,164</span></li>
 <li class="mid" data-h="1" title="01:00–02:00 · 0,159 €/kWh · Media"><span class="h">01:00</span><span class="p">0,159</span></li>
-<li class="mid" data-h="2" title="02:00–03:00 · 0,145 €/kWh · Media"><span class="h">02:00</span><span class="p">0,145</span></li>
+<li class="mid" data-h="2" title="02:00–03:00 · 0,146 €/kWh · Media"><span class="h">02:00</span><span class="p">0,146</span></li>
 <li class="good" data-h="3" title="03:00–04:00 · 0,140 €/kWh · Barata"><span class="h">03:00</span><span class="p">0,140</span></li>
 <li class="good" data-h="4" title="04:00–05:00 · 0,137 €/kWh · Barata"><span class="h">04:00</span><span class="p">0,137</span></li>
 <li class="good" data-h="5" title="05:00–06:00 · 0,144 €/kWh · Barata"><span class="h">05:00</span><span class="p">0,144</span></li>
@@ -76,7 +76,7 @@
 <li class="bad" data-h="22" title="22:00–23:00 · 0,206 €/kWh · Cara"><span class="h">22:00</span><span class="p">0,206</span></li>
 <li class="bad" data-h="23" title="23:00–00:00 · 0,190 €/kWh · Cara"><span class="h">23:00</span><span class="p">0,190</span></li>
 </ol>
-<p class="note">Colores relativos a este día: verde, el tercio de horas más barato; rojo, el más caro. Precios PVPC (tarifa 2.0TD, península) en €/kWh con impuesto eléctrico (5,11 %) e IVA (21 %). Fuente: Red Eléctrica.</p>
+<p class="note">Colores relativos a este día: verde, el tercio de horas más barato; rojo, el más caro. Precios PVPC (tarifa 2.0TD, península) en €/kWh con los impuestos vigentes ese día: impuesto eléctrico (5,11 %) e IVA (21 %). Fuente: Red Eléctrica.</p>
 <details class="chartbox"><summary>Ver gráfico</summary><svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg></details>
 </section>
 <section class="panel" aria-labelledby="h-apps">
@@ -88,7 +88,7 @@
 <tr data-n="2" data-kwh="2.5" data-worst="0.6942"><td><b>Secadora</b><small>ciclo completo</small></td><td class="mono">16:00–18:00</td><td class="num">0,23 €</td><td class="num">0,69 € <small>(20:00–22:00)</small></td><td class="num save">0,46 €</td></tr>
 <tr data-n="1" data-kwh="1.4" data-worst="0.4267"><td><b>Horno</b><small>1 hora</small></td><td class="mono">17:00–18:00</td><td class="num">0,13 €</td><td class="num">0,43 € <small>(21:00–22:00)</small></td><td class="num save">0,30 €</td></tr>
 <tr data-n="2" data-kwh="3.0" data-worst="0.8331"><td><b>Termo eléctrico</b><small>calentar el depósito</small></td><td class="mono">16:00–18:00</td><td class="num">0,28 €</td><td class="num">0,83 € <small>(20:00–22:00)</small></td><td class="num save">0,56 €</td></tr>
-<tr data-n="3" data-kwh="22.0" data-worst="5.5827"><td><b>Coche eléctrico</b><small>22 kWh a 7,4 kW</small></td><td class="mono">15:00–18:00</td><td class="num">2,02 €</td><td class="num">5,58 € <small>(20:00–23:00)</small></td><td class="num save">3,56 €</td></tr>
+<tr data-n="3" data-kwh="22.0" data-worst="5.5829"><td><b>Coche eléctrico</b><small>22 kWh a 7,4 kW</small></td><td class="mono">15:00–18:00</td><td class="num">2,02 €</td><td class="num">5,58 € <small>(20:00–23:00)</small></td><td class="num save">3,56 €</td></tr>
 </tbody></table></div>
 <p class="note">Consumos típicos; el tuyo depende del aparato y del programa. Si un ciclo dura más de lo indicado, elige el principio de la franja verde.</p>
 </section>
@@ -132,7 +132,7 @@
 </div>
 <p class="note">Media de junio hasta ahora: <b>0,164 €/kWh</b> con impuestos. Día más barato: 13 (0,108); más caro: 23 (0,209). Pulsa un día para ver sus horas.</p>
 </section>
-<script>window.LUZ={"date": "2026-06-10", "kind": "dia", "p": [0.1637, 0.15856, 0.1455, 0.14004, 0.13712, 0.14429, 0.16438, 0.16606, 0.14922, 0.09213, 0.17372, 0.18328, 0.18319, 0.18105, 0.09319, 0.09216, 0.09242, 0.09114, 0.17787, 0.19842, 0.2506, 0.30477, 0.20591, 0.19016], "q": [0.1455, 0.18105]};</script>
+<script>window.LUZ={"date": "2026-06-10", "kind": "dia", "p": [0.1637, 0.15856, 0.1455, 0.14004, 0.13712, 0.14429, 0.16439, 0.16607, 0.14923, 0.09213, 0.17372, 0.18329, 0.1832, 0.18105, 0.09319, 0.09216, 0.09243, 0.09114, 0.17787, 0.19842, 0.25061, 0.30478, 0.20591, 0.19017], "q": [0.1455, 0.18105]};</script>
 
   <section class="block" aria-labelledby="h-more">
     <header><p class="eyebrow">Ahorra en la factura</p><h2 id="h-more">Más herramientas de Kilovatio</h2></header>
@@ -147,7 +147,7 @@
     <header><p class="eyebrow">Preguntas frecuentes</p><h2 id="h-faq">Sobre el precio de la luz por horas</h2></header>
     <div class="faq">
       <details><summary>¿A qué hora se publican los precios de mañana?</summary><p>Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:15–20:30. En Kilovatio aparecen en la pestaña <a href="precio-luz-manana.html">Mañana</a> a partir de las 20:45.</p></details>
-      <details><summary>¿Estos precios incluyen impuestos?</summary><p>Sí: incluyen el impuesto especial sobre la electricidad (5,11 %) y el IVA (21 %). No incluyen el término de potencia ni el alquiler del contador, que pagas igual consumas a la hora que consumas.</p></details>
+      <details><summary>¿Estos precios incluyen impuestos?</summary><p>Sí: incluyen el impuesto especial sobre la electricidad y el IVA vigentes ese día (hoy, <span class="kv-iee">5,11 %</span> y <span class="kv-iva">21 %</span>; entre el 22 de marzo y el 31 de mayo de 2026 estuvieron rebajados al 0,5 % y al 10 %). No incluyen el término de potencia ni el alquiler del contador, que pagas igual consumas a la hora que consumas.</p></details>
       <details><summary>¿Me afecta si tengo una tarifa de precio fijo?</summary><p>No. Estos precios son los del PVPC, la tarifa regulada. Con una tarifa de precio fijo del mercado libre pagas lo mismo a cualquier hora. Compara las dos en la calculadora <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>.</p></details>
       <details><summary>¿Qué significan los colores del semáforo?</summary><p>Se comparan las horas del mismo día: verde es el tercio de horas más barato, ámbar el intermedio y rojo el más caro. Que un día sea caro o barato en conjunto lo indica el precio medio, comparado con los últimos 30 días.</p></details>
     </div>
