@@ -10,7 +10,24 @@ import html, json, os, re
 from datetime import date, datetime, timedelta
 
 SITE = "https://kilovatio-es.github.io/"
-TAX = 1.0511 * 1.21  # impuesto especial sobre la electricidad + IVA
+TAX = 1.0511 * 1.21  # por defecto; los tipos de cada día salen de data["tax"] (data/referencias.json)
+SCHED = []
+
+
+def tax_info(k):
+    """Impuestos vigentes el día k: {iva, iee (en %), factor, norma}."""
+    for t in SCHED:
+        if t["desde"] <= k and (t.get("hasta") is None or k <= t["hasta"]):
+            return dict(t, factor=(1 + t["iee"] / 100) * (1 + t["iva"] / 100))
+    return {"iva": 21, "iee": 5.11269632, "factor": TAX, "norma": "Tipos generales"}
+
+
+def tx(k):
+    return tax_info(k)["factor"]
+
+
+def pct_txt(x):
+    return (f"{x:.2f}".rstrip("0").rstrip(".")).replace(".", ",") + " %"
 DIAS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre",
          "octubre", "noviembre", "diciembre"]
@@ -63,8 +80,9 @@ def pct(a, b):
     return (a / b - 1) * 100 if b else 0
 
 
-def day_stats(prices):
+def day_stats(prices, k):
     """prices: lista de 24 €/kWh sin impuestos (puede tener None). Devuelve datos con impuestos."""
+    TAX = tx(k)
     pts = [(h, p * TAX) for h, p in enumerate(prices) if p is not None]
     vals = sorted(p for _, p in pts)
     q1, q2 = vals[len(vals) // 3], vals[len(vals) * 2 // 3]
@@ -97,7 +115,7 @@ LEVEL_TXT = {"good": "Barata", "mid": "Media", "bad": "Cara"}
 def render_block(data, k, kind, today_k):
     """Bloque principal de un día. kind: 'hoy' | 'manana' | 'dia'."""
     days = data["days"]
-    st = day_stats(days[k])
+    st = day_stats(days[k], k)
     keys = sorted(days)
     i = keys.index(k)
     prev_k = keys[i - 1] if i > 0 and (d_of(k) - d_of(keys[i - 1])).days == 1 else None
@@ -106,7 +124,7 @@ def render_block(data, k, kind, today_k):
     past30 = [x for x in keys if x < k][-30:]
     avg30 = None
     if len(past30) >= 20:
-        vv = [p * TAX for x in past30 for p in days[x] if p is not None]
+        vv = [p * tx(x) for x in past30 for p in days[x] if p is not None]
         avg30 = sum(vv) / len(vv)
 
     nombre = {"hoy": "hoy", "manana": "mañana"}.get(kind, "el " + fecha_larga(k, weekday=False))
@@ -148,12 +166,12 @@ def render_block(data, k, kind, today_k):
     # Frase resumen (también es lo que Google puede usar como fragmento)
     comp = []
     if prev_k:
-        pa = sum(p for p in days[prev_k] if p is not None) / len([p for p in days[prev_k] if p is not None]) * TAX
+        pa = sum(p for p in days[prev_k] if p is not None) / len([p for p in days[prev_k] if p is not None]) * tx(prev_k)
         r = pct(st["avg"], pa)
         comp.append(f'un {abs(r):.0f} % {"más barato" if r < 0 else "más caro"} que el {DIAS[d_of(prev_k).weekday()]}' if abs(r) >= 1 else f'casi igual que el {DIAS[d_of(prev_k).weekday()]}')
     if year_k in days:
         ya = [p for p in days[year_k] if p is not None]
-        ya = sum(ya) / len(ya) * TAX
+        ya = sum(ya) / len(ya) * tx(year_k)
         r = pct(st["avg"], ya)
         comp.append(f'un {abs(r):.0f} % {"menos" if r < 0 else "más"} que hace un año ({n3(ya)} €/kWh)')
     lead = (f'El precio medio de la luz {e(nombre)} ({fecha_larga(k)}) es de <strong>{n3(st["avg"])} €/kWh</strong>'
@@ -176,7 +194,7 @@ def render_block(data, k, kind, today_k):
         out.append(f'<li class="{lv}" data-h="{h}" title="{span(h)} · {n3(p)} €/kWh · {LEVEL_TXT[lv]}"><span class="h">{hh(h)}</span><span class="p">{n3(p)}</span></li>')
     out.append("</ol>")
     out.append('<p class="note">Colores relativos a este día: verde, el tercio de horas más barato; rojo, el más caro. '
-               'Precios PVPC (tarifa 2.0TD, península) en €/kWh con impuesto eléctrico (5,11 %) e IVA (21 %). Fuente: Red Eléctrica.</p>')
+               f'Precios PVPC (tarifa 2.0TD, península) en €/kWh con los impuestos vigentes ese día: impuesto eléctrico ({pct_txt(tax_info(k)["iee"])}) e IVA ({pct_txt(tax_info(k)["iva"])}). Fuente: Red Eléctrica.</p>')
     out.append('<details class="chartbox"><summary>Ver gráfico</summary><svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg></details>')
     out.append("</section>")
 
@@ -224,7 +242,7 @@ def calendar(data, k, today_k):
     avgs = {}
     for x in month_keys:
         v = [p for p in days[x] if p is not None]
-        avgs[x] = sum(v) / len(v) * TAX
+        avgs[x] = sum(v) / len(v) * tx(x)
     srt = sorted(avgs.values())
     q1 = srt[len(srt) // 3] if srt else 0
     q2 = srt[len(srt) * 2 // 3] if srt else 0
@@ -266,7 +284,7 @@ def pending_block(data, k_tomorrow, today_k):
            'Red Eléctrica los publica cada tarde hacia las 20:15–20:30 y aparecen aquí a partir de las 20:45. '
            'Mientras tanto, mira <a href="index.html">el precio de la luz de hoy</a>.</div>']
     if today_k in data["days"]:
-        st = day_stats(data["days"][today_k])
+        st = day_stats(data["days"][today_k], today_k)
         lo_h, lo_p = st["lo"]
         out.append(f'<p class="lead">Hoy, {fecha_larga(today_k, year=False)}, la hora más barata es de <strong>{span(lo_h)}</strong> ({n3(lo_p)} €/kWh) '
                    f'y la media del día es de {n3(st["avg"])} €/kWh con impuestos.</p>')
@@ -292,6 +310,8 @@ def write_if_changed(path, text):
 
 
 def write_all(data, root, today_k):
+    global SCHED
+    SCHED = data.get("tax") or []
     tdir = os.path.join(root, "plantillas")
     tpl_hoy = open(os.path.join(tdir, "luz-hoy.html"), encoding="utf-8").read()
     tpl_dia = open(os.path.join(tdir, "luz-dia.html"), encoding="utf-8").read()

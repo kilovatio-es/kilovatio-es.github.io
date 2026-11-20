@@ -218,6 +218,9 @@ def short_hours(label):
     return label[:120]
 
 
+PRICE_TAGS = set()   # etiquetas de precio en el archivo de la DGT (hoy no publica precios)
+
+
 def parse_recarga(fileobj):
     import xml.etree.ElementTree as ET
     def local(tag):
@@ -247,6 +250,8 @@ def parse_recarga(fileobj):
                 mask |= CONN.get((ch.text or "").strip(), 16)
             elif t == "maxPowerAtSocket":
                 kw = max(kw, (num(ch.text) or 0) / 1000)
+            elif re.search(r"price|tarif|energyrate|ratepolicy", t, re.I):
+                PRICE_TAGS.add(t)
         # nombre del sitio y del operador: primer <fac:name> directo de cada uno
         for ch in el:
             if local(ch.tag) == "name":
@@ -292,6 +297,95 @@ def recarga(now):
                       "conectores": {"1": "Tipo 2", "2": "CCS2", "4": "CHAdeMO", "8": "Schuko", "16": "Otros"},
                       "rows": rows})
     print(f"Mapa: {len(rows)} ubicaciones de recarga")
+    if PRICE_TAGS:
+        alert("dgt-precios", "La DGT ya publica precios de recarga",
+              "El archivo de puntos de recarga de la DGT incluye ahora etiquetas de precio: " + ", ".join(sorted(PRICE_TAGS))
+              + ". Hay que adaptar el mapa para mostrar el precio real de cada cargador en lugar del orientativo.", NAP_RECARGA)
+
+
+# ---------- Avisos: cambios que hay que revisar (BOE, nuevas fuentes) ----------
+ALERTS = os.path.join(ROOT, "data", "alertas.json")
+
+
+def load_alerts():
+    try:
+        with open(ALERTS, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:  # noqa: BLE001
+        return {"items": [], "boe_revisado": None}
+
+
+def open_issue(title, body):
+    """Abre una incidencia en GitHub: avisa por correo al dueño del repositorio y queda pendiente de revisar."""
+    token, repo = os.environ.get("GITHUB_TOKEN"), os.environ.get("GITHUB_REPOSITORY")
+    if not token or not repo:
+        print(f"Aviso (sin GitHub): {title}")
+        return
+    req = urllib.request.Request(f"https://api.github.com/repos/{repo}/issues", method="POST",
+                                 data=json.dumps({"title": title, "body": body}).encode(),
+                                 headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json",
+                                          "User-Agent": UA["User-Agent"]})
+    try:
+        urllib.request.urlopen(req, timeout=30).read()
+        print(f"Aviso abierto en GitHub: {title}")
+    except Exception as e:  # noqa: BLE001
+        print(f"Aviso: no se pudo abrir la incidencia ({e}): {title}")
+
+
+def alert(key, title, body, url=None):
+    A = load_alerts()
+    if any(x["id"] == key for x in A["items"]):
+        return
+    A["items"].append({"id": key, "titulo": title, "url": url, "fecha": datetime.now(TZ).strftime("%Y-%m-%d"), "estado": "pendiente"})
+    write_json(ALERTS, A)
+    open_issue("Kilovatio · revisar: " + title[:120], body + (f"\n\nEnlace: {url}" if url else "")
+               + "\n\nLa tarea de revisión de Kilovatio lo comprobará y actualizará la web si hace falta.")
+
+
+BOE_RE = re.compile(r"impuesto especial sobre la electricidad|impuesto sobre el valor a[ñn]adido.{0,120}(electricidad|energ[ií]a el[ée]ctrica)"
+                    r"|(electricidad|energ[ií]a el[ée]ctrica).{0,120}(impuesto|tipo impositivo|IVA)|precio voluntario para el peque[ñn]o consumidor"
+                    r"|bono social|peajes de (acceso|transporte)|cargos del sistema el[ée]ctrico|real decreto-ley.{0,200}(energ|electricidad)", re.I)
+
+
+def boe_watch(now):
+    """Revisa una vez al día el sumario del BOE (datos abiertos) en busca de normas sobre impuestos o precios de la luz."""
+    A = load_alerts()
+    today = now.strftime("%Y-%m-%d")
+    if A.get("boe_revisado") == today:
+        return
+    found = 0
+    for back in (1, 0):
+        d = (now - timedelta(days=back)).strftime("%Y%m%d")
+        try:
+            j = get_json(f"https://www.boe.es/datosabiertos/api/boe/sumario/{d}", timeout=60)
+        except Exception as e:  # noqa: BLE001
+            print(f"BOE {d}: sin sumario ({e})")
+            continue
+        items = []
+        def walk(o):
+            if isinstance(o, dict):
+                if "titulo" in o and "identificador" in o:
+                    items.append(o)
+                for v in o.values():
+                    walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+        walk(j.get("data", {}))
+        for it in items:
+            if BOE_RE.search(it.get("titulo", "")):
+                found += 1
+                alert("boe-" + it["identificador"], it["titulo"], "Publicado en el BOE del " + d[6:] + "/" + d[4:6] + "/" + d[:4] + ":\n\n" + it["titulo"],
+                      it.get("url_html"))
+    A = load_alerts()
+    A["boe_revisado"] = today
+    write_json(ALERTS, A)
+    print(f"BOE: revisado ({found} normas sobre la luz)")
+
+
+def load_refs():
+    with open(os.path.join(ROOT, "data", "referencias.json"), encoding="utf-8") as f:
+        return json.load(f)
 
 
 def write_json(path, obj):
@@ -329,6 +423,17 @@ def main():
         recarga(now)
     except Exception as e:  # noqa: BLE001
         print(f"Recarga: fallo: {e}")
+    try:
+        refs = load_refs()
+        data["tax"] = refs["impuestos"]          # impuestos por fecha (los usa la web para cada día)
+        data["recargaRef"] = refs.get("recarga")
+        data["refsRevisado"] = refs.get("revisado")
+    except Exception as e:  # noqa: BLE001
+        print(f"Referencias: fallo: {e}")
+    try:
+        boe_watch(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"BOE: fallo: {e}")
     data["updated"] = now.isoformat(timespec="minutes")
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as fh:
