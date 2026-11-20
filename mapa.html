@@ -98,7 +98,7 @@
       <li>La lista de la derecha enseña lo más barato (o lo más potente) <strong>de la zona que estás viendo</strong>. Muévete o acerca el mapa y se actualiza.</li>
     </ul>
     <h2>Cuánto cuesta cargar en la calle</h2>
-    <p>Los operadores no publican todavía el precio de cada cargador en el registro oficial. Como orientación, en noviembre de 2026 la recarga lenta en la calle suele costar 0,35–0,45 €/kWh y la rápida o ultrarrápida 0,49–0,69 €/kWh, frente a unos 0,10–0,15 €/kWh cargando en casa en horas valle. Calcula la diferencia con tu coche en la <a href="coche-electrico.html">calculadora de coche eléctrico</a>.</p>
+    <p>Los operadores todavía no publican el precio de cada cargador en el registro oficial de la DGT. Kilovatio lo comprueba cada día y, en cuanto lo publiquen, verás el precio exacto de cada punto. Mientras tanto, en la ficha de cada cargador aparece un <strong>precio orientativo según su tipo</strong>: la recarga lenta en la calle suele costar <span id="rf-lenta">0,25–0,35</span> €/kWh, la rápida <span id="rf-rapida">0,35–0,55</span> €/kWh y la ultrarrápida <span id="rf-ultra">0,50–0,70</span> €/kWh (<span id="rf-fuente">precios de mercado de marzo de 2026</span>), frente a unos <span id="rf-casa">0,10–0,15</span> €/kWh cargando en casa en horas valle con PVPC. Calcula la diferencia con tu coche en la <a href="coche-electrico.html">calculadora de coche eléctrico</a>.</p>
     <h2>Preguntas frecuentes</h2>
     <div class="faq">
       <details><summary>¿Cada cuánto se actualizan los precios de las gasolineras?</summary><p>Kilovatio descarga el listado completo del Ministerio cuatro veces al día. Aun así, una gasolinera puede haber cambiado el precio hace unos minutos: el precio que manda es el del surtidor.</p></details>
@@ -163,14 +163,29 @@
       "<span class='muted'>" + esc(r[6]) + "</span><table>" + rows + "</table>" +
       "<a href='" + dirs(r[0], r[1]) + "' target='_blank' rel='noopener'>Cómo llegar ↗</a></div>";
   }
+  var REF = { lenta: [0.25, 0.35], rapida: [0.35, 0.55], ultra: [0.50, 0.70] };
+  function rng(a) { return a[0].toFixed(2).replace(".", ",") + "–" + a[1].toFixed(2).replace(".", ","); }
+  var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  KV.data().then(function (d) {
+    if (d && d.recargaRef) {
+      ["lenta", "rapida", "ultra"].forEach(function (k) { if (d.recargaRef[k]) REF[k] = d.recargaRef[k]; $("rf-" + k).textContent = rng(REF[k]); });
+      var f = String(d.recargaRef.fecha || "").split("-");
+      if (f.length === 2) $("rf-fuente").textContent = "precios de mercado de " + MESES[+f[1] - 1] + " de " + f[0];
+    }
+    if (d) { var st = KV.stats(d); if (st.last30.valle) $("rf-casa").textContent = KV.n3(st.last30.valle * KV.TAX); }
+  });
   function evPopup(r) {
     var cons = Object.keys(CON_NAMES).filter(function (b) { return r[10] & b; }).map(function (b) { return CON_NAMES[b]; }).join(", ");
     var kind = r[8] >= 150 ? "Ultrarrápida" : r[8] >= 50 ? "Rápida" : r[8] > 22 ? "Semirrápida" : "Lenta";
+    var rg = REF[r[8] >= 150 ? "ultra" : r[8] > 22 ? "rapida" : "lenta"];
     return "<div class='pop'><b>" + esc(r[2] || "Punto de recarga") + "</b>" + (r[3] ? "<span>Operador: " + esc(r[3]) + "</span>" : "") +
       "<span>" + esc(r[4]) + (r[5] ? " · " + esc(r[5]) : "") + "</span>" +
       "<table><tr><td>Potencia máxima</td><td class='num'>" + KV.n0(r[8]) + " kW · " + kind + "</td></tr>" +
       "<tr><td>Cargadores</td><td class='num'>" + r[9] + "</td></tr><tr><td>Conectores</td><td class='num'>" + (cons || "—") + "</td></tr>" +
-      "<tr><td>Horario</td><td class='num'>" + esc(r[11] || "—") + "</td></tr></table>" +
+      "<tr><td>Horario</td><td class='num'>" + esc(r[11] || "—") + "</td></tr>" +
+      "<tr><td>Precio orientativo</td><td class='num'>" + rng(rg) + " €/kWh</td></tr>" +
+      "<tr><td>Carga de 40 kWh</td><td class='num'>" + KV.eur0(rg[0] * 40) + "–" + KV.eur0(rg[1] * 40) + "</td></tr></table>" +
+      "<span class='muted small'>Precio orientativo según el tipo de cargador. El exacto lo indica el operador en su app.</span>" +
       "<a href='" + dirs(r[0], r[1]) + "' target='_blank' rel='noopener'>Cómo llegar ↗</a></div>";
   }
 

@@ -77,8 +77,8 @@
   function bill(kwhYear, eurEnergyYear) {
     var e = eurEnergyYear / 12 / TAX;              // energía sin impuestos, mes
     var p = pot() * POT_DAY * 30.42;
-    var ie = (e + p) * 0.0511;
-    var iva = (e + p + ie + METER) * 0.21;
+    var ie = (e + p) * KV.IEE;
+    var iva = (e + p + ie + METER) * KV.IVA;
     return { e: e, p: p, ie: ie, m: METER, iva: iva, total: e + p + ie + METER + iva, kwh: kwhYear / 12 };
   }
 
@@ -144,9 +144,9 @@
     KV.kv($("bill"), [
       ["Energía (" + KV.n0(B.kwh) + " kWh)", KV.eur2(B.e)],
       ["Potencia (" + kw(pot()) + (S.p.pot > 0 ? "" : ", supuesta") + ")", KV.eur2(B.p)],
-      ["Impuesto eléctrico (5,11 %)", KV.eur2(B.ie)],
+      ["Impuesto eléctrico (" + KV.pctTxt(KV.IEE * 100) + ")", KV.eur2(B.ie)],
       ["Alquiler del contador", KV.eur2(B.m)],
-      ["IVA (21 %)", KV.eur2(B.iva)],
+      ["IVA (" + KV.pctTxt(KV.IVA * 100) + ")", KV.eur2(B.iva)],
       ["Total al mes", KV.eur2(B.total), true]]);
     var d = new Date(), dom = +KV.dayKey(0).slice(8, 10);
     $("bill-note").textContent = "Este mes llevas unos " + KV.eur0(B.total / 30.42 * dom) + " (" + dom + " días). " +
@@ -175,7 +175,7 @@
     var need = 0.6 + (heavy[0] || 0) + (heavy[1] || 0);
     var std = [3.45, 4.6, 5.75, 6.9, 8.05, 9.2], rec = std.filter(function (x) { return x >= need; })[0] || 9.2;
     if (p.pot > 0) {
-      if (p.pot > rec + 0.01) add("tip", "Puede que te sobre potencia", "Tienes " + kw(p.pot) + " y, con tus aparatos, " + kw(rec) + " suelen bastar si no enciendes a la vez los que más gastan. Compruébalo antes de cambiarla.", (p.pot - rec) * POT_DAY * 365 * TAX * 1.0511, "potencia-contratada.html");
+      if (p.pot > rec + 0.01) add("tip", "Puede que te sobre potencia", "Tienes " + kw(p.pot) + " y, con tus aparatos, " + kw(rec) + " suelen bastar si no enciendes a la vez los que más gastan. Compruébalo antes de cambiarla.", (p.pot - rec) * POT_DAY * 365 * (1 + KV.IEE) * (1 + KV.IVA), "potencia-contratada.html");
       else if (p.pot >= need) add("good", "Potencia ajustada", "Tus " + kw(p.pot) + " encajan con los aparatos que tienes.");
     } else add("info", "¿Qué potencia tienes?", "Mira tu factura: si tienes más de " + kw(rec) + ", quizá puedas bajarla y ahorrar en el término fijo.", 0, "potencia-contratada.html");
     if (p.tarifa === "fijo" && p.precio > 0 && ST) {
@@ -310,6 +310,7 @@
     var cost = { pvpc: 0, fijo: 0, tres: 0 }, cov = 0, all = 0;
     var pf = num($("t-fijo").value) || 0, p3 = { punta: num($("t-p1").value) || 0, llano: num($("t-p2").value) || 0, valle: num($("t-p3").value) || 0 };
     keys.forEach(function (k) {
+      var fk = KV.taxInfo(k).factor;   // impuestos vigentes ese día
       var d = R.days[k], m = k.slice(0, 7);
       month[m] = month[m] || [0, 0];
       var nightMin = Math.min(d[1], d[2], d[3], d[4], d[5]);
@@ -318,8 +319,8 @@
         tot += v; month[m][0] += v; prof[h] += v;
         var pe = KV.period(k, h); per[pe] += v;
         if (v > peak[0]) peak = [v, k, h];
-        var pr = priceAt(k, h); cost.pvpc += v * pr[0]; if (pr[1]) cov++; all++;
-        cost.fijo += v * pf; cost.tres += v * p3[pe];
+        var pr = priceAt(k, h); cost.pvpc += v * pr[0] * fk; if (pr[1]) cov++; all++;
+        cost.fijo += v * pf * fk; cost.tres += v * p3[pe] * fk;
       });
       month[m][1]++;
       if (R.exp && R.exp[k]) R.exp[k].forEach(function (v) { exp += v; });
@@ -329,7 +330,7 @@
     var A = { nd: nd, from: keys[0], to: keys[nd - 1], tot: tot, year: tot * f, exp: exp * f, month: month,
       prof: prof.map(function (v) { return v / nd; }), share: { punta: per.punta / tot, llano: per.llano / tot, valle: per.valle / tot },
       baseW: mins[Math.floor(mins.length / 2)] * 1000, peak: peak, cov: all ? cov / all : 0,
-      cost: { pvpc: cost.pvpc * TAX * f, fijo: cost.fijo * TAX * f, tres: cost.tres * TAX * f } };
+      cost: { pvpc: cost.pvpc * f, fijo: cost.fijo * f, tres: cost.tres * f } };
     if (R.exp) A.bat = battery(keys);
     A.bestBat = A.bat ? A.bat.filter(function (b) { return b.pay > 0; }).sort(function (a, b) { return a.pay - b.pay; })[0] : null;
     return A;
@@ -343,7 +344,7 @@
         for (var h = 0; h < 24; h++) {
           var e = ex[h] || 0, i = imp[h] || 0;
           if (e > 0) { var ch = Math.min(e, C - soc); soc += ch; sav -= ch * comp; }
-          if (i > 0 && soc > 0) { var dis = Math.min(i, soc * 0.9); soc -= dis / 0.9; used += dis; sav += dis * priceAt(k, h)[0] * TAX; }
+          if (i > 0 && soc > 0) { var dis = Math.min(i, soc * 0.9); soc -= dis / 0.9; used += dis; sav += dis * priceAt(k, h)[0] * KV.taxInfo(k).factor; }
         }
       });
       sav *= f; used *= f;
@@ -456,5 +457,5 @@
     if (S && S.p.tarifa === "fijo" && S.p.precio > 0 && !$("t-fijo").dataset.touched) $("t-fijo").value = S.p.precio;
     if (S) renderDash();
   }
-  KV.data().then(function (d) { D = d; ST = d ? KV.stats(d) : null; show(); });
+  KV.data().then(function (d) { D = d; ST = d ? KV.stats(d) : null; TAX = KV.TAX; show(); });
 })();

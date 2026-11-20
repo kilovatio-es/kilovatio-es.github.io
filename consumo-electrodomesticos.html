@@ -77,7 +77,7 @@
       </div>
       <div class="kv" id="r-kv"></div>
       <div class="field"><span class="lbl">Qué pesa más en tu consumo</span><div class="bars" id="r-bars"></div></div>
-      <p class="note">Factura con potencia PVPC (~30,7 €/kW·año), alquiler del contador, impuesto eléctrico (5,11 %) e IVA (21 %).</p>
+      <p class="note">Factura con potencia PVPC (~30,7 €/kW·año), alquiler del contador, impuesto eléctrico (<span class="kv-iee">5,11 %</span>) e IVA (<span class="kv-iva">21 %</span>) vigentes hoy.</p>
     </div>
   </div>
 
@@ -135,11 +135,11 @@ Factura = (energía + potencia + impuesto eléctrico + contador) × 1,21</div>
     var sbK = KV.val("sb") * Math.min(KV.val("sbh"), 24) * 365 / 1000;
     if (sbK > 0) items.push(["Consumo en espera", sbK]);
     kwhT += sbK;
-    var energy = kwhT * price, pot = KV.val("kw") * 30.7, iee = 0.0511 * (energy + pot), meter = 9.72;
-    var total = (energy + pot + iee + meter) * 1.21;
+    var energy = kwhT * price, pot = KV.val("kw") * 30.7, iee = KV.IEE * (energy + pot), meter = 9.72;
+    var total = (energy + pot + iee + meter) * (1 + KV.IVA);
     $("r-total").textContent = KV.eur0(total);
     $("r-sub").textContent = KV.n0(kwhT) + " kWh al año · " + KV.eur0(total / 12) + " al mes";
-    KV.kv($("r-kv"), [["Energía", KV.eur0(energy)], ["  de ella, consumo en espera", KV.eur0(sbK * price)], ["Potencia", KV.eur0(pot)], ["Impuesto eléctrico", KV.eur0(iee)], ["Alquiler del contador", KV.eur0(meter)], ["IVA", KV.eur0((energy + pot + iee + meter) * 0.21)], ["Total", KV.eur0(total), true]]);
+    KV.kv($("r-kv"), [["Energía", KV.eur0(energy)], ["  de ella, consumo en espera", KV.eur0(sbK * price)], ["Potencia", KV.eur0(pot)], ["Impuesto eléctrico", KV.eur0(iee)], ["Alquiler del contador", KV.eur0(meter)], ["IVA", KV.eur0((energy + pot + iee + meter) * KV.IVA)], ["Total", KV.eur0(total), true]]);
     items.sort(function (a, b) { return b[1] - a[1]; });
     KV.bars($("r-bars"), items.slice(0, 8).map(function (it) { return [it[0], it[1], KV.eur0(it[1] * price) + " · " + Math.round(kwhT ? it[1] / kwhT * 100 : 0) + " %"]; }));
   }
@@ -147,6 +147,7 @@ Factura = (energía + potencia + impuesto eléctrico + contador) × 1,21</div>
   $("add").addEventListener("click", function () { addRow(["Nuevo aparato", 500, 1, 365]); render(); tb.lastElementChild.querySelector("input").focus(); });
   $("f").addEventListener("input", render);
   load("piso"); render();
+  KV.data().then(render);
   KV.applyLive(function (s) { return { price: s.last30.avg }; }, $("f"), render,
     function (s) { return "Precio de la energía: media del PVPC de los últimos 30 días, " + KV.n3(s.last30.avg) + " €/kWh sin impuestos (los impuestos se suman en la factura)."; });
 })();

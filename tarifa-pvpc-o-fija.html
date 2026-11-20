@@ -105,7 +105,7 @@
         <thead><tr><th>Al año, con impuestos</th><th class="num">PVPC</th><th class="num">Precio fijo</th></tr></thead>
         <tbody id="r-tbl"></tbody>
       </table></div>
-      <p class="note">Incluye impuesto eléctrico (5,11 %), alquiler del contador (~0,81 €/mes) e IVA (21 %). No incluye servicios adicionales ni permanencias.</p>
+      <p class="note">Incluye impuesto eléctrico (<span class="kv-iee">5,11 %</span>), alquiler del contador (~0,81 €/mes) e IVA (<span class="kv-iva">21 %</span>) vigentes hoy. No incluye servicios adicionales ni permanencias.</p>
     </div>
   </div>
 
@@ -145,8 +145,8 @@ Total = (energía + potencia + impuesto eléctrico + contador) × 1,21 (IVA)</di
     return p.split(",").map(function (x) { return +x / 100; });
   }
   function bill(e, k1, k2, kw) {
-    var pot = kw * (k1 + k2) * 365, iee = 0.0511 * (e + pot), meter = 0.81 * 12;
-    var base = e + pot + iee + meter, iva = base * 0.21;
+    var pot = kw * (k1 + k2) * 365, iee = KV.IEE * (e + pot), meter = 0.81 * 12;
+    var base = e + pot + iee + meter, iva = base * KV.IVA;
     return { e: e, pot: pot, iee: iee, meter: meter, iva: iva, total: base + iva };
   }
   function render() {
@@ -164,6 +164,7 @@ Total = (energía + potencia + impuesto eléctrico + contador) × 1,21 (IVA)</di
     $("r-tbl").innerHTML = rows.map(function (r) { return "<tr><td>" + r[0] + "</td><td class=\"num\">" + KV.eur0(r[1]) + "</td><td class=\"num\">" + KV.eur0(r[2]) + "</td></tr>"; }).join("");
   }
   KV.onInput($("f"), render);
+  KV.data().then(render);
   KV.applyLive(function (s) { return { vP: s.last30.punta, vL: s.last30.llano, vV: s.last30.valle }; }, $("f"), render,
     function (s) { return "PVPC: media real de los últimos 30 días por periodo (punta " + KV.n3(s.last30.punta) + ", llano " + KV.n3(s.last30.llano) + ", valle " + KV.n3(s.last30.valle) + " €/kWh, sin impuestos)."; });
 })();

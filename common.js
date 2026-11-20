@@ -77,11 +77,28 @@ window.KV = (function () {
     if (wd === 0 || wd === 6 || h < 8) return "valle";
     return (h >= 10 && h < 14) || (h >= 18 && h < 22) ? "punta" : "llano";
   }
+  /* Impuestos de la luz por fecha (data/referencias.json → energia.json). Por defecto, tipos generales. */
+  var SCHED = [];
+  function taxInfo(k) {
+    k = k || dayKey(0);
+    for (var i = 0; i < SCHED.length; i++) {
+      var t = SCHED[i];
+      if (t.desde <= k && (t.hasta == null || k <= t.hasta)) return { iva: t.iva, iee: t.iee, norma: t.norma, resumen: t.resumen || "Tipo vigente hoy", factor: (1 + t.iee / 100) * (1 + t.iva / 100) };
+    }
+    return { iva: 21, iee: 5.11269632, norma: "Tipos generales", resumen: "Tipo general", factor: 1.0511269632 * 1.21 };
+  }
+  function pctTxt(x) { return String(Math.round(x * 100) / 100).replace(".", ",") + " %"; }
+  function setTax() {
+    var t = taxInfo();
+    api.TAX = t.factor; api.IVA = t.iva / 100; api.IEE = t.iee / 100;
+    document.querySelectorAll(".kv-iva").forEach(function (e) { e.textContent = pctTxt(t.iva); });
+    document.querySelectorAll(".kv-iee").forEach(function (e) { e.textContent = pctTxt(t.iee); });
+  }
   var dataP = null;
   function data() {
     if (!dataP) dataP = fetch("data/energia.json", { cache: "no-cache" })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) { return d && d.days ? d : null; })
+      .then(function (d) { if (d && d.tax) { SCHED = d.tax; setTax(); } return d && d.days ? d : null; })
       .catch(function () { return null; });
     return dataP;
   }
@@ -106,7 +123,7 @@ window.KV = (function () {
       last: past[past.length - 1], last30: avg(past.slice(-30)),
       month: { ym: ym, s: avg(past.filter(function (k) { return k.slice(0, 7) === ym; })) },
       prev: { ym: pym, s: avg(keys.filter(function (k) { return k.slice(0, 7) === pym; })) },
-      fuel: d.fuel, updated: d.updated
+      fuel: d.fuel, updated: d.updated, rec: d.recargaRef
     };
   }
   /* Pone valores por defecto con datos reales en los campos que la persona no ha tocado. */
@@ -129,10 +146,12 @@ window.KV = (function () {
     });
   }
 
-  return { $: $, val: val, esc: esc, kv: kv, bars: bars, columns: columns, onInput: onInput,
+  var api = { $: $, val: val, esc: esc, kv: kv, bars: bars, columns: columns, onInput: onInput, taxInfo: taxInfo, pctTxt: pctTxt,
     data: data, stats: stats, applyLive: applyLive, dayKey: dayKey, nowHour: nowHour, fmtDate: fmtDate, monthName: monthName, period: period,
     eur0: eur0.format, eur2: eur2.format, n0: n0.format, n1: n1.format, n3: n3.format,
-    TAX: 1.0511 * 1.21 };
+    TAX: 1.0511269632 * 1.21, IVA: 0.21, IEE: 0.0511269632 };
+  document.addEventListener("DOMContentLoaded", function () { if (document.querySelector(".kv-iva,.kv-iee")) data(); });
+  return api;
 })();
 
 /* Cloudflare Web Analytics: cuenta visitas sin cookies. Solo en la web publicada. */

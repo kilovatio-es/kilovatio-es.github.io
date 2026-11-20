@@ -65,8 +65,8 @@
       </div>
       <div class="three">
         <div class="field"><label for="ph">Casa (valle)</label><div class="input"><input id="ph" type="number" min="0" step="0.01" value="0.13"><span>€/kWh</span></div></div>
-        <div class="field"><label for="pp">Cargador lento</label><div class="input"><input id="pp" type="number" min="0" step="0.01" value="0.40"><span>€/kWh</span></div></div>
-        <div class="field"><label for="pr">Cargador rápido</label><div class="input"><input id="pr" type="number" min="0" step="0.01" value="0.59"><span>€/kWh</span></div></div>
+        <div class="field"><label for="pp">Cargador lento</label><div class="input"><input id="pp" type="number" min="0" step="0.01" value="0.30"><span>€/kWh</span></div></div>
+        <div class="field"><label for="pr">Cargador rápido</label><div class="input"><input id="pr" type="number" min="0" step="0.01" value="0.55"><span>€/kWh</span></div></div>
       </div>
       <div class="field"><label for="fast">De la carga fuera de casa, rápida</label><div class="input"><input id="fast" type="number" min="0" max="100" step="5" value="30"><span>%</span></div></div>
       <div class="field"><label for="wb">Punto de recarga en casa (con instalación)</label><div class="input"><input id="wb" type="number" min="0" step="50" value="1100"><span>€</span></div><small>Un cargador de pared (<em>wallbox</em>) de 7,4 kW instalado suele costar 800–1.500 €.</small></div>
@@ -159,6 +159,7 @@ Amortización del punto de recarga = coste ÷ ahorro anual</div>
   KV.onInput($("f"), render);
   KV.applyLive(function (s) {
     var o = { ph: s.last30.valle * KV.TAX };
+    if (s.rec && s.rec.lenta) { o.pp = (s.rec.lenta[0] + s.rec.lenta[1]) / 2; o.pr = (s.rec.rapida[0] + s.rec.rapida[1] + s.rec.ultra[0] + s.rec.ultra[1]) / 4; }
     if (s.fuel) { DEF.g[1] = DEF.h[1] = s.fuel.gasolina95; DEF.d[1] = s.fuel.diesel; o.pf = DEF[$("fuel").value][1]; }
     return o;
   }, $("f"), render, function (s) {
