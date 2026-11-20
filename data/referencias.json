@@ -1,0 +1,51 @@
+{
+  "revisado": "2026-11-20",
+  "nota": "Valores regulados y de referencia que no publica ninguna fuente automática. Los revisa cada mes la tarea programada de Kilovatio.",
+  "impuestos": [
+    {
+      "desde": "2025-01-01",
+      "hasta": "2026-03-21",
+      "iva": 21,
+      "iee": 5.11269632,
+      "norma": "Tipos generales",
+      "resumen": "Tipo general"
+    },
+    {
+      "desde": "2026-03-22",
+      "hasta": "2026-05-31",
+      "iva": 10,
+      "iee": 0.5,
+      "norma": "Rebaja temporal por la crisis energética (Real Decreto-ley 7/2026)",
+      "condicion": "Hogares con potencia contratada de hasta 10 kW",
+      "resumen": "Rebaja temporal (RDL 7/2026)"
+    },
+    {
+      "desde": "2026-06-01",
+      "hasta": null,
+      "iva": 21,
+      "iee": 5.11269632,
+      "norma": "Tipos generales. El Real Decreto-ley 25/2026 rebaja el IVA al 10 % y el impuesto eléctrico al 0,5 % en los meses en que el IPC de la electricidad supera en más de un 15 % al del año anterior; no se ha cumplido ni en noviembre ni en diciembre de 2026",
+      "resumen": "Tipo general (sin rebaja por IPC este mes)"
+    }
+  ],
+  "fuentes_impuestos": [
+    "https://sede.agenciatributaria.gob.es/Sede/impuestos-especiales-medioambientales/impuesto-especial-sobre-electricidad/medidas-tributarias-combatir-crisis-energetica-electricidad.html",
+    "https://selectra.es/energia/noticias/iva-luz-2026-noviembre-rebaja-ipc"
+  ],
+  "recarga": {
+    "fecha": "2026-03",
+    "fuente": "https://electroverse.com/es-ES/community/ev-blogs-and-guides/cuanto-cuesta-cargar-un-coche-electrico-en-espana",
+    "lenta": [
+      0.25,
+      0.35
+    ],
+    "rapida": [
+      0.35,
+      0.55
+    ],
+    "ultra": [
+      0.5,
+      0.7
+    ]
+  }
+}
