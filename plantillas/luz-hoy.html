@@ -73,13 +73,13 @@
     <div class="tablewrap"><table>
       <thead><tr><th>Concepto</th><th class="num">Valor</th><th>Nota</th></tr></thead>
       <tbody>
-        <tr><td id="rm-l">PVPC, precio medio de este mes</td><td class="num" id="rm-v">—</td><td>Energía con peajes y cargos, sin impuestos</td></tr>
-        <tr><td id="rp-l">PVPC, precio medio del mes pasado</td><td class="num" id="rp-v">—</td><td>Energía con peajes y cargos, sin impuestos</td></tr>
+        <tr><td id="rm-l">PVPC, precio medio de este mes</td><td class="num" id="rm-v">—</td><td>Energía con peajes, cargos e impuestos</td></tr>
+        <tr><td id="rp-l">PVPC, precio medio del mes pasado</td><td class="num" id="rp-v">—</td><td>Energía con peajes, cargos e impuestos</td></tr>
         <tr><td>PVPC, media de los últimos 30 días</td><td class="num" id="r30-v">—</td><td id="r30-n">Punta, llano y valle</td></tr>
         <tr><td>Término de potencia PVPC, punta (P1)</td><td class="num">0,0738 €/kW·día</td><td>Peajes y cargos, sin margen ni impuestos</td></tr>
         <tr><td>Término de potencia PVPC, valle (P2)</td><td class="num">0,0019 €/kW·día</td><td>Peajes y cargos</td></tr>
-        <tr><td>Impuesto especial sobre la electricidad</td><td class="num">5,11 %</td><td>Sobre potencia y energía</td></tr>
-        <tr><td>IVA de la electricidad</td><td class="num">21 %</td><td></td></tr>
+        <tr><td>Impuesto especial sobre la electricidad</td><td class="num kv-iee">5,11 %</td><td>Sobre potencia y energía · <span class="kv-norma">tipo vigente hoy</span></td></tr>
+        <tr><td>IVA de la electricidad</td><td class="num kv-iva">21 %</td><td>Hogares de hasta 10 kW · tipo vigente hoy</td></tr>
         <tr><td>Gas natural, tarifa TUR 2 (desde el 1 de octubre)</td><td class="num">0,0504 €/kWh</td><td>Término variable, sin impuestos</td></tr>
         <tr><td>Gasolina 95, media nacional</td><td class="num" id="rg-v">~1,67 €/l</td><td id="rf-n">Referencia de mediados de noviembre de 2026</td></tr>
         <tr><td>Gasóleo de automoción, media nacional</td><td class="num" id="rd-v">~1,86 €/l</td><td id="rf-n2">Referencia de mediados de noviembre de 2026</td></tr>
@@ -93,7 +93,7 @@
       <details open><summary>¿Por qué cambia el precio de la luz cada hora?</summary><p>El PVPC se calcula a partir del mercado mayorista, donde cada hora se casan la oferta de las centrales y la demanda. Cuando hay mucho sol y viento, las renovables abaratan las horas centrales del día; cuando hace falta gas para cubrir la demanda, el precio sube, sobre todo al anochecer.</p></details>
       <details><summary>¿Qué es el PVPC?</summary><p>El Precio Voluntario para el Pequeño Consumidor es la tarifa regulada por el Gobierno para hogares con hasta 10 kW de potencia. Solo la ofrecen las comercializadoras de referencia, y su precio cambia cada hora. Desde 2024 una parte del precio se calcula con referencias de los mercados a plazo, lo que suaviza los picos.</p></details>
       <details><summary>¿A qué hora se publican los precios de mañana?</summary><p>Red Eléctrica publica el PVPC del día siguiente cada tarde, normalmente hacia las 20:15–20:30. En Kilovatio aparecen en la pestaña <a href="precio-luz-manana.html">Mañana</a> a partir de las 20:45.</p></details>
-      <details><summary>¿Los precios incluyen impuestos?</summary><p>Sí. Red Eléctrica publica el precio sin impuestos y Kilovatio le suma el impuesto especial sobre la electricidad (5,11 %) y el IVA (21 %), que es lo que pagas realmente por cada kWh de energía. No incluye el término de potencia ni el alquiler del contador.</p></details>
+      <details><summary>¿Los precios incluyen impuestos?</summary><p>Sí. Red Eléctrica publica el precio sin impuestos y Kilovatio le suma el impuesto especial sobre la electricidad (<span class="kv-iee">5,11 %</span>) y el IVA (<span class="kv-iva">21 %</span>) vigentes cada día, que es lo que pagas realmente por cada kWh de energía. No incluye el término de potencia ni el alquiler del contador.</p></details>
       <details><summary>¿Y si tengo una tarifa de precio fijo?</summary><p>Con una tarifa del mercado libre a precio fijo, lo que pagas no depende de la hora. Mira la calculadora <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a> para saber qué te conviene.</p></details>
     </div>
   </section>
@@ -125,22 +125,24 @@
     var s = KV.stats(all);
     $("ref-eyebrow").textContent = "Datos de referencia · actualizado el " + KV.fmtDate(s.last);
     $("rm-l").textContent = "PVPC, precio medio de " + KV.monthName(s.month.ym) + (s.month.s.days ? " (" + s.month.s.days + " días)" : "");
-    $("rm-v").textContent = fmtE(s.month.s.avg);
+    $("rm-v").textContent = fmtE(s.month.s.avg == null ? null : s.month.s.avg * KV.taxInfo(s.month.ym + "-15").factor);
     $("rp-l").textContent = "PVPC, precio medio de " + KV.monthName(s.prev.ym);
-    $("rp-v").textContent = s.prev.s.days ? fmtE(s.prev.s.avg) : "Aún sin histórico";
-    $("r30-v").textContent = fmtE(s.last30.avg);
-    $("r30-n").textContent = "Punta " + KV.n3(s.last30.punta) + " · llano " + KV.n3(s.last30.llano) + " · valle " + KV.n3(s.last30.valle);
+    $("rp-v").textContent = s.prev.s.days ? fmtE(s.prev.s.avg * KV.taxInfo(s.prev.ym + "-15").factor) : "Aún sin histórico";
+    var T = KV.TAX, nt = KV.taxInfo().resumen;
+    $("r30-v").textContent = fmtE(s.last30.avg * T);
+    document.querySelectorAll(".kv-norma").forEach(function (e) { e.textContent = nt; });
+    $("r30-n").textContent = "Punta " + KV.n3(s.last30.punta * T) + " · llano " + KV.n3(s.last30.llano * T) + " · valle " + KV.n3(s.last30.valle * T);
     if (s.fuel) {
       $("rg-v").textContent = KV.n3(s.fuel.gasolina95) + " €/l"; $("rd-v").textContent = KV.n3(s.fuel.diesel) + " €/l";
       $("rf-n").textContent = $("rf-n2").textContent = "Media de todas las gasolineras, " + KV.fmtDate(s.fuel.date);
     }
-    var hrs = s.last30.hours;
+    var hrs = s.last30.hours.map(function (v) { return v == null ? null : v * T; });
     if (hrs.filter(function (v) { return v != null; }).length === 24) {
       var srt = hrs.slice().sort(function (a, b) { return a - b; }), q1 = srt[8], q2 = srt[16];
       $("avg-panel").hidden = false;
       KV.columns($("avg-chart"), hrs.map(function (v, i) { return { label: String(i).padStart(2, "0"), value: v, title: String(i).padStart(2, "0") + ":00 · " + KV.n3(v) + " €/kWh", color: v < q1 ? "var(--good)" : v >= q2 ? "var(--bad)" : "var(--mid)" }; }),
         { height: 200, labelEvery: 2, yfmt: function (v) { return v.toFixed(2).replace(".", ","); } });
-      $("avg-note").textContent = "Media de " + s.last30.days + " días, sin impuestos. Incluye fines de semana.";
+      $("avg-note").textContent = "Media de " + s.last30.days + " días, con impuestos. Incluye fines de semana.";
     }
   });
 })();
