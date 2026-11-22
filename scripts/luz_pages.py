@@ -40,7 +40,7 @@ APARATOS = [
     ("Termo eléctrico", 2, 3.0, "calentar el depósito"),
     ("Coche eléctrico", 3, 22.0, "22 kWh a 7,4 kW"),
 ]
-FIXED_PAGES = ["", "mi-kilovatio.html", "mapa.html", "placas-solares.html", "tarifa-pvpc-o-fija.html", "potencia-contratada.html",
+FIXED_PAGES = ["", "comparador-tarifas.html", "mi-kilovatio.html", "mapa.html", "placas-solares.html", "tarifa-pvpc-o-fija.html", "potencia-contratada.html",
                "calefaccion.html", "coche-electrico.html", "consumo-electrodomesticos.html", "guia-factura-luz.html"]
 
 e = html.escape

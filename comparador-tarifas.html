@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comparador de tarifas de luz: cuál te sale más barata · Kilovatio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Compara las tarifas de luz con tu consumo real: calculamos tu factura de un año, hora a hora, con cada oferta y con el PVPC, con potencia e impuestos. Gratis, sin registro y sin llamadas.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Comparador de tarifas de luz: cuál te sale más barata · Kilovatio">
+<meta property="og:description" content="Tu factura de un año calculada hora a hora con cada oferta y con el PVPC. Gratis, sin registro y sin llamadas.">
+<meta property="og:locale" content="es_ES">
+<link rel="canonical" href="https://kilovatio-es.github.io/comparador-tarifas.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="site">
+  <div class="wrap top">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="var(--sun)"/><path d="M13 4 7 13h5l-1 7 6-9h-5l1-7Z" fill="var(--surface)"/></svg>Kilovatio</a>
+    <span class="tagline">Tu energía, clara y en números</span>
+  </div>
+  <nav class="main" aria-label="Secciones"><div class="wrap">
+    <a href="index.html">Precio de la luz</a>
+    <a href="mi-kilovatio.html" class="mi">Mi Kilovatio</a>
+    <a href="comparador-tarifas.html" aria-current="page">Tu factura</a>
+    <a href="consumo-electrodomesticos.html">Tu casa</a>
+    <a href="mapa.html">Movilidad</a>
+  </div></nav>
+  <nav class="sub" aria-label="En esta sección"><div class="wrap">
+    <a href="comparador-tarifas.html" aria-current="page">Comparador de tarifas</a>
+    <a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a>
+    <a href="potencia-contratada.html">Potencia contratada</a>
+    <a href="guia-factura-luz.html">Guía de la factura</a>
+  </div></nav>
+</header>
+<main class="wrap cmp">
+  <div class="intro">
+    <p class="crumbs"><a href="index.html">Inicio</a> › <a href="tarifa-pvpc-o-fija.html">Tu factura</a> › Comparador de tarifas</p>
+    <p class="eyebrow">Comparador de tarifas de luz</p>
+    <h1>¿Qué tarifa de luz te sale más barata?</h1>
+    <p>Calculamos tu factura de un año entero, hora a hora, con cada oferta y con el PVPC (la tarifa regulada) a su precio real de los últimos 12 meses. Incluimos la potencia, los impuestos y todo lo que trae la factura, para que veas el total que pagarías de verdad.</p>
+    <ul class="trust">
+      <li><b id="t-ofertas">Ofertas revisadas</b><span id="t-rev">cada mes</span></li>
+      <li><b>PVPC real</b><span>precio de cada hora del último año</span></li>
+      <li><b>Privado</b><span>todo se calcula en tu navegador</span></li>
+      <li><b>Sin llamadas</b><span>ni registro ni comisiones</span></li>
+    </ul>
+  </div>
+
+  <section aria-labelledby="h-paso1">
+    <h2 class="step" id="h-paso1"><span>1</span>¿Con qué datos comparamos?</h2>
+    <div class="modes" role="group" aria-label="Forma de comparar">
+      <button type="button" class="choice" data-mode="factura" aria-pressed="false">
+        <span class="tag">1 minuto</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3h9l3 3v15l-2-1.3L14 21l-2-1.3L10 21l-2-1.3L6 21V3Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+        <h3>Con mi factura</h3>
+        <p>Copia tres datos de tu última factura: potencia, kWh consumidos y días.</p>
+        <span class="go">Empezar →</span>
+      </button>
+      <button type="button" class="choice" data-mode="archivo" aria-pressed="false">
+        <span class="tag good">El más exacto</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20h16"/><path d="M6 16v-5M10 16V7M14 16v-7M18 16V4"/></svg>
+        <h3>Con mi consumo hora a hora</h3>
+        <p>Sube el archivo de Datadis o de tu distribuidora y comparamos con lo que gastas cada hora.</p>
+        <span class="go">Subir archivo →</span>
+      </button>
+      <button type="button" class="choice" data-mode="mi" aria-pressed="false">
+        <span class="tag" id="mi-tag">Mi Kilovatio</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M12 13l-2 3h4l-2 3"/></svg>
+        <h3>Con mi perfil</h3>
+        <p id="mi-desc">Usa la casa que diste de alta en Mi Kilovatio, sin volver a escribir nada.</p>
+        <span class="go" id="mi-go">Usar mi perfil →</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="paso2" aria-labelledby="h-paso2" hidden>
+    <h2 class="step" id="h-paso2"><span>2</span>Tus datos</h2>
+    <form class="panel datos" id="f" novalidate>
+      <!-- Con la factura -->
+      <div class="mode-b" data-for="factura">
+        <div class="three">
+          <div class="field"><label for="kwh">Consumo de la factura</label><div class="input"><input id="kwh" type="number" inputmode="decimal" min="0" step="1" value="270"><span>kWh</span></div><small>Sale como «Consumo» o «Energía consumida».</small></div>
+          <div class="field"><label for="dias">Días facturados</label><div class="input"><input id="dias" type="number" inputmode="numeric" min="1" max="400" step="1" value="30"><span>días</span></div></div>
+          <div class="field"><label for="mes">Mes de la factura</label><div class="input"><select id="mes"></select></div><small>Para corregir el frío o el calor de ese mes.</small></div>
+        </div>
+        <details class="adv" id="adv-per"><summary>Mi factura trae el consumo en punta, llano y valle</summary><div class="inner">
+          <div class="three">
+            <div class="field"><label for="kP">Punta</label><div class="input"><input id="kP" type="number" inputmode="decimal" min="0" step="1" placeholder="—"><span>kWh</span></div></div>
+            <div class="field"><label for="kL">Llano</label><div class="input"><input id="kL" type="number" inputmode="decimal" min="0" step="1" placeholder="—"><span>kWh</span></div></div>
+            <div class="field"><label for="kV">Valle</label><div class="input"><input id="kV" type="number" inputmode="decimal" min="0" step="1" placeholder="—"><span>kWh</span></div></div>
+          </div>
+          <small class="muted">Si los rellenas usamos tu reparto real en vez del de tus costumbres. También vale P1, P2 y P3.</small>
+          <div class="field"><label for="anual">Consumo de los últimos 12 meses (opcional)</label><div class="input"><input id="anual" type="number" inputmode="decimal" min="0" step="10" placeholder="—"><span>kWh</span></div><small>Muchas facturas traen un gráfico con tu histórico. Si lo sabes, es más exacto que extrapolar una sola factura.</small></div>
+        </div></details>
+        <div class="field"><span class="lbl" id="l-habito">¿Cuándo usas más la luz?</span>
+          <div class="chips" id="habito" role="group" aria-labelledby="l-habito">
+            <button type="button" data-v="tipico" aria-pressed="true">Como la mayoría</button>
+            <button type="button" data-v="fuera">Fuera de casa por el día</button>
+            <button type="button" data-v="casa">En casa todo el día</button>
+            <button type="button" data-v="noche">Pongo lavadora y lavavajillas de noche</button>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field"><label class="check"><input type="checkbox" id="coche"> Cargo un coche eléctrico en casa</label>
+            <div class="input" id="coche-f" hidden><input id="km" type="number" inputmode="numeric" min="0" step="1000" value="12000" aria-label="Kilómetros al año"><span>km/año</span></div></div>
+          <div class="field"><label class="check"><input type="checkbox" id="solar"> Tengo placas solares</label>
+            <div class="input" id="solar-f" hidden><input id="kwp" type="number" inputmode="decimal" min="0" step="0.5" value="3" aria-label="Potencia de las placas"><span>kWp</span></div></div>
+        </div>
+      </div>
+
+      <!-- Con el archivo -->
+      <div class="mode-b" data-for="archivo" hidden>
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept=".csv,.txt,text/csv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v4h16v-4"/></svg>
+          <b>Elige tu archivo de consumo (CSV)</b>
+          <span>o arrástralo aquí. No sale de tu navegador.</span>
+        </label>
+        <p class="status" id="file-st" aria-live="polite"></p>
+        <details class="adv"><summary>¿Cómo descargo mi consumo hora a hora?</summary><div class="inner">
+          <ol class="howto-l">
+            <li>Entra en <a href="https://datadis.es" rel="noopener" target="_blank">datadis.es</a> (plataforma oficial y gratuita de las distribuidoras) con tu DNI.</li>
+            <li>En «Consumos», elige tu suministro y el periodo de los últimos 12 meses.</li>
+            <li>Pulsa «Descargar» y elige CSV. Súbelo aquí tal cual.</li>
+          </ol>
+          <p class="muted">También sirven los CSV horarios o cuartohorarios de i-DE, e-distribución, UFD y la mayoría de comercializadoras.</p>
+        </div></details>
+      </div>
+
+      <!-- Con Mi Kilovatio -->
+      <div class="mode-b" data-for="mi" hidden>
+        <div class="callout" id="mi-box"></div>
+      </div>
+
+      <h3 class="sub">Lo que tienes contratado</h3>
+      <div class="two">
+        <div class="field"><label for="p1">Potencia contratada</label><div class="input"><input id="p1" type="number" inputmode="decimal" min="0.5" max="15" step="0.05" value="3.45"><span>kW</span></div>
+          <small>En la factura: «Potencia contratada». Si salen dos, pon la de punta (P1).</small></div>
+        <div class="field" id="p2-f" hidden><label for="p2">Potencia en valle (P2)</label><div class="input"><input id="p2" type="number" inputmode="decimal" min="0.5" max="15" step="0.05" value="3.45"><span>kW</span></div></div>
+      </div>
+      <label class="check"><input type="checkbox" id="p2on"> Tengo una potencia distinta en valle</label>
+      <div class="field"><label for="actual">Tu tarifa actual</label><div class="input"><select id="actual"></select></div>
+        <small>Para calcular cuánto ahorras. Si no la ves en la lista, elige «Otra» y copia sus precios de la factura.</small></div>
+      <div id="otra" class="otra" hidden>
+        <div class="seg" role="group" aria-label="Tipo de precio"><button type="button" data-t="fija" aria-pressed="true">Un precio</button><button type="button" data-t="periodos" aria-pressed="false">Tres precios</button></div>
+        <div class="three">
+          <div class="field" data-t="fija"><label for="oE">Energía</label><div class="input"><input id="oE" type="number" inputmode="decimal" min="0" step="0.001" value="0.150"><span>€/kWh</span></div></div>
+          <div class="field" data-t="periodos" hidden><label for="oP">Punta</label><div class="input"><input id="oP" type="number" inputmode="decimal" min="0" step="0.001" value="0.200"><span>€/kWh</span></div></div>
+          <div class="field" data-t="periodos" hidden><label for="oL">Llano</label><div class="input"><input id="oL" type="number" inputmode="decimal" min="0" step="0.001" value="0.140"><span>€/kWh</span></div></div>
+          <div class="field" data-t="periodos" hidden><label for="oV">Valle</label><div class="input"><input id="oV" type="number" inputmode="decimal" min="0" step="0.001" value="0.090"><span>€/kWh</span></div></div>
+        </div>
+        <div class="two">
+          <div class="field"><label for="oK1">Potencia punta</label><div class="input"><input id="oK1" type="number" inputmode="decimal" min="0" step="0.001" value="0.100"><span>€/kW·día</span></div></div>
+          <div class="field"><label for="oK2">Potencia valle</label><div class="input"><input id="oK2" type="number" inputmode="decimal" min="0" step="0.001" value="0.030"><span>€/kW·día</span></div></div>
+        </div>
+        <small class="muted">Precios sin impuestos, como vienen en el detalle de la factura. Si la potencia viene en €/kW·año, divídela entre 365.</small>
+      </div>
+      <div class="go-row"><button type="submit" class="btn primary big" id="go">Comparar tarifas</button><span class="muted" id="go-note"></span></div>
+    </form>
+  </section>
+
+  <section id="res" aria-labelledby="h-res" hidden>
+    <h2 class="step" id="h-res"><span>3</span>Tu resultado</h2>
+    <div class="win" id="win" aria-live="polite"></div>
+    <div class="kpis three-k" id="kpis"></div>
+    <div class="callout good why" id="why"></div>
+    <div class="rank-tools">
+      <div class="seg" id="ftipo" role="group" aria-label="Filtrar por tipo">
+        <button type="button" data-f="todas" aria-pressed="true">Todas</button>
+        <button type="button" data-f="fija" aria-pressed="false">Precio único</button>
+        <button type="button" data-f="periodos" aria-pressed="false">Tres precios</button>
+        <button type="button" data-f="pvpc" aria-pressed="false">PVPC</button>
+      </div>
+      <span class="muted" id="rank-n"></span>
+    </div>
+    <ol class="rank" id="rank"></ol>
+    <div class="callout sun" id="solar-note" hidden></div>
+    <div class="res-actions">
+      <button type="button" class="btn" id="share">Copiar enlace de esta comparación</button>
+      <button type="button" class="btn ghost" id="edit">Cambiar mis datos</button>
+    </div>
+    <p class="note" id="metodo"></p>
+  </section>
+
+  <article class="explain">
+    <h2>Cómo lo calculamos</h2>
+    <p>Muchos comparadores multiplican un consumo medio por el precio de cada oferta. Nosotros simulamos <strong>tu año completo, hora a hora</strong>: 8.760 horas con el periodo que toca a cada una (punta, llano o valle, con fines de semana y festivos nacionales) y, para el PVPC, el precio real que tuvo cada hora en los últimos 12 meses.</p>
+    <ul>
+      <li><strong>Con tu factura:</strong> repartimos tus kWh por horas con un perfil de hogar real, lo ajustamos a tus costumbres y corregimos la estación (no consumes lo mismo en enero que en mayo).</li>
+      <li><strong>Con tu archivo:</strong> usamos tu consumo exacto de cada hora. Es la comparación más fiel que se puede hacer.</li>
+      <li><strong>En cada oferta</strong> calculamos la factura como la haría la comercializadora: energía, potencia por días, impuesto eléctrico (<span class="kv-iee">5,11 %</span>), alquiler del contador, financiación del bono social e IVA (<span class="kv-iva">21 %</span>).</li>
+    </ul>
+    <h3>Qué ofertas comparamos</h3>
+    <p>Ofertas para hogares (peaje 2.0TD, hasta 15 kW) sin permanencia, con su precio comprobado en la web de la comercializadora o en una fuente pública. Las revisamos cada mes: una oferta sin revisar en 45 días se marca como pendiente y a los 90 deja de aparecer. No es todo el mercado; si quieres ver cientos de ofertas, el <a href="https://comparador.cnmc.gob.es" rel="noopener" target="_blank">comparador oficial de la CNMC</a> es la referencia.</p>
+    <h3>Cambiar de compañía, paso a paso</h3>
+    <ol>
+      <li><strong>Es gratis y no te cortan la luz.</strong> No hace falta obra ni técnico: solo cambia quién te factura.</li>
+      <li>Ten a mano tu <strong>CUPS</strong> (el código de tu punto de suministro, sale en la factura), tu DNI y tu IBAN.</li>
+      <li>Contrata en la web de la nueva comercializadora. Ella da de baja la anterior: tú no tienes que llamar a nadie.</li>
+      <li>El cambio suele tardar de unos días a tres semanas. Mantén la misma potencia salvo que quieras ajustarla (<a href="potencia-contratada.html">calcula la tuya</a>).</li>
+      <li>Para el <strong>PVPC</strong> (y el bono social) tienes que contratar con una comercializadora de referencia y tener 10 kW o menos.</li>
+    </ol>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <details><summary>¿Cuánto se parece el resultado a mi factura real?</summary><p>Con tu archivo horario, mucho: el cálculo es el mismo que hace la comercializadora, con los mismos conceptos. Con una sola factura, el reparto por horas es una estimación; si tu factura trae punta, llano y valle, rellénalos y el resultado se acerca mucho más.</p></details>
+      <details><summary>¿Por qué el PVPC usa precios del pasado?</summary><p>Porque nadie sabe cuánto costará cada hora el año que viene. Los últimos 12 meses reales son la mejor referencia: incluyen un invierno y un verano completos. Las ofertas de precio fijo, en cambio, cuestan lo que dicen durante el contrato.</p></details>
+      <details><summary>¿Qué impuestos aplicáis?</summary><p>Los vigentes hoy: impuesto eléctrico del <span class="kv-iee">5,11 %</span> e IVA del <span class="kv-iva">21 %</span>. Los aplicamos igual a todas las tarifas para que la comparación sea justa. Si el Gobierno los cambia, se actualizan solos.</p></details>
+      <details><summary>¿Tengo placas solares, sirve?</summary><p>Sí. Con tu archivo usamos tus excedentes reales; con tu factura los estimamos con la potencia de tus placas. Solo sumamos la compensación de excedentes en las ofertas de las que conocemos el precio, y te lo indicamos en el resultado.</p></details>
+      <details><summary>¿Cobráis algo a las comercializadoras?</summary><p>No. El orden del ranking sale solo del cálculo: la más barata para tu consumo va primero, sin ofertas patrocinadas.</p></details>
+      <details><summary>¿Guardáis mis datos?</summary><p>No salen de tu navegador. Recordamos tu última comparación en este dispositivo para que puedas volver a verla con las ofertas del mes siguiente.</p></details>
+    </div>
+  </article>
+</main>
+<footer class="site"><div class="wrap cols">
+  <div>
+    <h4>Kilovatio</h4>
+    <p>Precios de la energía y herramientas gratuitas para entender y reducir lo que gastas en casa. Los precios de la luz y de los carburantes se actualizan solos cada día con datos oficiales.</p>
+    <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
+  </div>
+  <div><h4>Precio de la luz</h4><ul>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="precio-luz-manana.html">Precio de la luz mañana</a></li>
+    <li><a href="mi-kilovatio.html">Mi Kilovatio</a></li>
+  </ul></div>
+  <div><h4>Tu factura</h4><ul>
+    <li><a href="comparador-tarifas.html">Comparador de tarifas</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li><li><a href="potencia-contratada.html">Potencia contratada</a></li>
+    <li><a href="guia-factura-luz.html">Guía de la factura</a></li>
+  </ul></div>
+  <div><h4>Tu casa</h4><ul>
+    <li><a href="consumo-electrodomesticos.html">Electrodomésticos</a></li><li><a href="calefaccion.html">Calefacción</a></li>
+    <li><a href="placas-solares.html">Placas solares y batería</a></li>
+  </ul></div>
+  <div><h4>Movilidad</h4><ul>
+    <li><a href="mapa.html">Gasolineras y recarga</a></li><li><a href="coche-electrico.html">Coche eléctrico</a></li>
+  </ul></div>
+</div></footer>
+<script src="comparador.js"></script>
+<script src="consumo.js"></script>
+<script src="comparador-ui.js"></script>
+</body>
+</html>
