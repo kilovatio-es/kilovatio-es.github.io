@@ -3,7 +3,7 @@
    calcula la factura completa de cada oferta con KVcomp y muestra el ranking. Todo en el navegador. */
 (function () {
   var $ = KV.$, esc = KV.esc;
-  var OF = null, D = null, MODE = null, FILE = null, LAST = null, FILTRO = "todas";
+  var OF = null, D = null, EST = null, MODE = null, FILE = null, LAST = null, FILTRO = "todas", TODAS = false, PREV = null;
   var MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
   function load(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } }
@@ -142,8 +142,12 @@
     var hours = new Array(24).fill(0), cnt = new Array(24).fill(0);
     lastYear().forEach(function (k) { D.days[k].forEach(function (v, h) { if (v != null) { hours[h] += v; cnt[h]++; } }); });
     var fb = hours.map(function (s, h) { return cnt[h] ? s / cnt[h] : 0.13; });
+    var sp = D.spot || {}, sh = new Array(24).fill(0), sc = new Array(24).fill(0);
+    Object.keys(sp).forEach(function (k) { (sp[k] || []).forEach(function (v, h) { if (v != null) { sh[h] += Math.max(v, 0); sc[h]++; } }); });
+    var hasSpot = Object.keys(sp).length > 30;
     var t = KV.taxInfo(KV.dayKey(0));   // los impuestos de hoy, iguales para todas: es una comparación hacia el futuro
     return { p1kW: p1, p2kW: p2, regulado: OF.regulado, pvpc: D.days, pvpcFallback: fb, pvpcPotencia: OF.regulado.pvpc_potencia,
+             spot: hasSpot ? sp : null, spotFallback: hasSpot ? sh.map(function (x, h) { return sc[h] ? x / sc[h] : 0; }) : null,
              taxInfo: function () { return { iva: t.iva, iee: t.iee }; } };
   }
 
@@ -157,14 +161,20 @@
     var list = KVcomp.comparar(ofs, C, o);
     var curId = $("actual").value === "otra" ? "actual" : $("actual").value;
     LAST = { list: list, C: C, o: o, rep: KVcomp.reparto(C), curId: curId };
+    if (!PREV) { var old = load("kv-comp-best"); PREV = old && old.d !== KV.dayKey(0) ? old : null; }
     render();
     persist();
+    remember(list[0]);
     $("res").hidden = false;
     if (scroll) $("res").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   /* ---------- Resultado ---------- */
   function tipoTxt(t) { return t === "pvpc" ? "PVPC · precio por horas" : t === "periodos" ? "Tres precios" : "Precio único"; }
+  function aviso(of) {
+    var e = EST && EST.items && EST.items[of.id];
+    return !!e && (e.estado === "cambiada" || (e.estado === "sin_verificar" && e.dias_sin >= 3));
+  }
   function nombre(of) { return of.propia ? "Tu tarifa actual" : esc(of.comercializadora) + (of.nombre ? " · " + esc(of.nombre) : ""); }
   function precios(of, r) {
     if (of.tipo === "pvpc") return "Cada hora a su precio · te sale a " + n4(r.energia / (r.kwh || 1)) + " €/kWh de media";
@@ -210,7 +220,7 @@
       rows.map(function (q) { return "<tr><td>" + q[0] + '</td><td class="num">' + KV.eur2(q[1] * f) + "</td></tr>"; }).join("") +
       '<tr class="tot"><td>Total</td><td class="num">' + KV.eur2(r.anual) + "</td></tr></tbody></table></div>" +
       '<p class="prices"><b>Energía:</b> ' + precios(of, r) + "<br><b>Potencia:</b> punta " + n4(pot.p1) + " · valle " + n4(pot.p2) + " €/kW·día" +
-      (of.excedentes ? "<br><b>Excedentes:</b> se compensan a " + n4(of.excedentes) + " €/kWh" : "") + "</p>" + src + "</div>";
+      (of.excedentes === "mercado" ? "<br><b>Excedentes:</b> se compensan al precio del mercado de cada hora" : of.excedentes ? "<br><b>Excedentes:</b> se compensan a " + n4(of.excedentes) + " €/kWh" : "") + "</p>" + src + "</div>";
   }
 
   function render() {
@@ -223,7 +233,10 @@
       '<p class="big num">' + KV.eur0(best.r.anual) + ' <small>al año</small></p><p class="muted">Unos ' + KV.eur0(best.r.anual / 12) + " al mes de media, con potencia, impuestos y todo lo que trae la factura · " + tipoTxt(best.oferta.tipo) + "</p>";
 
     var k2;
-    if (cur && cur !== best) k2 = ["good", "Ahorrarías al año", KV.eur0(cur.r.anual - best.r.anual), "frente a " + (cur.oferta.propia ? "tu tarifa actual" : nombre(cur.oferta)) + " (" + KV.eur0(cur.r.anual) + ")"];
+    if (cur && cur !== best) {
+      var sav = cur.r.anual - best.r.anual, mesesG = sav / (best.r.anual / 12);
+      k2 = ["good", "Ahorrarías al año", KV.eur0(sav), "frente a " + (cur.oferta.propia ? "tu tarifa actual" : nombre(cur.oferta)) + (mesesG >= 0.8 ? " · como " + (mesesG >= 1.5 ? KV.n0(mesesG) + " meses" : "un mes") + " de luz gratis" : "")];
+    }
     else if (cur) k2 = ["good", "Tu tarifa", "Ya es la mejor", "no te compensa cambiar ahora"];
     else k2 = ["mid", "Entre la más barata y la más cara", KV.eur0(worst.r.anual - best.r.anual), "al año, con tu mismo consumo"];
     var rep = L.rep;
@@ -236,14 +249,16 @@
 
     $("why").innerHTML = why(best, list, rep, cur);
 
-    var shown = list.filter(function (x) { return FILTRO === "todas" || x.oferta.tipo === FILTRO || x.oferta.propia; });
+    var all = list.filter(function (x) { return FILTRO === "todas" || x.oferta.tipo === FILTRO || x.oferta.propia; });
+    var LIM = 6, shown = TODAS ? all : all.filter(function (x, i) { return i < LIM || x === cur || x.oferta.tipo === "pvpc"; });
     var max = Math.max.apply(null, list.map(function (x) { return x.r.anual; })), min = best.r.anual;
     $("rank").innerHTML = shown.map(function (x) {
       var of = x.oferta, pos = list.indexOf(x) + 1, d = x.r.anual - min;
       var badges = '<span class="b t-' + of.tipo + '">' + tipoTxt(of.tipo) + "</span>" +
         (x === cur ? '<span class="b cur">Tu tarifa</span>' : "") +
-        (!of.propia && of.tipo !== "pvpc" && KVcomp.estado(of, hoy) === "pendiente" ? '<span class="b warn">Precio pendiente de revisar</span>' : "") +
-        (of.excedentes ? '<span class="b">Compensa excedentes</span>' : "") +
+        (of.propia || of.tipo === "pvpc" ? "" : (aviso(of) ? '<span class="b warn">Puede haber cambiado de precio</span>' : KVcomp.estado(of, hoy) === "pendiente" ? '<span class="b warn">Precio pendiente de revisar</span>' : "")) +
+        (/primer año/i.test(of.condiciones || "") ? '<span class="b">Precio del 1.er año</span>' : "") +
+        (of.excedentes && L.C.exp ? '<span class="b">Compensa excedentes</span>' : "") +
         (/promoci/i.test(of.condiciones || "") ? '<span class="b">Tiene promoción (no incluida)</span>' : "");
       return '<li class="' + (pos === 1 ? "first" : "") + (x === cur ? " is-cur" : "") + '">' +
         '<span class="pos num">' + pos + "</span>" +
@@ -254,19 +269,67 @@
         '<div class="bar"><i style="width:' + Math.max(x.r.anual / max * 100, 4).toFixed(1) + '%"></i></div>' +
         "<details><summary>Ver el desglose de la factura</summary>" + detalle(x) + "</details></li>";
     }).join("");
-    $("rank-n").textContent = shown.length + " de " + list.length + " tarifas";
+    $("rank-n").textContent = all.length + " tarifas comparadas";
+    $("more").hidden = shown.length >= all.length && !TODAS;
+    $("more").textContent = TODAS ? "Ver solo las mejores" : "Ver las " + (all.length - shown.length) + " tarifas restantes";
+    chart(best, cur, list);
+    hook(best);
 
     var sol = L.C.exp && Object.keys(L.C.exp).length;
     $("solar-note").hidden = !sol;
     if (sol) {
       var con = OF.ofertas.filter(function (o) { return o.excedentes; }).length;
-      $("solar-note").innerHTML = "<b>Con placas solares:</b> solo sumamos la compensación de excedentes en " + con + " de las ofertas, porque es el único precio que tenemos comprobado. En el resto (también en el PVPC) tu factura real sería algo más baja de lo que ves aquí.";
+      $("solar-note").innerHTML = "<b>Con placas solares:</b> en el PVPC tus excedentes se descuentan al precio del mercado de cada hora" + (L.o.spot ? "" : " (todavía sin datos: lo sumaremos en cuanto el robot los descargue)") +
+        ". En el mercado libre solo lo sumamos en " + con + " " + (con === 1 ? "oferta" : "ofertas") + ", porque es el único precio de compensación que tenemos comprobado: en el resto tu factura real sería algo más baja de lo que ves aquí.";
     }
     var pvx = list.filter(function (x) { return x.oferta.tipo === "pvpc"; })[0], sp = pvx && pvx.r.kwh ? pvx.r.sinPrecio / pvx.r.kwh : 0;
     var kwTxt = function (x) { return x.toLocaleString("es-ES", { maximumFractionDigits: 2 }) + " kW"; };
     $("metodo").innerHTML = "Calculado hora a hora con " + esc(L.C.fuente) + ", " + (L.o.p1kW === L.o.p2kW ? kwTxt(L.o.p1kW) + " de potencia" : kwTxt(L.o.p1kW) + " en punta y " + kwTxt(L.o.p2kW) + " en valle") +
       " y los impuestos vigentes hoy. PVPC con los precios reales de Red Eléctrica de los últimos 12 meses" + (sp > 0.05 ? " (el " + pct(sp) + " de tu consumo cae en días sin precio PVPC en nuestro histórico; ahí usamos la media de esa hora)" : sp > 0.002 ? " (en las pocas horas sin precio publicado usamos la media de esa hora)" : "") +
       ". Ofertas revisadas el " + KV.fmtDate(OF.revisado) + ". Es una estimación orientativa: confirma las condiciones al contratar.";
+  }
+
+  /* Factura mes a mes: la mejor frente a tu tarifa (o el PVPC). Une los meses repetidos del año móvil. */
+  function chart(best, cur, list) {
+    var other = cur && cur !== best ? cur : list.filter(function (x) { return x.oferta.tipo === "pvpc" && x !== best; })[0] || list[1];
+    if (!other) { $("chart").innerHTML = ""; return; }
+    function byMonth(r) {
+      var m = {}; r.meses.forEach(function (M) { var k = +M.mes.slice(5, 7) - 1; m[k] = (m[k] || 0) + M.total; }); return m;
+    }
+    var A = byMonth(best.r), B = byMonth(other.r), f = 365 / (best.r.dias || 365);
+    var start = new Date().getMonth(), idx = []; for (var i = 0; i < 12; i++) idx.push((start + i) % 12);
+    idx = idx.filter(function (m) { return A[m] != null; });
+    var max = Math.max.apply(null, idx.map(function (m) { return Math.max(A[m], B[m] || 0) * f; }).concat([1]));
+    var W = 640, H = 220, T = 14, Bt = 26, L = 8, step = (W - L) / idx.length, bw = Math.min(16, step / 3);
+    var bars = idx.map(function (m, i) {
+      var x = L + i * step + step / 2, a = A[m] * f, b = (B[m] || 0) * f, ya = T + (H - T - Bt) * (1 - a / max), yb = T + (H - T - Bt) * (1 - b / max);
+      return '<rect x="' + (x - bw - 1).toFixed(1) + '" y="' + yb.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (H - Bt - yb).toFixed(1) + '" rx="3" fill="var(--line)"><title>' + MESES[m] + ": " + KV.eur0(b) + "</title></rect>" +
+        '<rect x="' + (x + 1).toFixed(1) + '" y="' + ya.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (H - Bt - ya).toFixed(1) + '" rx="3" fill="var(--good)"><title>' + MESES[m] + ": " + KV.eur0(a) + "</title></rect>" +
+        '<text x="' + x.toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + MESES[m].slice(0, 3) + "</text>";
+    }).join("");
+    var nm = function (x) { return x.oferta.propia ? "Tu tarifa actual" : x.oferta.tipo === "pvpc" ? "PVPC" : esc(x.oferta.comercializadora + " · " + x.oferta.nombre); };
+    var winM = idx.reduce(function (a, m) { return (B[m] || 0) - A[m] > (B[a] || 0) - A[a] ? m : a; }, idx[0]);
+    $("chart").innerHTML = '<div class="ch-head"><h3>Tu factura mes a mes</h3><ul class="legend"><li><i style="background:var(--good)"></i>' + nm(best) + '</li><li><i style="background:var(--line)"></i>' + nm(other) + "</li></ul></div>" +
+      '<svg viewBox="0 0 ' + W + " " + H + '" class="mchart" role="img" aria-label="Factura estimada de cada mes">' + bars + "</svg>" +
+      '<p class="note">' + ((B[winM] || 0) > A[winM] ? "Donde más se nota la diferencia es en " + MESES[winM] + ": " + KV.eur0(((B[winM] || 0) - A[winM]) * f) + " menos ese mes. " : "") +
+      "Los meses de invierno pesan más porque consumes más luz y, en el PVPC, el precio suele subir.</p>";
+  }
+
+  /* Al volver: qué ha cambiado desde la última comparación */
+  function hook(best) {
+    var el = $("hook"); if (!el) return;
+    if (!PREV || PREV.d === KV.dayKey(0) || MODE === "archivo") { el.hidden = true; return; }
+    var diff = PREV.anual - best.r.anual, same = PREV.id === best.oferta.id;
+    el.hidden = false;
+    el.innerHTML = "<b>Desde tu última visita (" + KV.fmtDate(PREV.d) + ")</b> " +
+      (same ? "la mejor tarifa para ti sigue siendo la misma" : "hay una tarifa mejor para ti: <b>" + nombre(best.oferta) + "</b>") +
+      (Math.abs(diff) >= 1 ? (diff > 0 ? ", y ahora te saldría " + KV.eur0(diff) + " más barata al año." : ", aunque ahora te saldría " + KV.eur0(-diff) + " más cara al año por los precios de este mes.") : ".");
+  }
+  function remember(best) {
+    if (MODE === "archivo") return;
+    var old = load("kv-comp-best");
+    if (!PREV) PREV = old && old.d !== KV.dayKey(0) ? old : null;
+    save("kv-comp-best", { id: best.oferta.id, anual: Math.round(best.r.anual), d: KV.dayKey(0) });
   }
 
   /* ---------- Guardar, recuperar y compartir ---------- */
@@ -385,6 +448,7 @@
     ["dragenter", "dragover"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("over"); }); });
     ["dragleave", "drop"].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove("over"); }); });
     dz.addEventListener("drop", function (e) { if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]); });
+    $("more").addEventListener("click", function () { TODAS = !TODAS; render(); if (!TODAS) $("rank").scrollIntoView({ behavior: "smooth", block: "start" }); });
     $("ftipo").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; FILTRO = b.dataset.f; press($("ftipo"), FILTRO, "f"); render(); });
     $("edit").addEventListener("click", function () { $("paso2").scrollIntoView({ behavior: "smooth", block: "start" }); });
     $("share").addEventListener("click", function () {
@@ -419,8 +483,9 @@
     } else sync();
   }
 
-  Promise.all([fetch("data/ofertas.json", { cache: "no-cache" }).then(function (r) { return r.json(); }), KV.data()]).then(function (a) {
-    OF = a[0]; D = a[1];
+  Promise.all([fetch("data/ofertas.json", { cache: "no-cache" }).then(function (r) { return r.json(); }), KV.data(),
+    fetch("data/ofertas_estado.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })]).then(function (a) {
+    OF = a[0]; D = a[1]; EST = a[2];
     if (!OF || !D) throw 0;
     init();
   }).catch(function () {

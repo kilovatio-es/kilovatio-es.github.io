@@ -167,9 +167,11 @@
 
   <section id="res" aria-labelledby="h-res" hidden>
     <h2 class="step" id="h-res"><span>3</span>Tu resultado</h2>
+    <div class="callout hook" id="hook" hidden></div>
     <div class="win" id="win" aria-live="polite"></div>
     <div class="kpis three-k" id="kpis"></div>
     <div class="callout good why" id="why"></div>
+    <div class="panel chartp" id="chart"></div>
     <div class="rank-tools">
       <div class="seg" id="ftipo" role="group" aria-label="Filtrar por tipo">
         <button type="button" data-f="todas" aria-pressed="true">Todas</button>
@@ -180,6 +182,7 @@
       <span class="muted" id="rank-n"></span>
     </div>
     <ol class="rank" id="rank"></ol>
+    <button type="button" class="btn more" id="more" hidden></button>
     <div class="callout sun" id="solar-note" hidden></div>
     <div class="res-actions">
       <button type="button" class="btn" id="share">Copiar enlace de esta comparación</button>
@@ -197,7 +200,7 @@
       <li><strong>En cada oferta</strong> calculamos la factura como la haría la comercializadora: energía, potencia por días, impuesto eléctrico (<span class="kv-iee">5,11 %</span>), alquiler del contador, financiación del bono social e IVA (<span class="kv-iva">21 %</span>).</li>
     </ul>
     <h3>Qué ofertas comparamos</h3>
-    <p>Ofertas para hogares (peaje 2.0TD, hasta 15 kW) sin permanencia, con su precio comprobado en la web de la comercializadora o en una fuente pública. Las revisamos cada mes: una oferta sin revisar en 45 días se marca como pendiente y a los 90 deja de aparecer. No es todo el mercado; si quieres ver cientos de ofertas, el <a href="https://comparador.cnmc.gob.es" rel="noopener" target="_blank">comparador oficial de la CNMC</a> es la referencia.</p>
+    <p>Ofertas para hogares (peaje 2.0TD, hasta 15 kW) sin permanencia, con su precio comprobado en la web de la comercializadora o en una fuente pública. Cada día un robot abre la web oficial de las comercializadoras y comprueba que el precio sigue siendo el mismo; si cambia, la oferta se marca al momento y la revisamos. Además las repasamos todas cada mes: una oferta sin revisar en 45 días se marca como pendiente y a los 90 deja de aparecer. Si una oferta tiene descuento el primer año, usamos ese precio (es el que pagarías los 12 meses que comparamos) y te lo indicamos. No es todo el mercado; si quieres ver cientos de ofertas, el <a href="https://comparador.cnmc.gob.es" rel="noopener" target="_blank">comparador oficial de la CNMC</a> es la referencia.</p>
     <h3>Cambiar de compañía, paso a paso</h3>
     <ol>
       <li><strong>Es gratis y no te cortan la luz.</strong> No hace falta obra ni técnico: solo cambia quién te factura.</li>
@@ -211,7 +214,7 @@
       <details><summary>¿Cuánto se parece el resultado a mi factura real?</summary><p>Con tu archivo horario, mucho: el cálculo es el mismo que hace la comercializadora, con los mismos conceptos. Con una sola factura, el reparto por horas es una estimación; si tu factura trae punta, llano y valle, rellénalos y el resultado se acerca mucho más.</p></details>
       <details><summary>¿Por qué el PVPC usa precios del pasado?</summary><p>Porque nadie sabe cuánto costará cada hora el año que viene. Los últimos 12 meses reales son la mejor referencia: incluyen un invierno y un verano completos. Las ofertas de precio fijo, en cambio, cuestan lo que dicen durante el contrato.</p></details>
       <details><summary>¿Qué impuestos aplicáis?</summary><p>Los vigentes hoy: impuesto eléctrico del <span class="kv-iee">5,11 %</span> e IVA del <span class="kv-iva">21 %</span>. Los aplicamos igual a todas las tarifas para que la comparación sea justa. Si el Gobierno los cambia, se actualizan solos.</p></details>
-      <details><summary>¿Tengo placas solares, sirve?</summary><p>Sí. Con tu archivo usamos tus excedentes reales; con tu factura los estimamos con la potencia de tus placas. Solo sumamos la compensación de excedentes en las ofertas de las que conocemos el precio, y te lo indicamos en el resultado.</p></details>
+      <details><summary>¿Tengo placas solares, sirve?</summary><p>Sí. Con tu archivo usamos tus excedentes reales; con tu factura los estimamos con la potencia de tus placas. En el PVPC los excedentes se descuentan al precio del mercado de cada hora, que descargamos de Red Eléctrica cada día. En el mercado libre solo sumamos la compensación en las ofertas de las que conocemos el precio, y te lo indicamos en el resultado.</p></details>
       <details><summary>¿Cobráis algo a las comercializadoras?</summary><p>No. El orden del ranking sale solo del cálculo: la más barata para tu consumo va primero, sin ofertas patrocinadas.</p></details>
       <details><summary>¿Guardáis mis datos?</summary><p>No salen de tu navegador. Recordamos tu última comparación en este dispositivo para que puedas volver a verla con las ofertas del mes siguiente.</p></details>
     </div>

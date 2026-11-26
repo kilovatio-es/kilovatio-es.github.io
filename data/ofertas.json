@@ -1,11 +1,15 @@
 {
-  "revisado": "2026-11-21",
+  "revisado": "2026-11-26",
   "nota": "Ofertas del mercado libre para hogares (peaje 2.0TD). Precios sin impuestos. Potencia en €/kW·día. La revisión mensual de Kilovatio las comprueba; una oferta sin revisar en 45 días se marca como pendiente y a los 90 se retira sola.",
   "regulado": {
     "bono_social_anual": 9.011295,
     "contador_mes": 0.81,
-    "pvpc_potencia": {"p1": 0.082, "p2": 0.002},
-    "fuente_bono_social": "Financiación del bono social repercutida a cada punto de suministro (9,011295 €/año), según el comparador de la CNMC"
+    "pvpc_potencia": {
+      "p1": 0.082,
+      "p2": 0.002
+    },
+    "fuente_bono_social": "Financiación del bono social repercutida a cada punto de suministro (9,011295 €/año), según el comparador de la CNMC",
+    "pvpc_excedentes": "Precio del mercado diario de cada hora (Red Eléctrica), aproximación del precio de compensación del PVPC"
   },
   "ofertas": [
     {
@@ -13,8 +17,13 @@
       "comercializadora": "Iberdrola",
       "nombre": "Plan Online",
       "tipo": "fija",
-      "energia": {"unico": 0.1519},
-      "potencia": {"p1": 0.106822, "p2": 0.106822},
+      "energia": {
+        "unico": 0.1519
+      },
+      "potencia": {
+        "p1": 0.106822,
+        "p2": 0.106822
+      },
       "excedentes": null,
       "permanencia": false,
       "condiciones": "Contratación online.",
@@ -27,8 +36,15 @@
       "comercializadora": "Iberdrola",
       "nombre": "Plan Online 3 Periodos",
       "tipo": "periodos",
-      "energia": {"p1": 0.208952, "p2": 0.153952, "p3": 0.120952},
-      "potencia": {"p1": 0.090411, "p2": 0.030137},
+      "energia": {
+        "p1": 0.208952,
+        "p2": 0.153952,
+        "p3": 0.120952
+      },
+      "potencia": {
+        "p1": 0.090411,
+        "p2": 0.030137
+      },
       "excedentes": null,
       "permanencia": false,
       "condiciones": "Contratación online.",
@@ -41,8 +57,13 @@
       "comercializadora": "Niba",
       "nombre": "Zen",
       "tipo": "fija",
-      "energia": {"unico": 0.147},
-      "potencia": {"p1": 0.099, "p2": 0.099},
+      "energia": {
+        "unico": 0.147
+      },
+      "potencia": {
+        "p1": 0.099,
+        "p2": 0.099
+      },
       "excedentes": null,
       "permanencia": false,
       "condiciones": "Energía verde. Sin servicios adicionales obligatorios.",
@@ -55,8 +76,15 @@
       "comercializadora": "Niba",
       "nombre": "Tres",
       "tipo": "periodos",
-      "energia": {"p1": 0.217, "p2": 0.167, "p3": 0.097},
-      "potencia": {"p1": 0.097, "p2": 0.097},
+      "energia": {
+        "p1": 0.217,
+        "p2": 0.167,
+        "p3": 0.097
+      },
+      "potencia": {
+        "p1": 0.097,
+        "p2": 0.097
+      },
       "excedentes": null,
       "permanencia": false,
       "condiciones": "Energía verde.",
@@ -69,8 +97,13 @@
       "comercializadora": "Gana Energía",
       "nombre": "Tarifa 24 Horas",
       "tipo": "fija",
-      "energia": {"unico": 0.149},
-      "potencia": {"p1": 0.099, "p2": 0.099},
+      "energia": {
+        "unico": 0.149
+      },
+      "potencia": {
+        "p1": 0.099,
+        "p2": 0.099
+      },
       "excedentes": null,
       "permanencia": false,
       "condiciones": "Precio fijo durante 12 meses.",
@@ -83,8 +116,15 @@
       "comercializadora": "Gana Energía",
       "nombre": "Tramos Horarios",
       "tipo": "periodos",
-      "energia": {"p1": 0.201, "p2": 0.134, "p3": 0.110},
-      "potencia": {"p1": 0.099, "p2": 0.099},
+      "energia": {
+        "p1": 0.201,
+        "p2": 0.134,
+        "p3": 0.11
+      },
+      "potencia": {
+        "p1": 0.099,
+        "p2": 0.099
+      },
       "excedentes": null,
       "permanencia": false,
       "condiciones": "Precio fijo durante 12 meses.",
@@ -97,8 +137,13 @@
       "comercializadora": "Chc Energía",
       "nombre": "Plan Estrella Dúo",
       "tipo": "fija",
-      "energia": {"unico": 0.139},
-      "potencia": {"p1": 0.078144433, "p2": 0.059937759},
+      "energia": {
+        "unico": 0.139
+      },
+      "potencia": {
+        "p1": 0.078144433,
+        "p2": 0.059937759
+      },
       "excedentes": null,
       "permanencia": false,
       "condiciones": "Para potencias inferiores a 15 kW. Promoción de 9,99 €/mes de descuento durante los 5 primeros meses (no incluida en el cálculo).",
@@ -111,14 +156,273 @@
       "comercializadora": "Energía Nufri",
       "nombre": "Tarifa 3 Precios",
       "tipo": "periodos",
-      "energia": {"p1": 0.187452, "p2": 0.108680, "p3": 0.074539},
-      "potencia": {"p1": 0.084122, "p2": 0.084179},
-      "excedentes": 0.030,
+      "energia": {
+        "p1": 0.187452,
+        "p2": 0.10868,
+        "p3": 0.074539
+      },
+      "potencia": {
+        "p1": 0.084122,
+        "p2": 0.084179
+      },
+      "excedentes": 0.03,
       "permanencia": false,
       "condiciones": "Solo nuevos clientes. Excedentes compensados a 0,030 €/kWh.",
       "fuente": "https://www.xatakahome.com/iluminacion-y-energia/tarifas-luz-baratas-para-empezar-noviembre-2026-ahorrando-asi-queda-pvpc-respecto-a-mercado-libre",
       "fuente_tipo": "comparador",
       "revisado": "2026-11-21"
+    },
+    {
+      "id": "octopus-relax",
+      "comercializadora": "Octopus Energy",
+      "nombre": "Relax",
+      "tipo": "fija",
+      "energia": {
+        "unico": 0.149
+      },
+      "potencia": {
+        "p1": 0.12,
+        "p2": 0.12
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio fijo durante 12 meses. Energía 100 % renovable.",
+      "fuente": "https://octopusenergy.es/precios",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://octopusenergy.es/precios",
+        "textos": [
+          "\"price\":0.149"
+        ]
+      }
+    },
+    {
+      "id": "octopus-3",
+      "comercializadora": "Octopus Energy",
+      "nombre": "Octopus 3",
+      "tipo": "periodos",
+      "energia": {
+        "p1": 0.166,
+        "p2": 0.15,
+        "p3": 0.139
+      },
+      "potencia": {
+        "p1": 0.12,
+        "p2": 0.12
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio fijo durante 12 meses. Energía 100 % renovable.",
+      "fuente": "https://octopusenergy.es/precios",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://octopusenergy.es/precios",
+        "textos": [
+          "0,166",
+          "0,150",
+          "0,139"
+        ]
+      }
+    },
+    {
+      "id": "endesa-conecta",
+      "comercializadora": "Endesa",
+      "nombre": "Conecta Luz",
+      "tipo": "fija",
+      "energia": {
+        "unico": 0.12999
+      },
+      "potencia": {
+        "p1": 0.093666,
+        "p2": 0.093666
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Solo contratación online. Precio del primer año con un 10 % de descuento; después, 0,144433 €/kWh.",
+      "fuente": "https://www.endesa.com/es/luz-y-gas/luz",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://www.endesa.com/es/luz-y-gas/luz/conecta-de-endesa",
+        "textos": [
+          "0,129990"
+        ]
+      }
+    },
+    {
+      "id": "endesa-24h-online",
+      "comercializadora": "Endesa",
+      "nombre": "Luz 24h Online",
+      "tipo": "fija",
+      "energia": {
+        "unico": 0.148435
+      },
+      "potencia": {
+        "p1": 0.093666,
+        "p2": 0.093666
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio del primer año con un 20 % de descuento (10 % el primer año y 10 % indefinido); después, unos 0,167 €/kWh.",
+      "fuente": "https://www.endesa.com/es/luz-y-gas/luz",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://www.endesa.com/es/luz-y-gas/luz/one/tarifa-one-luz",
+        "textos": [
+          "0,148435"
+        ]
+      }
+    },
+    {
+      "id": "endesa-conecta-3p",
+      "comercializadora": "Endesa",
+      "nombre": "Conecta 3 Periodos",
+      "tipo": "periodos",
+      "energia": {
+        "p1": 0.20241,
+        "p2": 0.13401,
+        "p3": 0.11061
+      },
+      "potencia": {
+        "p1": 0.093666,
+        "p2": 0.093666
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio del primer año con un 10 % de descuento; después, 0,2249 · 0,1489 · 0,1229 €/kWh.",
+      "fuente": "https://www.endesa.com/es/luz-y-gas/luz",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://www.endesa.com/es/luz-y-gas/luz/one/tarifa-one-luz-3periodos",
+        "textos": [
+          "0,202410",
+          "0,134010",
+          "0,110610"
+        ]
+      }
+    },
+    {
+      "id": "naturgy-por-uso",
+      "comercializadora": "Naturgy",
+      "nombre": "Por Uso Luz",
+      "tipo": "fija",
+      "energia": {
+        "unico": 0.148
+      },
+      "potencia": {
+        "p1": 0.12303,
+        "p2": 0.061562
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio estable durante 12 meses, sin servicios adicionales.",
+      "fuente": "https://www.naturgy.es/hogar/luz",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://www.naturgy.es/hogar/luz",
+        "textos": [
+          "0,148000",
+          "0,123030",
+          "0,061562"
+        ]
+      }
+    },
+    {
+      "id": "naturgy-noche",
+      "comercializadora": "Naturgy",
+      "nombre": "Noche Luz",
+      "tipo": "periodos",
+      "energia": {
+        "p1": 0.218,
+        "p2": 0.145,
+        "p3": 0.11
+      },
+      "potencia": {
+        "p1": 0.12303,
+        "p2": 0.061562
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio estable durante 12 meses, sin servicios adicionales.",
+      "fuente": "https://www.naturgy.es/hogar/luz",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://www.naturgy.es/hogar/luz",
+        "textos": [
+          "0,218000",
+          "0,145000",
+          "0,110000"
+        ]
+      }
+    },
+    {
+      "id": "plenitude-facil-plus",
+      "comercializadora": "Plenitude",
+      "nombre": "Fácil Plus",
+      "tipo": "fija",
+      "energia": {
+        "unico": 0.146559
+      },
+      "energia_alta": {
+        "unico": 0.166887
+      },
+      "potencia": {
+        "p1": 0.112498,
+        "p2": 0.112498
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio fijo 12 meses. Hasta 5 kW de potencia; con más de 5 kW la energía cuesta 0,166887 €/kWh (ya lo tenemos en cuenta).",
+      "fuente": "https://eniplenitude.es/hogar/tarifas-luz/facil/",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://eniplenitude.es/hogar/tarifas-luz/facil/",
+        "textos": [
+          "0,146559",
+          "0,112498"
+        ]
+      }
+    },
+    {
+      "id": "plenitude-3p",
+      "comercializadora": "Plenitude",
+      "nombre": "Fácil Plus 3 Periodos",
+      "tipo": "periodos",
+      "energia": {
+        "p1": 0.280596,
+        "p2": 0.214031,
+        "p3": 0.108853
+      },
+      "energia_alta": {
+        "p1": 0.287701,
+        "p2": 0.219106,
+        "p3": 0.126108
+      },
+      "potencia": {
+        "p1": 0.099984,
+        "p2": 0.099984
+      },
+      "excedentes": null,
+      "permanencia": false,
+      "condiciones": "Precio fijo 12 meses. Precios hasta 5 kW de potencia; con más de 5 kW son algo más altos (ya lo tenemos en cuenta).",
+      "fuente": "https://eniplenitude.es/hogar/tarifas-luz/plus-3-periodos/",
+      "fuente_tipo": "oficial",
+      "revisado": "2026-11-26",
+      "vigilar": {
+        "url": "https://eniplenitude.es/hogar/tarifas-luz/plus-3-periodos/",
+        "textos": [
+          "0,280596",
+          "0,214031",
+          "0,108853"
+        ]
+      }
     }
   ]
 }

@@ -24,8 +24,10 @@
     var reg = o.regulado || { bono_social_anual: 9.011295, contador_mes: 0.81 };
     var keys = Object.keys(consumo.days).sort();
     var meses = {}, kwh = 0, sinPrecio = 0;
+    var E = oferta.energia_alta && o.p1kW > 5 ? oferta.energia_alta : oferta.energia;   // algunas ofertas cobran más la energía por encima de 5 kW
     keys.forEach(function (k) {
-      var d = consumo.days[k], ex = consumo.exp && consumo.exp[k];
+      var d = consumo.days[k], ex = consumo.exp && consumo.exp[k], spot = oferta.tipo === "pvpc" && o.spot && o.spot[k];
+      var vx = 0;
       var m = k.slice(0, 7), M = meses[m] = meses[m] || { dias: [], energia: 0, excedente: 0, valorExc: 0 };
       var eDia = 0, xDia = 0;
       for (var h = 0; h < 24; h++) {
@@ -34,15 +36,22 @@
           var day = o.pvpc && o.pvpc[k];
           p = day && day[h] != null ? day[h] : null;
           if (p == null) { p = o.pvpcFallback ? o.pvpcFallback[h] : 0.13; sinPrecio += v; }
-        } else if (oferta.tipo === "periodos") p = oferta.energia[period(k, h)];
-        else p = oferta.energia.unico;
+        } else if (oferta.tipo === "periodos") p = E[period(k, h)];
+        else p = E.unico;
         eDia += v * p; kwh += v;
-        if (ex && ex[h] > 0) xDia += ex[h];
+        if (ex && ex[h] > 0) {
+          xDia += ex[h];
+          // PVPC: los excedentes se pagan al precio del mercado de esa hora; mercado libre: al precio fijo de la oferta
+          var pe = oferta.tipo === "pvpc"
+            ? (spot && spot[h] != null ? Math.max(spot[h], 0) : (o.spotFallback ? o.spotFallback[h] : 0))
+            : (+oferta.excedentes || 0);
+          vx += ex[h] * pe;
+        }
       }
       var pot = o.p1kW * oferta.potencia.p1 + o.p2kW * oferta.potencia.p2;
       M.dias.push({ k: k, energia: eDia, pot: pot });
       M.energia += eDia; M.excedente += xDia;
-      M.valorExc += xDia * (oferta.excedentes || 0);
+      M.valorExc += vx;
     });
     var T = { energia: 0, compensado: 0, potencia: 0, iee: 0, contador: 0, bono: 0, iva: 0, kwh: kwh, dias: keys.length, meses: [] };
     Object.keys(meses).sort().forEach(function (m) {
@@ -74,7 +83,7 @@
   function comparar(ofertas, consumo, o) {
     var lista = ofertas.map(function (of) { return { oferta: of, r: factura(of, consumo, o) }; });
     if (o.pvpc) lista.push({ oferta: { id: "pvpc", comercializadora: "Tarifa regulada", nombre: "PVPC", tipo: "pvpc",
-      potencia: o.pvpcPotencia || { p1: 0.082, p2: 0.002 }, excedentes: null }, r: null });
+      potencia: o.pvpcPotencia || { p1: 0.082, p2: 0.002 }, excedentes: o.spot ? "mercado" : null }, r: null });
     lista.forEach(function (x) { if (!x.r) x.r = factura(x.oferta, consumo, o); });
     lista.sort(function (a, b) { return a.r.anual - b.r.anual; });
     return lista;

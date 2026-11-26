@@ -45,10 +45,28 @@ def to_24(acc):
     return out
 
 
+SPOT = {}   # precio del mercado diario por hora (€/kWh): con él se compensan los excedentes en el PVPC
+
+
+def stash_spot(j):
+    """Guarda en SPOT la serie del mercado diario que viene en la misma respuesta que el PVPC."""
+    ser = [x for x in j.get("included", []) if "spot" in x.get("attributes", {}).get("title", "").lower()]
+    if not ser:
+        return
+    acc = {}
+    for v in ser[0]["attributes"]["values"]:
+        dt = str(v["datetime"])
+        acc.setdefault(dt[:10], {}).setdefault(int(dt[11:13]), []).append(float(v["value"]))
+    for d, hh in acc.items():
+        if len(hh) >= 23:
+            SPOT[d] = to_24(hh)
+
+
 def pvpc_redata(day):
     url = ("https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real"
            f"?start_date={day}T00:00&end_date={day}T23:59&time_trunc=hour")
     j = get_json(url)
+    stash_spot(j)
     series = [s for s in j.get("included", []) if "pvpc" in s.get("attributes", {}).get("title", "").lower()]
     if not series:
         return None
@@ -65,6 +83,7 @@ def pvpc_redata_range(start, end):
     url = ("https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real"
            f"?start_date={start}T00:00&end_date={end}T23:59&time_trunc=hour")
     j = get_json(url, timeout=90)
+    stash_spot(j)
     series = [s for s in j.get("included", []) if "pvpc" in s.get("attributes", {}).get("title", "").lower()]
     if not series:
         return {}
@@ -81,7 +100,7 @@ def backfill(data, now, days_back=395, chunk=7, max_requests=80):
     missing = []
     for i in range(days_back, 1, -1):
         d = (today - timedelta(days=i)).strftime("%Y-%m-%d")
-        if d not in data["days"]:
+        if d not in data["days"] or d not in data.get("spot", {}):
             missing.append(d)
     if not missing:
         return
@@ -383,6 +402,72 @@ def boe_watch(now):
     print(f"BOE: revisado ({found} normas sobre la luz)")
 
 
+def fetch_text(url, timeout=40):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; Kilovatio/1.0; +https://kilovatio-es.github.io)",
+                                               "Accept": "text/html,application/xhtml+xml", "Accept-Language": "es-ES,es;q=0.9"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace")
+
+
+def vigilar_ofertas(now):
+    """Una vez al día abre la web oficial de cada oferta y comprueba que siguen apareciendo sus precios.
+    Si cambian, la marca en data/ofertas_estado.json (la web la señala) y abre un aviso para revisarla."""
+    from urllib import robotparser
+    from urllib.parse import urlsplit
+    today = now.strftime("%Y-%m-%d")
+    est_path = os.path.join(ROOT, "data", "ofertas_estado.json")
+    est = {"revisado": None, "items": {}}
+    if os.path.exists(est_path):
+        with open(est_path, encoding="utf-8") as f:
+            est = json.load(f)
+    if est.get("revisado") == today:
+        return
+    with open(os.path.join(ROOT, "data", "ofertas.json"), encoding="utf-8") as f:
+        of = json.load(f)
+    robots, pages = {}, {}
+    for o in of["ofertas"]:
+        v = o.get("vigilar")
+        if not v:
+            continue
+        url, st = v["url"], "sin_verificar"
+        try:
+            host = "{0.scheme}://{0.netloc}".format(urlsplit(url))
+            if host not in robots:
+                rp = robotparser.RobotFileParser()
+                try:
+                    rp.parse(fetch_text(host + "/robots.txt", 20).splitlines())
+                except Exception:  # noqa: BLE001
+                    rp = None
+                robots[host] = rp
+            rp = robots[host]
+            if rp is not None and not rp.can_fetch("Kilovatio", url):
+                st = "no_permitido"
+            else:
+                if url not in pages:
+                    pages[url] = fetch_text(url)
+                    time.sleep(2)
+                html = pages[url]
+                found = [t for t in v["textos"] if t in html]
+                st = "ok" if len(found) == len(v["textos"]) else "cambiada" if found else "sin_verificar"
+        except Exception as e:  # noqa: BLE001
+            print(f"Oferta {o['id']}: no se pudo abrir ({e})")
+        prev = est["items"].get(o["id"], {})
+        item = {"estado": st, "comprobado": today, "ok": today if st == "ok" else prev.get("ok"),
+                "dias_sin": prev.get("dias_sin", 0) + 1 if st == "sin_verificar" else 0}
+        est["items"][o["id"]] = item
+        print(f"Oferta {o['id']}: {st}")
+        name = f"{o['comercializadora']} {o['nombre']}"
+        if st == "cambiada":
+            alert(f"oferta-{o['id']}-{today[:7]}", f"oferta {name}",
+                  f"En {url} ya no aparecen todos los precios guardados ({', '.join(v['textos'])}). "
+                  "Comprueba la oferta, actualiza data/ofertas.json (precios, revisado y vigilar.textos).", url)
+        elif st == "sin_verificar" and item["dias_sin"] == 3:
+            alert(f"oferta-sin-{o['id']}-{today[:7]}", f"oferta {name}",
+                  f"Hace 3 días que no se pueden comprobar los precios en {url}. Revisa la oferta a mano.", url)
+    est["revisado"] = today
+    write_json(est_path, est)
+
+
 def load_refs():
     with open(os.path.join(ROOT, "data", "referencias.json"), encoding="utf-8") as f:
         return json.load(f)
@@ -408,8 +493,11 @@ def main():
         if p:
             data["days"][day] = p
     backfill(data, now)
+    data.setdefault("spot", {}).update(SPOT)
     keep =sorted(data["days"])[-KEEP_DAYS:]
     data["days"] = {k: data["days"][k] for k in keep}
+    data["spot"] = {k: data["spot"][k] for k in keep if k in data["spot"]}
+    print(f"Mercado diario: {len(data['spot'])} días")
     try:
         j = fuel_raw()
         f = fuel(j)
@@ -430,6 +518,10 @@ def main():
         data["refsRevisado"] = refs.get("revisado")
     except Exception as e:  # noqa: BLE001
         print(f"Referencias: fallo: {e}")
+    try:
+        vigilar_ofertas(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"Ofertas: fallo: {e}")
     try:
         boe_watch(now)
     except Exception as e:  # noqa: BLE001
