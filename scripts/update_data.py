@@ -213,11 +213,16 @@ def gasolineras(j, now):
         rows.append([round(lat, 5), round(lon, 5), (e.get("Rótulo") or "").strip(), (e.get("Dirección") or "").strip(),
                      (e.get("Municipio") or "").strip(), (e.get("Provincia") or "").strip().title(),
                      (e.get("Horario") or "").strip(), (e.get("C.P.") or "").strip()] + prices)
+    if len(rows) < 5000:
+        # El Ministerio a veces responde con la lista vacía o a medias: se conservan los datos anteriores
+        print(f"Mapa: solo {len(rows)} gasolineras en la respuesta; se mantienen los datos anteriores")
+        return False
     out = {"updated": now.isoformat(timespec="minutes"), "source": j.get("Fecha"),
            "cols": ["lat", "lon", "rotulo", "direccion", "municipio", "provincia", "horario", "cp"] + [k for k, _ in FUELS],
            "rows": rows}
     write_json(os.path.join(ROOT, "data", "gasolineras.json"), out)
     print(f"Mapa: {len(rows)} gasolineras")
+    return True
 
 
 # ---------- Puntos de recarga (DGT, Punto de Acceso Nacional, DATEX II, licencia CC-BY) ----------
@@ -468,6 +473,22 @@ def vigilar_ofertas(now):
     write_json(est_path, est)
 
 
+def gas_daily(now):
+    """Páginas de gasolineras más baratas (España, provincias y localidades): una vez al día, con los precios de la mañana."""
+    mark = os.path.join(ROOT, "data", "paginas.json")
+    st = {}
+    if os.path.exists(mark):
+        with open(mark, encoding="utf-8") as f:
+            st = json.load(f)
+    today = now.strftime("%Y-%m-%d")
+    if st.get("gasolineras") == today or (now.hour < 7 and os.path.exists(os.path.join(ROOT, "gasolineras.html"))):
+        return
+    import gas_pages
+    if gas_pages.write_all(ROOT, now):
+        st["gasolineras"] = today
+        write_json(mark, st)
+
+
 def load_refs():
     with open(os.path.join(ROOT, "data", "referencias.json"), encoding="utf-8") as f:
         return json.load(f)
@@ -507,6 +528,10 @@ def main():
         gasolineras(j, now)
     except Exception as e:  # noqa: BLE001
         print(f"Carburantes: fallo: {e}")
+    try:
+        gas_daily(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"Páginas de gasolineras: fallo: {e}")
     try:
         recarga(now)
     except Exception as e:  # noqa: BLE001

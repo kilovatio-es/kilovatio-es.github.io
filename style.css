@@ -467,3 +467,35 @@ h2.step span{flex:none;width:2rem;height:2rem;border-radius:999px;background:var
 .mchart{width:100%;height:auto;display:block}
 .mchart text{font:500 11px var(--f-mono);fill:var(--muted)}
 .callout.hook{background:var(--sun-soft);border-color:color-mix(in srgb,var(--sun) 35%,transparent)}
+
+/* Gasolineras */
+.gas .gk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.gnear{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1rem;margin:1.4rem 0 .4rem}
+.gnear #near-res{flex-basis:100%;display:grid;gap:.6rem}
+.gsec{display:grid;gap:.8rem;padding-block:1.6rem}
+.gtabs{justify-self:start;flex-wrap:wrap}
+.gpane{display:grid;gap:.8rem}
+.grank{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
+.grank li{display:grid;grid-template-columns:2rem minmax(0,1fr) auto;gap:.8rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem}
+.grank li:first-child{border-color:var(--good);box-shadow:0 0 0 1px var(--good) inset}
+.gp{width:2rem;height:2rem;border-radius:999px;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);font-weight:600;font-size:.85rem}
+.grank li:first-child .gp{background:var(--good);border-color:var(--good);color:var(--surface)}
+.gw{display:grid;gap:.1rem;min-width:0}
+.gw span{font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.gw .g24{justify-self:start;font:600 .7rem var(--f-mono);background:var(--grid-soft);color:var(--grid);padding:.05rem .45rem;border-radius:999px}
+.gc{display:grid;justify-items:end;gap:.05rem;text-align:right}
+.gc b{font:600 1.2rem var(--f-mono)}
+.gc a{font-size:.8rem;font-weight:600}
+.gd{font:600 .76rem var(--f-mono);color:var(--muted)}
+.gd.good{color:var(--good)}.gd.bad{color:var(--bad)}
+.gall{justify-self:center}
+.glinks{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
+.glinks a{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.35rem .8rem;background:var(--surface);text-decoration:none;font-size:.9rem}
+.glinks.inl{display:inline-flex;margin-left:.4rem;vertical-align:middle}
+.gprov td:first-child a{font-weight:600}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:820px){.gas .gk{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.gas .gk{grid-template-columns:minmax(0,1fr)}.grank li{grid-template-columns:1.8rem minmax(0,1fr);}.gc{grid-column:2;justify-items:start;text-align:left;grid-template-columns:auto auto auto;gap:.6rem;align-items:baseline}}
+.gas .intro{gap:.6rem}
+@media (max-width:480px){.gas .gk{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.6rem}.gas .gk .ans{padding:.7rem .8rem}.gas .gk .ans b{font-size:1.2rem}.gas .gk .ans span{font-size:.76rem}.gas .intro p:not(.note){font-size:.98rem}}
+.gtabs{border-radius:14px}
