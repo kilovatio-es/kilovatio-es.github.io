@@ -4,7 +4,8 @@ import os, re, sys
 
 CATS = [
     # clave, etiqueta, enlace principal, subpáginas
-    ("luz", "Precio de la luz", "index.html", []),
+    ("luz", "Precio de la luz", "index.html",
+     [("index.html", "Hoy"), ("precio-luz-manana.html", "Mañana"), ("precio-luz-meses.html", "Por meses")]),
     ("mi", "Mi Kilovatio", "mi-kilovatio.html", []),
     ("factura", "Tu factura", "comparador-tarifas.html",
      [("comparador-tarifas.html", "Comparador de tarifas"), ("mejores-tarifas-luz.html", "Mejores tarifas del mes"), ("tarifa-pvpc-o-fija.html", "PVPC o precio fijo"), ("potencia-contratada.html", "Potencia contratada"),
@@ -57,7 +58,7 @@ FOOTER = """<footer class="site"><div class="wrap cols">
     <p style="margin-top:.6rem">Los resultados son estimaciones orientativas y no sustituyen el presupuesto de un profesional ni el asesoramiento fiscal.</p>
   </div>
   <div><h4>Precio de la luz</h4><ul>
-    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="precio-luz-manana.html">Precio de la luz mañana</a></li>
+    <li><a href="index.html">Precio de la luz hoy</a></li><li><a href="precio-luz-manana.html">Precio de la luz mañana</a></li><li><a href="precio-luz-meses.html">Precio de la luz por meses</a></li>
     <li><a href="mi-kilovatio.html">Mi Kilovatio</a></li>
   </ul></div>
   <div><h4>Tu factura</h4><ul>

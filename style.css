@@ -508,3 +508,11 @@ h2.step span{flex:none;width:2rem;height:2rem;border-radius:999px;background:var
 .rk-h{margin-top:.6rem}
 .cta{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;background:var(--sun-soft);border-color:color-mix(in srgb,var(--sun) 35%,transparent);margin-bottom:2rem}
 .cta h2{font-size:1.3rem}.cta > div{display:grid;gap:.3rem;max-width:60ch}
+.mes{display:grid;gap:1.2rem;padding-bottom:1rem}
+.lead-m{max-width:70ch;color:var(--muted);font-size:1.05rem}
+.lead-m b{color:var(--ink)}
+.mes-sec{display:grid;gap:.7rem}
+.mes-nav{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:space-between}
+.mchart a rect:hover{opacity:.75}
+.mes .gk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+@media (max-width:820px){.mes .gk{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.mes .gk .ans b{font-size:1.25rem}}
