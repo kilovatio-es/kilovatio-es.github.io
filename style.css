@@ -499,3 +499,12 @@ h2.step span{flex:none;width:2rem;height:2rem;border-radius:999px;background:var
 .gas .intro{gap:.6rem}
 @media (max-width:480px){.gas .gk{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.6rem}.gas .gk .ans{padding:.7rem .8rem}.gas .gk .ans b{font-size:1.2rem}.gas .gk .ans span{font-size:.76rem}.gas .intro p:not(.note){font-size:.98rem}}
 .gtabs{border-radius:14px}
+
+/* Mejores tarifas del mes */
+.tarifas section{padding-bottom:1.6rem}
+.tmodes .choice h3{font-size:1.1rem}
+.tmodes .choice .go{color:var(--muted);font-size:.82rem}
+.tres .tpane{display:grid;gap:1rem}
+.rk-h{margin-top:.6rem}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;background:var(--sun-soft);border-color:color-mix(in srgb,var(--sun) 35%,transparent);margin-bottom:2rem}
+.cta h2{font-size:1.3rem}.cta > div{display:grid;gap:.3rem;max-width:60ch}

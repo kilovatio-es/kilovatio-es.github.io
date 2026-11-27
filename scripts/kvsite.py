@@ -7,7 +7,7 @@ CATS = [
     ("luz", "Precio de la luz", "index.html", []),
     ("mi", "Mi Kilovatio", "mi-kilovatio.html", []),
     ("factura", "Tu factura", "comparador-tarifas.html",
-     [("comparador-tarifas.html", "Comparador de tarifas"), ("tarifa-pvpc-o-fija.html", "PVPC o precio fijo"), ("potencia-contratada.html", "Potencia contratada"),
+     [("comparador-tarifas.html", "Comparador de tarifas"), ("mejores-tarifas-luz.html", "Mejores tarifas del mes"), ("tarifa-pvpc-o-fija.html", "PVPC o precio fijo"), ("potencia-contratada.html", "Potencia contratada"),
       ("guia-factura-luz.html", "Guía de la factura")]),
     ("casa", "Tu casa", "consumo-electrodomesticos.html",
      [("consumo-electrodomesticos.html", "Electrodomésticos"), ("calefaccion.html", "Calefacción"),
@@ -22,6 +22,8 @@ def cat_of(page):
         return "luz"
     if page.startswith("gasolineras"):
         return "mov"
+    if page.startswith("mejores-tarifas-luz"):
+        return "factura"
     for key, _, main, subs in CATS:
         if page == main or page in [s[0] for s in subs]:
             return key
@@ -59,7 +61,7 @@ FOOTER = """<footer class="site"><div class="wrap cols">
     <li><a href="mi-kilovatio.html">Mi Kilovatio</a></li>
   </ul></div>
   <div><h4>Tu factura</h4><ul>
-    <li><a href="comparador-tarifas.html">Comparador de tarifas</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li><li><a href="potencia-contratada.html">Potencia contratada</a></li>
+    <li><a href="comparador-tarifas.html">Comparador de tarifas</a></li><li><a href="mejores-tarifas-luz.html">Mejores tarifas del mes</a></li><li><a href="tarifa-pvpc-o-fija.html">PVPC o precio fijo</a></li><li><a href="potencia-contratada.html">Potencia contratada</a></li>
     <li><a href="guia-factura-luz.html">Guía de la factura</a></li>
   </ul></div>
   <div><h4>Tu casa</h4><ul>

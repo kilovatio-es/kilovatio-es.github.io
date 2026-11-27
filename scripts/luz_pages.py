@@ -333,11 +333,12 @@ def write_all(data, root, today_k):
     for k in complete:
         changed += write_if_changed(os.path.join(root, page_name(k)), fill(tpl_dia, *render_block(data, k, "dia", today_k), page_name(k)))
     # Sitemap
+    tar = sorted((f for f in os.listdir(root) if f.startswith("mejores-tarifas-luz") and f.endswith(".html")), key=lambda f: (f != "mejores-tarifas-luz.html", f))
     gas = sorted(f for f in os.listdir(root) if f.startswith("gasolineras") and f.endswith(".html"))
     if "gasolineras.html" in gas:
         gas.remove("gasolineras.html")
         gas.insert(0, "gasolineras.html")
-    urls = ([SITE + p for p in FIXED_PAGES] + [SITE + "precio-luz-manana.html"] + [SITE + g for g in gas]
+    urls = ([SITE + p for p in FIXED_PAGES] + [SITE + "precio-luz-manana.html"] + [SITE + t for t in tar] + [SITE + g for g in gas]
             + [SITE + page_name(k) for k in reversed(complete)])
     sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
         f"  <url><loc>{u}</loc></url>\n" for u in urls) + "</urlset>\n"

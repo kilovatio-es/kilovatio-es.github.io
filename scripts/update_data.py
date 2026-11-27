@@ -557,6 +557,11 @@ def main():
         json.dump(data, fh, ensure_ascii=False, separators=(",", ":"))
     print(f"Guardado {OUT}: {len(data['days'])} días")
     try:
+        import tarifas_pages  # «Mejores tarifas de luz» del mes, con el motor del comparador
+        tarifas_pages.write_all(ROOT, now.strftime("%Y-%m-%d"))
+    except Exception as e:  # noqa: BLE001
+        print(f"Mejores tarifas: fallo: {e}")
+    try:
         import luz_pages  # páginas de hoy, mañana y cada día, con los números en el HTML
         luz_pages.write_all(data, ROOT, now.strftime("%Y-%m-%d"))
     except Exception as e:  # noqa: BLE001
