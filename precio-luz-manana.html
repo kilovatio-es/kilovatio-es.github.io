@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Precio de la luz mañana, sábado 28 de noviembre · Kilovatio</title>
+<title>Precio de la luz mañana, sábado 28 de noviembre: más barata a las 12:00 · Kilovatio</title>
 <link rel="canonical" href="https://kilovatio-es.github.io/precio-luz-manana.html">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Precio de la luz mañana (sábado 28 de noviembre de 2026) hora a hora. Se publica cada tarde hacia las 20:30: hora más barata, más cara y semáforo de 24 horas.">
+<meta name="description" content="Precio de la luz mañana (sábado 28 de noviembre de 2026) hora a hora: la hora más barata es 12:00–13:00 (0,199 €/kWh) y la más cara 21:00–22:00 (0,365 €/kWh). Media 0,272 €/kWh con impuestos. Semáforo de 24 horas y mejor hora para cada aparato.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Precio de la luz mañana, sábado 28 de noviembre · Kilovatio">
-<meta property="og:description" content="Precio de la luz mañana (sábado 28 de noviembre de 2026) hora a hora. Se publica cada tarde hacia las 20:30: hora más barata, más cara y semáforo de 24 horas.">
+<meta property="og:title" content="Precio de la luz mañana, sábado 28 de noviembre: más barata a las 12:00 · Kilovatio">
+<meta property="og:description" content="Precio de la luz mañana (sábado 28 de noviembre de 2026) hora a hora: la hora más barata es 12:00–13:00 (0,199 €/kWh) y la más cara 21:00–22:00 (0,365 €/kWh). Media 0,272 €/kWh con impuestos. Semáforo de 24 horas y mejor hora para cada aparato.">
 <meta property="og:locale" content="es_ES">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23e39f12'/%3E%3Cpath d='M13 4 7 13h5l-1 7 6-9h-5l1-7Z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,10 +41,66 @@
   <div class="intro luz-intro">
     <h1>Precio de la luz mañana</h1>
   </div>
-<div class="daynav"><div class="seg" role="navigation" aria-label="Día"><a href="index.html">Hoy</a><a href="precio-luz-manana.html" aria-current="page">Mañana</a></div></div>
-<p class="eyebrow">Mañana, sábado 28 de noviembre</p>
-<div class="callout sun pending"><b>Los precios de mañana todavía no están publicados.</b> Red Eléctrica los publica cada tarde hacia las 20:15–20:30 y aparecen aquí a partir de las 20:45. Mientras tanto, mira <a href="index.html">el precio de la luz de hoy</a>.</div>
-<p class="lead">Hoy, viernes 27 de noviembre, la hora más barata es de <strong>14:00–15:00</strong> (0,227 €/kWh) y la media del día es de 0,326 €/kWh con impuestos.</p>
+<div class="daynav">
+<div class="seg" role="navigation" aria-label="Día"><a href="index.html">Hoy</a><a href="precio-luz-manana.html" aria-current="page">Mañana</a></div>
+<label class="pickday"><span>Otro día</span><input type="date" id="pick" value="2026-11-28" min="2025-10-25" max="2026-11-28" aria-label="Elegir día"></label>
+</div>
+<p class="eyebrow">Mañana, sábado 28 de noviembre · PVPC con impuestos</p>
+<div class="answer">
+<div class="ans good"><small>Hora más barata</small><b>12:00–13:00</b><span class="num">0,199 €/kWh</span></div>
+<div class="ans bad"><small>Hora más cara</small><b>21:00–22:00</b><span class="num">0,365 €/kWh</span></div>
+<div class="ans mid"><small>Precio medio del día</small><b class="num">0,272</b><span>€/kWh · Día normal</span></div>
+<div class="ans now" id="nowcard" hidden><small>Ahora</small><b class="num" id="now-p">—</b><span id="now-t"></span></div>
+</div>
+<p class="lead">El precio medio de la luz mañana (sábado 28 de noviembre de 2026) es de <strong>0,272 €/kWh</strong>, un 17 % más barato que el viernes y un 77 % más que hace un año (0,154 €/kWh). La hora más barata es de <strong>12:00–13:00</strong> (0,199 €/kWh) y la más cara, de <strong>21:00–22:00</strong> (0,365 €/kWh). Es un día normal: en la media de los últimos 30 días.</p>
+<section class="panel sema-wrap" aria-labelledby="h-sema">
+<div class="sema-head"><h2 id="h-sema">Semáforo de la luz mañana, hora a hora</h2><div class="legend"><span><i style="background:var(--good)"></i>Barata</span><span><i style="background:var(--mid)"></i>Media</span><span><i style="background:var(--bad)"></i>Cara</span></div></div>
+<ol class="sema" id="sema">
+<li class="mid" data-h="0" title="00:00–01:00 · 0,282 €/kWh · Media"><span class="h">00:00</span><span class="p">0,282</span></li>
+<li class="mid" data-h="1" title="01:00–02:00 · 0,267 €/kWh · Media"><span class="h">01:00</span><span class="p">0,267</span></li>
+<li class="mid" data-h="2" title="02:00–03:00 · 0,251 €/kWh · Media"><span class="h">02:00</span><span class="p">0,251</span></li>
+<li class="mid" data-h="3" title="03:00–04:00 · 0,242 €/kWh · Media"><span class="h">03:00</span><span class="p">0,242</span></li>
+<li class="good" data-h="4" title="04:00–05:00 · 0,241 €/kWh · Barata"><span class="h">04:00</span><span class="p">0,241</span></li>
+<li class="good" data-h="5" title="05:00–06:00 · 0,241 €/kWh · Barata"><span class="h">05:00</span><span class="p">0,241</span></li>
+<li class="good" data-h="6" title="06:00–07:00 · 0,236 €/kWh · Barata"><span class="h">06:00</span><span class="p">0,236</span></li>
+<li class="mid" data-h="7" title="07:00–08:00 · 0,268 €/kWh · Media"><span class="h">07:00</span><span class="p">0,268</span></li>
+<li class="bad" data-h="8" title="08:00–09:00 · 0,283 €/kWh · Cara"><span class="h">08:00</span><span class="p">0,283</span></li>
+<li class="mid" data-h="9" title="09:00–10:00 · 0,251 €/kWh · Media"><span class="h">09:00</span><span class="p">0,251</span></li>
+<li class="good" data-h="10" title="10:00–11:00 · 0,225 €/kWh · Barata"><span class="h">10:00</span><span class="p">0,225</span></li>
+<li class="good" data-h="11" title="11:00–12:00 · 0,205 €/kWh · Barata"><span class="h">11:00</span><span class="p">0,205</span></li>
+<li class="good" data-h="12" title="12:00–13:00 · 0,199 €/kWh · Barata"><span class="h">12:00</span><span class="p">0,199</span></li>
+<li class="good" data-h="13" title="13:00–14:00 · 0,200 €/kWh · Barata"><span class="h">13:00</span><span class="p">0,200</span></li>
+<li class="good" data-h="14" title="14:00–15:00 · 0,215 €/kWh · Barata"><span class="h">14:00</span><span class="p">0,215</span></li>
+<li class="mid" data-h="15" title="15:00–16:00 · 0,243 €/kWh · Media"><span class="h">15:00</span><span class="p">0,243</span></li>
+<li class="mid" data-h="16" title="16:00–17:00 · 0,278 €/kWh · Media"><span class="h">16:00</span><span class="p">0,278</span></li>
+<li class="bad" data-h="17" title="17:00–18:00 · 0,318 €/kWh · Cara"><span class="h">17:00</span><span class="p">0,318</span></li>
+<li class="bad" data-h="18" title="18:00–19:00 · 0,364 €/kWh · Cara"><span class="h">18:00</span><span class="p">0,364</span></li>
+<li class="bad" data-h="19" title="19:00–20:00 · 0,364 €/kWh · Cara"><span class="h">19:00</span><span class="p">0,364</span></li>
+<li class="bad" data-h="20" title="20:00–21:00 · 0,362 €/kWh · Cara"><span class="h">20:00</span><span class="p">0,362</span></li>
+<li class="bad" data-h="21" title="21:00–22:00 · 0,365 €/kWh · Cara"><span class="h">21:00</span><span class="p">0,365</span></li>
+<li class="bad" data-h="22" title="22:00–23:00 · 0,322 €/kWh · Cara"><span class="h">22:00</span><span class="p">0,322</span></li>
+<li class="bad" data-h="23" title="23:00–00:00 · 0,303 €/kWh · Cara"><span class="h">23:00</span><span class="p">0,303</span></li>
+</ol>
+<p class="note">Colores relativos a este día: verde, el tercio de horas más barato; rojo, el más caro. Precios PVPC (tarifa 2.0TD, península) en €/kWh con los impuestos vigentes ese día: impuesto eléctrico (5,11 %) e IVA (21 %). Fuente: Red Eléctrica.</p>
+<details class="chartbox"><summary>Ver gráfico</summary><svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg></details>
+</section>
+<section class="panel" aria-labelledby="h-apps">
+<h2 id="h-apps">¿Cuándo pongo la lavadora mañana?</h2>
+<p class="muted">La mejor franja seguida para cada aparato y lo que cuesta, frente a hacerlo en las horas más caras.</p>
+<div class="tablewrap"><table class="apps"><thead><tr><th>Aparato</th><th>Mejor franja</th><th class="num">Cuesta</th><th class="num">En la peor franja</th><th class="num">Ahorras</th></tr></thead><tbody>
+<tr data-n="2" data-kwh="0.9" data-worst="0.3277"><td><b>Lavadora</b><small>ciclo de 40 °C</small></td><td class="mono">12:00–14:00</td><td class="num">0,18 €</td><td class="num">0,33 € <small>(18:00–20:00)</small></td><td class="num save">0,15 €</td></tr>
+<tr data-n="2" data-kwh="1.0" data-worst="0.3641"><td><b>Lavavajillas</b><small>programa eco</small></td><td class="mono">12:00–14:00</td><td class="num">0,20 €</td><td class="num">0,36 € <small>(18:00–20:00)</small></td><td class="num save">0,16 €</td></tr>
+<tr data-n="2" data-kwh="2.5" data-worst="0.9102"><td><b>Secadora</b><small>ciclo completo</small></td><td class="mono">12:00–14:00</td><td class="num">0,50 €</td><td class="num">0,91 € <small>(18:00–20:00)</small></td><td class="num save">0,41 €</td></tr>
+<tr data-n="1" data-kwh="1.4" data-worst="0.5112"><td><b>Horno</b><small>1 hora</small></td><td class="mono">12:00–13:00</td><td class="num">0,28 €</td><td class="num">0,51 € <small>(21:00–22:00)</small></td><td class="num save">0,23 €</td></tr>
+<tr data-n="2" data-kwh="3.0" data-worst="1.0922"><td><b>Termo eléctrico</b><small>calentar el depósito</small></td><td class="mono">12:00–14:00</td><td class="num">0,60 €</td><td class="num">1,09 € <small>(18:00–20:00)</small></td><td class="num save">0,49 €</td></tr>
+<tr data-n="3" data-kwh="22.0" data-worst="8.0017"><td><b>Coche eléctrico</b><small>22 kWh a 7,4 kW</small></td><td class="mono">11:00–14:00</td><td class="num">4,43 €</td><td class="num">8,00 € <small>(19:00–22:00)</small></td><td class="num save">3,57 €</td></tr>
+</tbody></table></div>
+<p class="note">Consumos típicos; el tuyo depende del aparato y del programa. Si un ciclo dura más de lo indicado, elige el principio de la franja verde.</p>
+</section>
+<nav class="prevnext" aria-label="Días">
+<a href="precio-luz-2026-11-27.html">← viernes 27 de noviembre</a>
+<span></span>
+</nav>
 <section class="panel cal" aria-labelledby="h-cal"><div class="cal-head"><h2 id="h-cal">Precio medio de cada día · noviembre de 2026</h2>
 <div class="cal-nav"><a href="precio-luz-2026-10-31.html" aria-label="Mes anterior">← octubre</a></div></div>
 <div class="calgrid" role="list"><span class="dow">L</span><span class="dow">M</span><span class="dow">X</span><span class="dow">J</span><span class="dow">V</span><span class="dow">S</span><span class="dow">D</span>
@@ -55,7 +111,7 @@
 <span class="pad"></span>
 <span class="pad"></span>
 <a role="listitem" class="good" href="precio-luz-2026-11-01.html" title="domingo 1 de noviembre de 2026 · media 0,231 €/kWh"><b>1</b><span>0,231</span></a>
-<a role="listitem" class="mid" href="precio-luz-2026-11-02.html" title="lunes 2 de noviembre de 2026 · media 0,288 €/kWh"><b>2</b><span>0,288</span></a>
+<a role="listitem" class="bad" href="precio-luz-2026-11-02.html" title="lunes 2 de noviembre de 2026 · media 0,288 €/kWh"><b>2</b><span>0,288</span></a>
 <a role="listitem" class="bad" href="precio-luz-2026-11-03.html" title="martes 3 de noviembre de 2026 · media 0,290 €/kWh"><b>3</b><span>0,290</span></a>
 <a role="listitem" class="bad" href="precio-luz-2026-11-04.html" title="miércoles 4 de noviembre de 2026 · media 0,322 €/kWh"><b>4</b><span>0,322</span></a>
 <a role="listitem" class="bad" href="precio-luz-2026-11-05.html" title="jueves 5 de noviembre de 2026 · media 0,317 €/kWh"><b>5</b><span>0,317</span></a>
@@ -80,13 +136,14 @@
 <a role="listitem" class="bad" href="precio-luz-2026-11-24.html" title="martes 24 de noviembre de 2026 · media 0,309 €/kWh"><b>24</b><span>0,309</span></a>
 <a role="listitem" class="mid" href="precio-luz-2026-11-25.html" title="miércoles 25 de noviembre de 2026 · media 0,249 €/kWh"><b>25</b><span>0,249</span></a>
 <a role="listitem" class="bad" href="precio-luz-2026-11-26.html" title="jueves 26 de noviembre de 2026 · media 0,310 €/kWh"><b>26</b><span>0,310</span></a>
-<a role="listitem" class="bad cur" href="precio-luz-2026-11-27.html" title="viernes 27 de noviembre de 2026 · media 0,326 €/kWh"><b>27</b><span>0,326</span></a>
-<span role="listitem" class="empty"><b>28</b></span>
+<a role="listitem" class="bad" href="precio-luz-2026-11-27.html" title="viernes 27 de noviembre de 2026 · media 0,326 €/kWh"><b>27</b><span>0,326</span></a>
+<a role="listitem" class="mid cur" href="precio-luz-2026-11-28.html" title="sábado 28 de noviembre de 2026 · media 0,272 €/kWh"><b>28</b><span>0,272</span></a>
 <span role="listitem" class="empty"><b>29</b></span>
 <span role="listitem" class="empty"><b>30</b></span>
 </div>
 <p class="note">Media de noviembre hasta ahora: <b>0,266 €/kWh</b> con impuestos. Día más barato: 22 (0,188); más caro: 27 (0,326). Pulsa un día para ver sus horas.</p>
 </section>
+<script>window.LUZ={"date": "2026-11-28", "kind": "manana", "p": [0.28216, 0.26651, 0.25091, 0.24247, 0.24122, 0.24139, 0.23575, 0.26821, 0.28261, 0.25107, 0.22462, 0.20486, 0.19924, 0.1999, 0.21514, 0.24277, 0.27827, 0.31823, 0.36436, 0.36379, 0.3622, 0.36515, 0.32232, 0.30272], "q": [0.24247, 0.28261]};</script>
 
   <section class="block" aria-labelledby="h-more">
     <header><p class="eyebrow">Ahorra en la factura</p><h2 id="h-more">Más herramientas de Kilovatio</h2></header>
