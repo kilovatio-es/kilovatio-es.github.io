@@ -557,6 +557,11 @@ def main():
         json.dump(data, fh, ensure_ascii=False, separators=(",", ":"))
     print(f"Guardado {OUT}: {len(data['days'])} días")
     try:
+        import prevision  # estimación del precio de los próximos días (viento, sol y temperatura de Open-Meteo)
+        prevision.run(ROOT, data, now)
+    except Exception as e:  # noqa: BLE001
+        print(f"Previsión: fallo: {e}")
+    try:
         import tarifas_pages  # «Mejores tarifas de luz» del mes, con el motor del comparador
         tarifas_pages.write_all(ROOT, now.strftime("%Y-%m-%d"))
     except Exception as e:  # noqa: BLE001
