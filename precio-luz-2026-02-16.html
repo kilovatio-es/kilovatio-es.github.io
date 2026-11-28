@@ -84,8 +84,8 @@
 <p class="note">Colores relativos a este día: verde, el tercio de horas más barato; rojo, el más caro. Precios PVPC (tarifa 2.0TD, península) en €/kWh con los impuestos vigentes ese día: impuesto eléctrico (5,11 %) e IVA (21 %). Fuente: Red Eléctrica.</p>
 <details class="chartbox"><summary>Ver gráfico</summary><svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg></details>
 </section>
-<section class="panel" aria-labelledby="h-apps">
-<h2 id="h-apps">¿Cuándo pongo la lavadora el 16 de febrero de 2026?</h2>
+<section class="panel" aria-labelledby="h-apps" id="ahora">
+<h2 id="h-apps">¿Cuándo convenía poner la lavadora el 16 de febrero de 2026?</h2>
 <p class="muted">La mejor franja seguida para cada aparato y lo que cuesta, frente a hacerlo en las horas más caras.</p>
 <div class="tablewrap"><table class="apps"><thead><tr><th>Aparato</th><th>Mejor franja</th><th class="num">Cuesta</th><th class="num">En la peor franja</th><th class="num">Ahorras</th></tr></thead><tbody>
 <tr data-n="2" data-kwh="0.9" data-worst="0.2226"><td><b>Lavadora</b><small>ciclo de 40 °C</small></td><td class="mono">06:00–08:00</td><td class="num">0,09 €</td><td class="num">0,22 € <small>(19:00–21:00)</small></td><td class="num save">0,13 €</td></tr>
@@ -94,6 +94,7 @@
 <tr data-n="1" data-kwh="1.4" data-worst="0.3498"><td><b>Horno</b><small>1 hora</small></td><td class="mono">06:00–07:00</td><td class="num">0,14 €</td><td class="num">0,35 € <small>(19:00–20:00)</small></td><td class="num save">0,21 €</td></tr>
 <tr data-n="2" data-kwh="3.0" data-worst="0.7421"><td><b>Termo eléctrico</b><small>calentar el depósito</small></td><td class="mono">06:00–08:00</td><td class="num">0,30 €</td><td class="num">0,74 € <small>(19:00–21:00)</small></td><td class="num save">0,44 €</td></tr>
 <tr data-n="3" data-kwh="22.0" data-worst="5.3382"><td><b>Coche eléctrico</b><small>22 kWh a 7,4 kW</small></td><td class="mono">05:00–08:00</td><td class="num">2,28 €</td><td class="num">5,34 € <small>(18:00–21:00)</small></td><td class="num save">3,06 €</td></tr>
+<tr data-n="2" data-kwh="4.0" data-worst="0.9894"><td><b>Radiador eléctrico</b><small>2 kW durante 2 horas</small></td><td class="mono">06:00–08:00</td><td class="num">0,40 €</td><td class="num">0,99 € <small>(19:00–21:00)</small></td><td class="num save">0,59 €</td></tr>
 </tbody></table></div>
 <p class="note">Consumos típicos; el tuyo depende del aparato y del programa. Si un ciclo dura más de lo indicado, elige el principio de la franja verde.</p>
 </section>
@@ -142,7 +143,6 @@
 <p class="note">Media de febrero hasta ahora: <b>0,149 €/kWh</b> con impuestos. Día más barato: 7 (0,094); más caro: 25 (0,183). Pulsa un día para ver sus horas.</p>
 </section>
 <script>window.LUZ={"date": "2026-02-16", "kind": "dia", "p": [0.10914, 0.11309, 0.11592, 0.11697, 0.11699, 0.11278, 0.09847, 0.09998, 0.1437, 0.13603, 0.22138, 0.22559, 0.22607, 0.22601, 0.13824, 0.13842, 0.14031, 0.13687, 0.23322, 0.24988, 0.24483, 0.23097, 0.13533, 0.12893], "q": [0.12893, 0.22138]};</script>
-  <div id="prev"></div>
 
   <section class="block" aria-labelledby="h-more">
     <header><p class="eyebrow">Ahorra en la factura</p><h2 id="h-more">Más herramientas de Kilovatio</h2></header>
@@ -165,7 +165,9 @@
 </main>
 
 <script src="luz.js"></script>
+<script src="ahora.js"></script>
 <script src="prevision.js"></script>
+<script src="mix.js"></script>
 
 <footer class="site"><div class="wrap cols">
   <div>

@@ -489,6 +489,21 @@ def gas_daily(now):
         write_json(mark, st)
 
 
+def mix_snapshot(now):
+    """data/mix.json: última hora del seguimiento de la demanda de Red Eléctrica (respaldo si la web no puede pedirlo en directo)."""
+    day = now.strftime("%Y-%m-%d")
+    url = ("https://demanda.ree.es/WSvisionaMovilesPeninsulaRest/resources/demandaGeneracionPeninsula"
+           f"?callback=cb&curva=DEMANDAAU&fecha={day}")
+    req = urllib.request.Request(url, headers=UA)
+    with urllib.request.urlopen(req, timeout=40) as r:
+        t = r.read().decode("utf-8").strip()
+    j = json.loads(t[t.index("(") + 1:t.rindex(")")])
+    vals = [v for v in j.get("valoresHorariosGeneracion", []) if v.get("dem")]
+    if vals:
+        write_json(os.path.join(ROOT, "data", "mix.json"), {"actualizado": now.isoformat(timespec="minutes"), "ultimos": vals[-288:]})
+        print(f"Mix: {len(vals)} registros, último {vals[-1]['ts']}")
+
+
 def load_refs():
     with open(os.path.join(ROOT, "data", "referencias.json"), encoding="utf-8") as f:
         return json.load(f)
@@ -543,6 +558,10 @@ def main():
         data["refsRevisado"] = refs.get("revisado")
     except Exception as e:  # noqa: BLE001
         print(f"Referencias: fallo: {e}")
+    try:
+        mix_snapshot(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"Mix: fallo: {e}")
     try:
         vigilar_ofertas(now)
     except Exception as e:  # noqa: BLE001

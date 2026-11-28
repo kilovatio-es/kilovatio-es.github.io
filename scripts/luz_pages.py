@@ -39,6 +39,7 @@ APARATOS = [
     ("Horno", 1, 1.4, "1 hora"),
     ("Termo eléctrico", 2, 3.0, "calentar el depósito"),
     ("Coche eléctrico", 3, 22.0, "22 kWh a 7,4 kW"),
+    ("Radiador eléctrico", 2, 4.0, "2 kW durante 2 horas"),
 ]
 FIXED_PAGES = ["", "comparador-tarifas.html", "mi-kilovatio.html", "mapa.html", "placas-solares.html", "tarifa-pvpc-o-fija.html", "potencia-contratada.html",
                "calefaccion.html", "coche-electrico.html", "consumo-electrodomesticos.html", "guia-factura-luz.html"]
@@ -198,10 +199,19 @@ def render_block(data, k, kind, today_k):
     out.append('<details class="chartbox"><summary>Ver gráfico</summary><svg class="chart" id="chart" role="img" aria-label="Precio de la luz por horas"></svg></details>')
     out.append("</section>")
 
-    # ---- ¿Cuándo pongo cada aparato? ----
-    out.append('<section class="panel" aria-labelledby="h-apps">')
-    out.append(f'<h2 id="h-apps">¿Cuándo pongo la lavadora {e(nombre)}?</h2>')
-    out.append('<p class="muted">La mejor franja seguida para cada aparato y lo que cuesta, frente a hacerlo en las horas más caras.</p>')
+    # ---- ¿Lo pongo ahora o espero? (hoy y mañana: interactivo; otros días: la tabla) ----
+    live = kind in ("hoy", "manana")
+    out.append(f'<section class="panel{" ahora" if live else ""}" aria-labelledby="h-apps" id="ahora">')
+    if live:
+        out.append(f'<h2 id="h-apps">{"¿Lo pongo ahora o espero?" if kind == "hoy" else "¿Cuándo pongo cada aparato mañana?"}</h2>')
+        out.append('<div class="chips apps-pick" role="group" aria-label="Aparato">' + "".join(
+            f'<button type="button" data-i="{i}" data-n="{n}" data-kwh="{kwh}" aria-pressed="{str(i == 0).lower()}">{name}</button>'
+            for i, (name, n, kwh, note) in enumerate(APARATOS)) + "</div>")
+        out.append('<div id="ahora-res" class="ahora-res" aria-live="polite"></div>')
+        out.append(f'<details class="apps-all"><summary>Ver la mejor hora y el coste de todos los aparatos {e(nombre)}</summary>')
+    else:
+        out.append(f'<h2 id="h-apps">¿Cuándo convenía poner la lavadora {e(nombre)}?</h2>')
+        out.append('<p class="muted">La mejor franja seguida para cada aparato y lo que cuesta, frente a hacerlo en las horas más caras.</p>')
     out.append('<div class="tablewrap"><table class="apps"><thead><tr><th>Aparato</th><th>Mejor franja</th><th class="num">Cuesta</th><th class="num">En la peor franja</th><th class="num">Ahorras</th></tr></thead><tbody>')
     for name, n, kwh, note in APARATOS:
         b, w = st["window"](n, True), st["window"](n, False)
@@ -212,7 +222,11 @@ def render_block(data, k, kind, today_k):
                    f'<td class="num save">{eur(kwh * (w[1] - b[1]))}</td></tr>')
     out.append("</tbody></table></div>")
     out.append('<p class="note">Consumos típicos; el tuyo depende del aparato y del programa. Si un ciclo dura más de lo indicado, elige el principio de la franja verde.</p>')
+    if live:
+        out.append("</details>")
     out.append("</section>")
+    if live:   # próximos días (prevision.js) y de dónde viene la luz ahora (mix.js, solo hoy)
+        out.append('<div id="prev"></div>' + ('<div id="mix"></div>' if kind == "hoy" else ""))
 
     # ---- Navegación entre días y calendario ----
     out.append('<nav class="prevnext" aria-label="Días">')

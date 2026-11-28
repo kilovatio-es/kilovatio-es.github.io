@@ -28,6 +28,7 @@
     var ans = document.querySelector(".answer"); if (!ans) return;
     var mi = null; try { mi = JSON.parse(localStorage.getItem("kv-mi") || "null"); } catch (e) { }
     var box = document.createElement("div"); box.className = "mkhook";
+    if (mi) return;   // con perfil, la mejor hora de cada aparato ya sale en «¿Lo pongo ahora o espero?»
     if (!mi) {
       box.innerHTML = "<p><b>Mi Kilovatio:</b> mira qué gasta tu casa, tu factura estimada y la mejor hora de cada día para tus aparatos. Sin registro.</p><a class=\"btn primary\" href=\"mi-kilovatio.html\">Dar de alta mi casa →</a>";
     } else {
