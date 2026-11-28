@@ -62,7 +62,12 @@ def finde(k):
     return d.weekday() >= 5 or k[5:] in FESTIVOS
 
 
-def feats(k, h, w, level):
+def feats(k, h, w, level, direct=False):
+    """direct=True: modelo del PVPC directamente (una constante por hora para laborables y otra para fines de semana)."""
+    if direct:
+        x = [0.0] * 48
+        x[h + (24 if finde(k) else 0)] = 1.0
+        return x + [w[0], w[1], w[2], level, w[0] * level]
     x = [0.0] * 24
     x[h] = 1.0
     return x + [w[0], w[1], w[2], 1.0 if finde(k) else 0.0, level, w[0] * level]
@@ -112,7 +117,7 @@ def level_before(spot, k, n=7):
     return sum(v) / len(v) if v else None
 
 
-def train(spot, W, days, ref_day):
+def train(spot, W, days, ref_day, direct=False):
     rows = []
     for k in days:
         lv = level_before(spot, k)
@@ -123,7 +128,7 @@ def train(spot, W, days, ref_day):
         for h, y in enumerate(spot[k]):
             if y is None or (k, h) not in W:
                 continue
-            rows.append((feats(k, h, W[(k, h)], lv), y, wt))
+            rows.append((feats(k, h, W[(k, h)], lv, direct), y, wt))
     return solve(rows) if len(rows) > 24 * 20 else None
 
 
@@ -143,14 +148,19 @@ def adders(days_p, spot, upto, n=28):
     return med
 
 
-def predict_day(coef, k, W, lv, add):
+def predict_day(coef, k, W, lv, add, direct=False, lim=None):
     hs = []
     for h in range(24):
         w = W.get((k, h))
         if w is None:
             return None
-        s = max(dot(coef, feats(k, h, w, lv)), -0.005)
-        hs.append(round(s + add.get((finde(k), h), 0.0), 5))
+        if direct:
+            v = dot(coef, feats(k, h, w, lv, True))
+        else:
+            v = max(dot(coef, feats(k, h, w, lv)), -0.005) + add.get((finde(k), h), 0.0)
+        if lim:
+            v = min(max(v, lim[0]), lim[1])
+        hs.append(round(v, 5))
     return hs
 
 
@@ -165,26 +175,44 @@ def run(root, data, now):
     W = weather()
     hist = sorted(k for k in spot if k <= last and k in days_p)
     train_days = hist[-90:]
-    # Prueba con las 2 últimas semanas (entrena sin ellas y compara con lo que pasó, con el tiempo real)
-    test = train_days[-14:]
-    coef_t = train(spot, W, train_days[:-14], test[0])
-    add_t = adders(days_p, spot, train_days[-15])
-    errs = []
-    if coef_t:
-        for k in test:
-            lv = level_before(spot, k)
-            p = predict_day(coef_t, k, W, lv, add_t) if lv is not None else None
-            if p:
-                real = [x for x in days_p[k] if x is not None]
-                errs.append(abs(sum(p) / 24 - sum(real) / len(real)))
-    mae = sum(errs) / len(errs) if errs else 0.02
-    coef = train(spot, W, train_days, last)
+    pv_days = sorted(pub)[-90:]
+    # Límites sensatos: lo visto en las últimas 4 semanas, con margen
+    recent_vals = [x for k in pub[-28:] for x in days_p[k] if x is not None]
+    lim = (min(recent_vals) - 0.01, max(recent_vals) * 1.15)
+    # Prueba con las 2 últimas semanas: se entrena sin ellas y se compara con lo que pasó (con el tiempo real).
+    # Se prueban dos modelos (mercado + diferencia típica, o el PVPC directamente) y se usa el que menos falla.
+    res = {}
+    for direct in (False, True):
+        src, ds = (days_p, pv_days) if direct else (spot, train_days)
+        test = ds[-14:]
+        coef_t = train(src, W, ds[:-14], test[0], direct)
+        add_t = adders(days_p, spot, ds[-15])
+        errs, bias = [], []
+        if coef_t:
+            for k in test:
+                lv = level_before(src, k)
+                p = predict_day(coef_t, k, W, lv, add_t, direct, lim) if lv is not None else None
+                if p:
+                    real = [x for x in days_p[k] if x is not None]
+                    e_ = sum(p) / 24 - sum(real) / len(real)
+                    errs.append(abs(e_))
+                    bias.append(e_)
+        if errs:
+            res[direct] = (sum(errs) / len(errs), sum(bias) / len(bias))
+    if not res:
+        print("Previsión: no se pudo probar el modelo")
+        return
+    direct = min(res, key=lambda d: res[d][0])
+    mae = res[direct][0]
+    print("Previsión: prueba " + ", ".join(f"{'PVPC directo' if d else 'mercado+peajes'} {v[0] * 1000:.1f} €/MWh (sesgo {v[1] * 1000:+.1f})" for d, v in res.items()))
+    src, ds = (days_p, pv_days) if direct else (spot, train_days)
+    coef = train(src, W, ds, last, direct)
     if not coef:
         print("Previsión: no se pudo entrenar el modelo")
         return
     add = adders(days_p, spot, last)
     # Nivel de partida: la última semana publicada
-    lv = level_before(spot, (date.fromisoformat(last) + timedelta(days=1)).isoformat())
+    lv = level_before(src, (date.fromisoformat(last) + timedelta(days=1)).isoformat())
     wind_d = {}
     sun_d = {}
     for (k, h), w in W.items():
@@ -200,7 +228,7 @@ def run(root, data, now):
         k = (d0 + timedelta(days=i)).isoformat()
         if (date.fromisoformat(k) - date.fromisoformat(today)).days > 7:
             break
-        p = predict_day(coef, k, W, lv, add)
+        p = predict_day(coef, k, W, lv, add, direct, lim)
         if not p:
             continue
         horizon = (date.fromisoformat(k) - date.fromisoformat(today)).days
@@ -249,7 +277,8 @@ def run(root, data, now):
                    "error_pct": round(100 * sum(abs(x["est"] - x["real"]) / x["real"] for x in last30 if x["real"] > 0) / len(last30), 1),
                    "ultimos": last30[-7:]}
     out = {"generado": now.isoformat(timespec="minutes"), "ultimo_publicado": last, "dias": out_days,
-           "error_prueba": round(mae, 5), "acierto": acierto,
+           "error_prueba": round(mae, 5), "modelo": "pvpc" if direct else "mercado", "prueba": {("pvpc" if d else "mercado"): [round(v[0], 5), round(v[1], 5)] for d, v in res.items()},
+           "acierto": acierto,
            "metodo": "Regresión con la previsión de viento, sol y temperatura de Open-Meteo y los precios de los últimos 90 días"}
     with open(os.path.join(root, "data", "prevision.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
